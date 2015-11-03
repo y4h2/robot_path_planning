@@ -1,0 +1,188 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>controllers.pid_controller &mdash; PySimiam 1.0.0 documentation</title>
+    
+    <link rel="stylesheet" href="../../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '1.0.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="shortcut icon" href="../../_static/appicon_16x16.ico"/>
+    <link rel="top" title="PySimiam 1.0.0 documentation" href="../../index.html" />
+    <link rel="up" title="Module code" href="../index.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+<li><img class="logo" src="../../_static/appicon.png" style="vertical-align:middle; margin-top: -1px" alt="Logo"/></li>
+<li><a href="../../index.html">PySimiam 1.0.0 documentation</a> &raquo;</li>
+
+          <li><a href="../index.html" accesskey="U">Module code</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <h1>Source code for controllers.pid_controller</h1><div class="highlight"><pre>
+<span class="c">#</span>
+<span class="c"># (c) PySimiam Team 2013</span>
+<span class="c">#</span>
+<span class="c"># Contact person: Tim Fuchs &lt;typograph@elec.ru&gt;</span>
+<span class="c">#</span>
+<span class="c"># This class was implemented as a weekly programming excercise</span>
+<span class="c"># of the &#39;Control of Mobile Robots&#39; course by Magnus Egerstedt.</span>
+<span class="c">#</span>
+<span class="kn">from</span> <span class="nn">controller</span> <span class="kn">import</span> <span class="n">Controller</span>
+<span class="kn">import</span> <span class="nn">math</span>
+<span class="kn">import</span> <span class="nn">numpy</span>
+
+<div class="viewcode-block" id="PIDController"><a class="viewcode-back" href="../../code_suppl_sup_contr.html#controllers.pid_controller.PIDController">[docs]</a><span class="k">class</span> <span class="nc">PIDController</span><span class="p">(</span><span class="n">Controller</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;The PID controller is a general-purpose controller that steers the robot to a certain heading direction. The heading is recalculated on every execution.&quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">params</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;Initialize internal variables&#39;&#39;&#39;</span>
+        <span class="n">Controller</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">params</span><span class="p">)</span>
+        
+        <span class="c"># This angle shows the direction that the controller</span>
+        <span class="c"># tries to follow. It is used by the supervisor</span>
+        <span class="c"># to draw and debug this controller</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">heading_angle</span> <span class="o">=</span> <span class="mi">0</span>
+
+<div class="viewcode-block" id="PIDController.restart"><a class="viewcode-back" href="../../code_suppl_sup_contr.html#controllers.pid_controller.PIDController.restart">[docs]</a>    <span class="k">def</span> <span class="nf">restart</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Set the integral and differential errors to zero&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">E</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">error_1</span> <span class="o">=</span> <span class="mi">0</span>
+</div>
+<div class="viewcode-block" id="PIDController.set_parameters"><a class="viewcode-back" href="../../code_suppl_sup_contr.html#controllers.pid_controller.PIDController.set_parameters">[docs]</a>    <span class="k">def</span> <span class="nf">set_parameters</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">params</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Set PID values</span>
+<span class="sd">        </span>
+<span class="sd">        The params structure is expected to have in the `gains` field three</span>
+<span class="sd">        parameters for the PID gains.</span>
+<span class="sd">        </span>
+<span class="sd">        :param params.gains.kp: Proportional gain</span>
+<span class="sd">        :type params.gains.kp: float</span>
+<span class="sd">        :param params.gains.ki: Integral gain</span>
+<span class="sd">        :type params.gains.ki: float</span>
+<span class="sd">        :param params.gains.kd: Differential gain</span>
+<span class="sd">        :type params.gains.kd: float</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">kp</span> <span class="o">=</span> <span class="n">params</span><span class="o">.</span><span class="n">gains</span><span class="o">.</span><span class="n">kp</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ki</span> <span class="o">=</span> <span class="n">params</span><span class="o">.</span><span class="n">gains</span><span class="o">.</span><span class="n">ki</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">kd</span> <span class="o">=</span> <span class="n">params</span><span class="o">.</span><span class="n">gains</span><span class="o">.</span><span class="n">kd</span>
+</div>
+<div class="viewcode-block" id="PIDController.get_heading"><a class="viewcode-back" href="../../code_suppl_sup_contr.html#controllers.pid_controller.PIDController.get_heading">[docs]</a>    <span class="k">def</span> <span class="nf">get_heading</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">state</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Get the direction in which the controller wants to move the robot</span>
+<span class="sd">        as a vector in the robot&#39;s frame of reference.</span>
+<span class="sd">        </span>
+<span class="sd">        :return: a numpy array [x, y, z] with z = 1.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s">&quot;PIDController.get_heading&quot;</span><span class="p">)</span>
+    </div>
+<div class="viewcode-block" id="PIDController.get_heading_angle"><a class="viewcode-back" href="../../code_suppl_sup_contr.html#controllers.pid_controller.PIDController.get_heading_angle">[docs]</a>    <span class="k">def</span> <span class="nf">get_heading_angle</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">state</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Return the heading as an angle in the robot&#39;s frame of reference.&quot;&quot;&quot;</span>
+
+        <span class="c"># The vector to follow</span>
+        <span class="n">heading</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_heading</span><span class="p">(</span><span class="n">state</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">math</span><span class="o">.</span><span class="n">atan2</span><span class="p">(</span><span class="n">heading</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span><span class="n">heading</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+    </div>
+<div class="viewcode-block" id="PIDController.execute"><a class="viewcode-back" href="../../code_suppl_sup_contr.html#controllers.pid_controller.PIDController.execute">[docs]</a>    <span class="k">def</span> <span class="nf">execute</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">state</span><span class="p">,</span> <span class="n">dt</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Calculate errors and steer the robot&quot;&quot;&quot;</span>
+     
+        <span class="c"># This is the direction we want to go</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">heading_angle</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_heading_angle</span><span class="p">(</span><span class="n">state</span><span class="p">)</span>
+
+        <span class="c"># 1. Calculate simple proportional error</span>
+        <span class="c"># The direction is in the robot&#39;s frame of reference,</span>
+        <span class="c"># so the error is the direction.</span>
+        <span class="c"># Note that the error is automatically between pi and -pi.</span>
+        <span class="n">error</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">heading_angle</span>
+
+        <span class="c"># 2. Calculate integral error</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">E</span> <span class="o">+=</span> <span class="n">error</span><span class="o">*</span><span class="n">dt</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">E</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">E</span> <span class="o">+</span> <span class="n">math</span><span class="o">.</span><span class="n">pi</span><span class="p">)</span><span class="o">%</span><span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="n">math</span><span class="o">.</span><span class="n">pi</span><span class="p">)</span> <span class="o">-</span> <span class="n">math</span><span class="o">.</span><span class="n">pi</span>
+
+        <span class="c"># 3. Calculate differential error</span>
+        <span class="n">dE</span> <span class="o">=</span> <span class="p">(</span><span class="n">error</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">error_1</span><span class="p">)</span><span class="o">/</span><span class="n">dt</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">error_1</span> <span class="o">=</span> <span class="n">error</span> <span class="c">#updates the error_1 var</span>
+
+        <span class="c"># 4. Calculate desired omega</span>
+        <span class="n">w_</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">kp</span><span class="o">*</span><span class="n">error</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">ki</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">E</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">kd</span><span class="o">*</span><span class="n">dE</span>
+        
+        <span class="c"># The linear velocity is given to us:</span>
+        <span class="n">v_</span> <span class="o">=</span> <span class="n">state</span><span class="o">.</span><span class="n">velocity</span><span class="o">.</span><span class="n">v</span>
+
+        <span class="k">return</span> <span class="p">[</span><span class="n">v_</span><span class="p">,</span> <span class="n">w_</span><span class="p">]</span></div></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+<li><img class="logo" src="../../_static/appicon.png" style="vertical-align:middle; margin-top: -1px" alt="Logo"/></li>
+<li><a href="../../index.html">PySimiam 1.0.0 documentation</a> &raquo;</li>
+
+          <li><a href="../index.html" >Module code</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2013, Timofey Fuchs, Shaun Lippy, John Alexander, Vidam Govorovski, Jonathan Whitten.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
+    </div>
+  </body>
+</html>

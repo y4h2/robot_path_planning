@@ -1,0 +1,632 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Implementing your own robot &mdash; PySimiam 1.0.0 documentation</title>
+    
+    <link rel="stylesheet" href="_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '',
+        VERSION:     '1.0.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="shortcut icon" href="_static/appicon_16x16.ico"/>
+    <link rel="top" title="PySimiam 1.0.0 documentation" href="index.html" />
+    <link rel="next" title="Writing a supervisor" href="supervisor.html" />
+    <link rel="prev" title="World files" href="world.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="supervisor.html" title="Writing a supervisor"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="world.html" title="World files"
+             accesskey="P">previous</a> |</li>
+<li><img class="logo" src="_static/appicon.png" style="vertical-align:middle; margin-top: -1px" alt="Logo"/></li>
+<li><a href="index.html">PySimiam 1.0.0 documentation</a> &raquo;</li>
+ 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="implementing-your-own-robot">
+<span id="robot-tutorial"></span><h1>Implementing your own robot<a class="headerlink" href="#implementing-your-own-robot" title="Permalink to this headline">¶</a></h1>
+<p>At the moment only one robot - Khepera3 - is implemented in pySimiam. Most likely,
+you will need to customize it for your needs or implement a completely new robot.</p>
+<p>A robot from the point of view of the simulator is an drawable object that accepts
+control inputs from a supervisor. The pair robot-supervisor is a tightly bound entity,
+and the simulator plays only a messenger role between them.</p>
+<div class="section" id="the-robot-is-a-simobject">
+<h2>The robot is a SimObject<a class="headerlink" href="#the-robot-is-a-simobject" title="Permalink to this headline">¶</a></h2>
+<p>Start with subclassing <a class="reference internal" href="code_robot.html#robot.Robot" title="robot.Robot"><tt class="xref py py-class docutils literal"><span class="pre">robot.Robot</span></tt></a> and implementing drawing. Two functions
+have to be implemented: <a class="reference internal" href="code_simobject.html#simobject.SimObject.draw" title="simobject.SimObject.draw"><tt class="xref py py-meth docutils literal"><span class="pre">draw()</span></tt></a> that draws the robot
+on screen and <a class="reference internal" href="code_simobject.html#simobject.SimObject.get_envelope" title="simobject.SimObject.get_envelope"><tt class="xref py py-meth docutils literal"><span class="pre">get_envelope()</span></tt></a> that returns the bounding
+rectangle of the robot for collision detection.</p>
+<p>The <a class="reference internal" href="code_simobject.html#simobject.SimObject.get_envelope" title="simobject.SimObject.get_envelope"><tt class="xref py py-meth docutils literal"><span class="pre">get_envelope()</span></tt></a> method should return a list of points describing the polygon. By default this polygon is only used for collision detection,
+and so it does not have to correspond exactly to the drawing of the robot.</p>
+<p>The <a class="reference internal" href="code_simobject.html#simobject.SimObject.draw" title="simobject.SimObject.draw"><tt class="xref py py-meth docutils literal"><span class="pre">draw()</span></tt></a> method accepts a <a class="reference internal" href="code_ui.html#renderer.Renderer" title="renderer.Renderer"><tt class="xref py py-class docutils literal"><span class="pre">Renderer</span></tt></a>
+object as parameter, and can use any of its functions to draw the robot. The drawing
+can be as complicated as you wish, or as easy as:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="k">def</span> <span class="nf">draw</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">r</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Draw the envelope (shape) filling it with the internal color.&quot;&quot;&quot;</span>
+    <span class="n">r</span><span class="o">.</span><span class="n">set_pose</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">get_pose</span><span class="p">())</span>
+    <span class="n">r</span><span class="o">.</span><span class="n">set_brush</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">get_color</span><span class="p">())</span>
+    <span class="n">r</span><span class="o">.</span><span class="n">draw_polygon</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">get_envelope</span><span class="p">())</span>
+</pre></div>
+</div>
+<p>Note the use of <a class="reference internal" href="code_ui.html#renderer.Renderer.set_pose" title="renderer.Renderer.set_pose"><tt class="xref py py-meth docutils literal"><span class="pre">set_pose()</span></tt></a> method. It is much easier
+to draw the robot in the robot&#8217;s internal reference frame, so it is recommended
+to use this method before drawing. It is also recommended to use the color of
+the robot <tt class="xref py py-meth docutils literal"><span class="pre">set_pose()</span></tt> during drawing, to be able to distinguish
+different robots.</p>
+<p>If you robot has sensors that can be drawn, an additional method <a class="reference internal" href="code_robot.html#robot.Robot.draw_sensors" title="robot.Robot.draw_sensors"><tt class="xref py py-meth docutils literal"><span class="pre">draw_sensors()</span></tt></a> can be implemented. We will revisit this point later, when we talk about sensors.</p>
+</div>
+<div class="section" id="the-robot-moves">
+<h2>The robot moves<a class="headerlink" href="#the-robot-moves" title="Permalink to this headline">¶</a></h2>
+<p>To move the robot, the simulator calls <tt class="xref py py-meth docutils literal"><span class="pre">move()</span></tt> with the time
+interval as a parameter. When implementing this method, you should update
+the pose of the robot with <a class="reference internal" href="code_simobject.html#simobject.SimObject.set_pose" title="simobject.SimObject.set_pose"><tt class="xref py py-meth docutils literal"><span class="pre">set_pose()</span></tt></a>, depending on
+its internal state.</p>
+<p>The internal state of the robot is set by the supervisor passing parameters into <a class="reference internal" href="code_robot.html#robot.Robot.set_inputs" title="robot.Robot.set_inputs"><tt class="xref py py-meth docutils literal"><span class="pre">set_inputs()</span></tt></a>. The format of the parameters is up to the robot
+implementation, and the supervisor has to conform to this. Please, provide
+sufficient documentation when implementing this method.</p>
+</div>
+<div class="section" id="information-about-the-robot">
+<h2>Information about the robot<a class="headerlink" href="#information-about-the-robot" title="Permalink to this headline">¶</a></h2>
+<p>Some of the robot&#8217;s parameters are important to understand its state. For example,
+in case of a differential drive robot, the radius of the wheels and the distance
+between them is important. There should be also a way to obtain sensor readings.
+This information is expected to be provided by the <a class="reference internal" href="code_robot.html#robot.Robot.get_info" title="robot.Robot.get_info"><tt class="xref py py-meth docutils literal"><span class="pre">get_info()</span></tt></a>
+method. As with <a class="reference internal" href="code_robot.html#robot.Robot.set_inputs" title="robot.Robot.set_inputs"><tt class="xref py py-meth docutils literal"><span class="pre">set_inputs()</span></tt></a>, the actual structure of the
+returned object is up to the robot and only matters for the supervisor. You
+can turn to the <tt class="xref py py-class docutils literal"><span class="pre">Khepera3</span></tt> code for inspiration.</p>
+<p>One thing that is important for the simulator, though, is the set of the external
+sensors of the robot, as the sensors have to interact with the world. This information
+should be returned as a list of sensors from the <tt class="xref py py-meth docutils literal"><span class="pre">get_external_sensors()</span></tt> method.</p>
+<p>For example, if your robot has an IR sensor skirt with five sensors, the list
+should contain these sensor objects (see <a class="reference internal" href="code_robot.html#sensor.ProximitySensor" title="sensor.ProximitySensor"><tt class="xref py py-class docutils literal"><span class="pre">sensor.ProximitySensor</span></tt></a>).
+You should also implement <a class="reference internal" href="code_robot.html#robot.Robot.draw_sensors" title="robot.Robot.draw_sensors"><tt class="xref py py-meth docutils literal"><span class="pre">draw_sensors()</span></tt></a> in this case,
+which can be as simple as:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="k">def</span> <span class="nf">draw_sensors</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">renderer</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Draw the sensors that this robot has&quot;&quot;&quot;</span>
+    <span class="k">for</span> <span class="n">sensor</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">ir_sensors</span><span class="p">:</span>
+        <span class="n">sensor</span><span class="o">.</span><span class="n">draw</span><span class="p">(</span><span class="n">renderer</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">At the moment, the only type of sensors that are supported by the simulator
+are proximity sensors, such as ultrasound and IR sensors. Please contact the
+developers (or extend the simulator yourself) if you need another kind of external
+sensors.</p>
+</div>
+</div>
+<div class="section" id="testing">
+<h2>Testing<a class="headerlink" href="#testing" title="Permalink to this headline">¶</a></h2>
+<p>Your robot should be ready now. How can you test it? You need two parts - a <a class="reference internal" href="world.html#world-tutorial"><em>world</em></a> and a <a class="reference internal" href="supervisor.html#supervisor-tutorial"><em>supervisor</em></a> . In the beginning, neither
+of the two has to be very complicated. A simple world can just contain one robot,
+and your supervisor can work without any controllers. This should be enough to
+test the drawing, positioning of the sensors and the dynamics.</p>
+</div>
+<div class="section" id="api">
+<h2>API<a class="headerlink" href="#api" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt>
+<em class="property">class </em><tt class="descclassname">pose.</tt><tt class="descname">Pose</tt><big>(</big><em>*args</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="_modules/pose.html#Pose"><span class="viewcode-link">[source]</span></a></dt>
+<dd><p>The pose class allows for a posing of objects in 2D space. The pose uses a right-hand coordinate system with counter-clockwise measurement of theta from the x-axis</p>
+<p>There are several ways to create a pose:</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="36%" />
+<col width="64%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><tt class="docutils literal"><span class="pre">Pose(x,y,theta)</span></tt></td>
+<td>A pose at x,y and orientation <cite>theta</cite></td>
+</tr>
+<tr class="row-even"><td><tt class="docutils literal"><span class="pre">Pose(x,y)</span></tt></td>
+<td>Same as <tt class="docutils literal"><span class="pre">Pose(x,y,0)</span></tt></td>
+</tr>
+<tr class="row-odd"><td><tt class="docutils literal"><span class="pre">Pose()</span></tt></td>
+<td>Same as <tt class="docutils literal"><span class="pre">Pose(0,0,0)</span></tt></td>
+</tr>
+<tr class="row-even"><td><tt class="docutils literal"><span class="pre">Pose([x,y,theta])</span></tt></td>
+<td>Same as <tt class="docutils literal"><span class="pre">Pose(x,y,theta)</span></tt></td>
+</tr>
+</tbody>
+</table>
+<p>There are several ways to access pose parameters:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">theta</span> <span class="o">=</span> <span class="n">pose</span>
+<span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">theta</span> <span class="o">=</span> <span class="n">pose</span><span class="o">.</span><span class="n">get_list</span><span class="p">()</span>
+<span class="n">x</span> <span class="o">=</span> <span class="n">pose</span><span class="o">.</span><span class="n">x</span><span class="p">;</span> <span class="n">y</span> <span class="o">=</span> <span class="n">pose</span><span class="o">.</span><span class="n">y</span><span class="p">;</span> <span class="n">theta</span> <span class="o">=</span> <span class="n">pose</span><span class="o">.</span><span class="n">theta</span>
+</pre></div>
+</div>
+<dl class="method">
+<dt>
+<tt class="descclassname">Pose.</tt><tt class="descname">get_list</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/pose.html#Pose.get_list"><span class="viewcode-link">[source]</span></a></dt>
+<dd><p>Get the pose as a list <tt class="docutils literal"><span class="pre">[x,</span> <span class="pre">y,</span> <span class="pre">theta]</span></tt>. Equivalent to <tt class="docutils literal"><span class="pre">list(pose)</span></tt>.</p>
+</dd></dl>
+
+<dl class="method">
+<dt>
+<tt class="descclassname">Pose.</tt><tt class="descname">get_transformation</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/pose.html#Pose.get_transformation"><span class="viewcode-link">[source]</span></a></dt>
+<dd><p>Get the 3x3 transformation matrix associated with the pose.</p>
+</dd></dl>
+
+<dl class="method">
+<dt>
+<tt class="descclassname">Pose.</tt><tt class="descname">iscloseto</tt><big>(</big><em>other</em>, <em>epsilon</em><big>)</big><a class="reference internal" href="_modules/pose.html#Pose.iscloseto"><span class="viewcode-link">[source]</span></a></dt>
+<dd><p>Compare this pose to <em>other</em>. Returns True if the relative distance
+in x, y and theta is smaller than <em>epsilon</em></p>
+</dd></dl>
+
+<dl class="method">
+<dt>
+<tt class="descclassname">Pose.</tt><tt class="descname">set_pose</tt><big>(</big><em>*args</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="_modules/pose.html#Pose.set_pose"><span class="viewcode-link">[source]</span></a></dt>
+<dd><p>Set all or some pose parameters.</p>
+<p>Possible arguments are:</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="43%" />
+<col width="57%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><tt class="docutils literal"><span class="pre">set_pose(x,</span> <span class="pre">y,</span> <span class="pre">theta)</span></tt></td>
+<td>Set all of x, y and theta</td>
+</tr>
+<tr class="row-even"><td><tt class="docutils literal"><span class="pre">set_pose(another_pose)</span></tt></td>
+<td>Use x, y and theta from another pose</td>
+</tr>
+<tr class="row-odd"><td><tt class="docutils literal"><span class="pre">set_pose(x</span> <span class="pre">=</span> <span class="pre">3.0)</span></tt></td>
+<td>Only change the x position</td>
+</tr>
+<tr class="row-even"><td><tt class="docutils literal"><span class="pre">set_pose(theta</span> <span class="pre">=</span> <span class="pre">pi,</span> <span class="pre">y</span> <span class="pre">=</span> <span class="pre">3.0)</span></tt></td>
+<td>Only change the y position and orientation</td>
+</tr>
+<tr class="row-odd"><td><tt class="docutils literal"><span class="pre">set_pose(another_pose,</span> <span class="pre">y</span> <span class="pre">=</span> <span class="pre">1)</span></tt></td>
+<td>Use x and theta from another pose, use y=1</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt>
+<em class="property">class </em><tt class="descclassname">simobject.</tt><tt class="descname">SimObject</tt><big>(</big><em>pose</em>, <em>color=0</em><big>)</big><a class="reference internal" href="_modules/simobject.html#SimObject"><span class="viewcode-link">[source]</span></a></dt>
+<dd><p>The base class for all objects that can be drawn in the simulator. 
+Every SimObject has a pose, an envelope and a color.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>pose</strong> (<a class="reference internal" href="code_simobject.html#pose.Pose" title="pose.Pose"><tt class="xref py py-class docutils literal"><span class="pre">Pose</span></tt></a>) &#8211; The position of the object.</li>
+<li><strong>color</strong> (<em>int</em>) &#8211; The internal color of the object (<cite>0xAARRGGBB</cite> or <cite>0xRRGGBB</cite>).
+The default color is black.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<dl class="method">
+<dt>
+<tt class="descclassname">SimObject.</tt><tt class="descname">get_color</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/simobject.html#SimObject.get_color"><span class="viewcode-link">[source]</span></a></dt>
+<dd><p>Get the internal color of the object</p>
+</dd></dl>
+
+<dl class="method">
+<dt>
+<tt class="descclassname">SimObject.</tt><tt class="descname">set_color</tt><big>(</big><em>color</em><big>)</big><a class="reference internal" href="_modules/simobject.html#SimObject.set_color"><span class="viewcode-link">[source]</span></a></dt>
+<dd><p>Set the internal color of the object</p>
+</dd></dl>
+
+<dl class="method">
+<dt>
+<tt class="descclassname">SimObject.</tt><tt class="descname">get_pose</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/simobject.html#SimObject.get_pose"><span class="viewcode-link">[source]</span></a></dt>
+<dd><p>Get the pose of the object in world coordinates</p>
+</dd></dl>
+
+<dl class="method">
+<dt>
+<tt class="descclassname">SimObject.</tt><tt class="descname">set_pose</tt><big>(</big><em>pose</em><big>)</big><a class="reference internal" href="_modules/simobject.html#SimObject.set_pose"><span class="viewcode-link">[source]</span></a></dt>
+<dd><p>Set the pose of the object in world coordinates</p>
+</dd></dl>
+
+<dl class="method">
+<dt>
+<tt class="descclassname">SimObject.</tt><tt class="descname">draw</tt><big>(</big><em>renderer</em><big>)</big><a class="reference internal" href="_modules/simobject.html#SimObject.draw"><span class="viewcode-link">[source]</span></a></dt>
+<dd><p>Draws the object using <em>renderer</em> (see <a class="reference internal" href="code_ui.html#renderer.Renderer" title="renderer.Renderer"><tt class="xref py py-class docutils literal"><span class="pre">Renderer</span></tt></a>).</p>
+<p>The object doesn&#8217;t have to use only one color. It doesn&#8217;t even
+have to use its internal color while drawing.</p>
+</dd></dl>
+
+<dl class="method">
+<dt>
+<tt class="descclassname">SimObject.</tt><tt class="descname">get_envelope</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/simobject.html#SimObject.get_envelope"><span class="viewcode-link">[source]</span></a></dt>
+<dd><p>Get the envelope of the object in object&#8217;s local coordinates.</p>
+<p>The envelope is a list of <em>xy</em> pairs, describing the shape of the
+bounding polygon.</p>
+</dd></dl>
+
+<dl class="method">
+<dt>
+<tt class="descclassname">SimObject.</tt><tt class="descname">get_world_envelope</tt><big>(</big><em>recalculate=False</em><big>)</big><a class="reference internal" href="_modules/simobject.html#SimObject.get_world_envelope"><span class="viewcode-link">[source]</span></a></dt>
+<dd><p>Get the envelope of the object in world coordinates.
+Used for checking collision.</p>
+<p>The envelope is cached, and will be recalculated if <em>recalculate</em>
+is <cite>True</cite>.</p>
+</dd></dl>
+
+<dl class="method">
+<dt>
+<tt class="descclassname">SimObject.</tt><tt class="descname">get_bounding_rect</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/simobject.html#SimObject.get_bounding_rect"><span class="viewcode-link">[source]</span></a></dt>
+<dd><p>Get the smallest rectangle that contains the object
+as a tuple (x, y, width, height).</p>
+</dd></dl>
+
+<dl class="method">
+<dt>
+<tt class="descclassname">SimObject.</tt><tt class="descname">has_collision</tt><big>(</big><em>other</em><big>)</big><a class="reference internal" href="_modules/simobject.html#SimObject.has_collision"><span class="viewcode-link">[source]</span></a></dt>
+<dd><p>Check if the object has collided with <em>other</em>.
+Return True or False</p>
+</dd></dl>
+
+<dl class="method">
+<dt>
+<tt class="descclassname">SimObject.</tt><tt class="descname">get_contact_points</tt><big>(</big><em>other</em><big>)</big><a class="reference internal" href="_modules/simobject.html#SimObject.get_contact_points"><span class="viewcode-link">[source]</span></a></dt>
+<dd><p>Get a list of contact points with other object.
+Returns a list of (x, y)</p>
+</dd></dl>
+
+<dl class="method">
+<dt>
+<tt class="descclassname">SimObject.</tt><tt class="descname">get_bounds</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/simobject.html#SimObject.get_bounds"><span class="viewcode-link">[source]</span></a></dt>
+<dd><p>Get the smallest rectangle that contains the object
+as a tuple (xmin, ymin, xmax, ymax)</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt>
+<em class="property">class </em><tt class="descclassname">simobject.</tt><tt class="descname">Polygon</tt><big>(</big><em>pose</em>, <em>shape</em>, <em>color</em><big>)</big><a class="reference internal" href="_modules/simobject.html#Polygon"><span class="viewcode-link">[source]</span></a></dt>
+<dd><p>The polygon is a simobject that gets the envelope supplied at construction.
+It draws itself as a filled polygon.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>pose</strong> (<a class="reference internal" href="code_simobject.html#pose.Pose" title="pose.Pose"><tt class="xref py py-class docutils literal"><span class="pre">Pose</span></tt></a>) &#8211; The position of the polygon.</li>
+<li><strong>shape</strong> (<em>list((int,int))</em>) &#8211; The list of points making up the polygon.</li>
+<li><strong>color</strong> (<em>int</em>) &#8211; The color of the polygon (<cite>0xAARRGGBB</cite> or <cite>0xRRGGBB</cite>).</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<dl class="method">
+<dt>
+<tt class="descclassname">Polygon.</tt><tt class="descname">draw</tt><big>(</big><em>r</em><big>)</big><a class="reference internal" href="_modules/simobject.html#Polygon.draw"><span class="viewcode-link">[source]</span></a></dt>
+<dd><p>Draw the envelope (shape) filling it with the internal color.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt>
+<em class="property">class </em><tt class="descclassname">simobject.</tt><tt class="descname">Cloud</tt><big>(</big><em>color</em><big>)</big></dt>
+<dd><p>The cloud is a collection of points.</p>
+<dl class="method">
+<dt>
+<tt class="descclassname">Cloud.</tt><tt class="descname">add_point</tt><big>(</big><em>pose</em><big>)</big></dt>
+<dd><p>Append a point at <em>pose</em> to the collection. The orientation of the pose is ignored</p>
+</dd></dl>
+
+<dl class="method">
+<dt>
+<tt class="descclassname">Cloud.</tt><tt class="descname">draw</tt><big>(</big><em>r</em><big>)</big></dt>
+<dd><p>Draw a polyline with modes at all added points, using the internal color</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt>
+<em class="property">class </em><tt class="descclassname">simobject.</tt><tt class="descname">Path</tt><big>(</big><em>start</em>, <em>color</em><big>)</big><a class="reference internal" href="_modules/simobject.html#Path"><span class="viewcode-link">[source]</span></a></dt>
+<dd><p>The path is a simobject that draws itself as a polyline.
+The line starts at <cite>start</cite>, and can be continued by adding
+points using <tt class="xref py py-meth docutils literal"><span class="pre">add_point()</span></tt>.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>start</strong> (<a class="reference internal" href="code_simobject.html#pose.Pose" title="pose.Pose"><tt class="xref py py-class docutils literal"><span class="pre">Pose</span></tt></a>) &#8211; The starting point of the polyline in world coordinates.</li>
+<li><strong>color</strong> (<em>int</em>) &#8211; The color of the line (<cite>0xAARRGGBB</cite> or <cite>0xRRGGBB</cite>).</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<p>The path is used by the simulator to track the history of robot motion</p>
+<dl class="method">
+<dt>
+<tt class="descclassname">Path.</tt><tt class="descname">reset</tt><big>(</big><em>start</em><big>)</big><a class="reference internal" href="_modules/simobject.html#Path.reset"><span class="viewcode-link">[source]</span></a></dt>
+<dd><p>Set the start point to start.x and start.y
+and remove all other points</p>
+</dd></dl>
+
+<dl class="method">
+<dt>
+<tt class="descclassname">Path.</tt><tt class="descname">draw</tt><big>(</big><em>r</em><big>)</big><a class="reference internal" href="_modules/simobject.html#Path.draw"><span class="viewcode-link">[source]</span></a></dt>
+<dd><p>Draw a polyline with modes at all added points, using the internal color</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt>
+<em class="property">class </em><tt class="descclassname">robot.</tt><tt class="descname">RealBot</tt><big>(</big><em>pose</em>, <em>color=0</em><big>)</big></dt>
+<dd><p>This type of robots implements communication with a real-world robot.</p>
+<p>Although this is a SimObject, it doesn&#8217;t move by itself.
+Use <a class="reference internal" href="code_simobject.html#simobject.SimObject.set_pose" title="simobject.SimObject.set_pose"><tt class="xref py py-meth docutils literal"><span class="pre">set_pose()</span></tt></a> to move the robot.</p>
+<dl class="method">
+<dt>
+<tt class="descclassname">RealBot.</tt><tt class="descname">pause</tt><big>(</big><big>)</big></dt>
+<dd><p>Stops the robot, saving the state</p>
+</dd></dl>
+
+<dl class="method">
+<dt>
+<tt class="descclassname">RealBot.</tt><tt class="descname">resume</tt><big>(</big><big>)</big></dt>
+<dd><p>Restarts the robot from the saved state</p>
+</dd></dl>
+
+<dl class="method">
+<dt>
+<tt class="descclassname">RealBot.</tt><tt class="descname">update_external_info</tt><big>(</big><big>)</big></dt>
+<dd><p>Initiate communication with the real robot and get state info back.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt>
+<em class="property">class </em><tt class="descclassname">robot.</tt><tt class="descname">Robot</tt><big>(</big><em>pose</em>, <em>color=0</em><big>)</big><a class="reference internal" href="_modules/robot.html#Robot"><span class="viewcode-link">[source]</span></a></dt>
+<dd><p>The robot is a <a class="reference internal" href="code_simobject.html#simobject.SimObject" title="simobject.SimObject"><tt class="xref py py-class docutils literal"><span class="pre">SimObject</span></tt></a> that implements drawing
+and information functions to interface with supervisor.</p>
+<p>This class is not intended to be subclassed in user code. Use one
+of the provided subclasses instead: <a class="reference internal" href="code_robot.html#robot.SimBot" title="robot.SimBot"><tt class="xref py py-class docutils literal"><span class="pre">SimBot</span></tt></a> for emulated robots
+or <a class="reference internal" href="code_robot.html#robot.RealBot" title="robot.RealBot"><tt class="xref py py-class docutils literal"><span class="pre">RealBot</span></tt></a> for physical robots.</p>
+<dl class="method">
+<dt>
+<tt class="descclassname">Robot.</tt><tt class="descname">draw_sensors</tt><big>(</big><em>renderer</em><big>)</big><a class="reference internal" href="_modules/robot.html#Robot.draw_sensors"><span class="viewcode-link">[source]</span></a></dt>
+<dd><p>Draw the sensors that this robot has</p>
+</dd></dl>
+
+<dl class="method">
+<dt>
+<tt class="descclassname">Robot.</tt><tt class="descname">get_info</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/robot.html#Robot.get_info"><span class="viewcode-link">[source]</span></a></dt>
+<dd><p>Return the robot information structure, including sensor readings and
+shape information</p>
+</dd></dl>
+
+<dl class="method">
+<dt>
+<tt class="descclassname">Robot.</tt><tt class="descname">set_inputs</tt><big>(</big><em>inputs</em><big>)</big><a class="reference internal" href="_modules/robot.html#Robot.set_inputs"><span class="viewcode-link">[source]</span></a></dt>
+<dd><p>Set drive inputs in the format needed by this robot</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt>
+<em class="property">class </em><tt class="descclassname">robot.</tt><tt class="descname">SimBot</tt><big>(</big><em>pose</em>, <em>color=0</em><big>)</big></dt>
+<dd><p>The robot defined by this class is a simulated robot, and implements
+its own motion in <a class="reference internal" href="code_robot.html#robot.SimBot.move" title="robot.SimBot.move"><tt class="xref py py-meth docutils literal"><span class="pre">move()</span></tt></a>.</p>
+<p>To implement a new type of robot, subclass <a class="reference internal" href="code_robot.html#robot.SimBot" title="robot.SimBot"><tt class="xref py py-class docutils literal"><span class="pre">SimBot</span></tt></a> and implement
+<a class="reference internal" href="code_robot.html#robot.Robot.get_info" title="robot.Robot.get_info"><tt class="xref py py-meth docutils literal"><span class="pre">get_info()</span></tt></a> and <a class="reference internal" href="code_robot.html#robot.SimBot.get_external_sensors" title="robot.SimBot.get_external_sensors"><tt class="xref py py-meth docutils literal"><span class="pre">get_external_sensors()</span></tt></a>.</p>
+<p>To make your robot move, implement <a class="reference internal" href="code_robot.html#robot.SimBot.move" title="robot.SimBot.move"><tt class="xref py py-meth docutils literal"><span class="pre">move()</span></tt></a>.</p>
+<p>To make you robot controllable, implement <a class="reference internal" href="code_robot.html#robot.Robot.set_inputs" title="robot.Robot.set_inputs"><tt class="xref py py-meth docutils literal"><span class="pre">set_inputs()</span></tt></a>.</p>
+<p>If your robot has sensors that can be drawn in the view, implement
+<a class="reference internal" href="code_robot.html#robot.Robot.draw_sensors" title="robot.Robot.draw_sensors"><tt class="xref py py-meth docutils literal"><span class="pre">draw_sensors()</span></tt></a>.</p>
+<dl class="method">
+<dt>
+<tt class="descclassname">SimBot.</tt><tt class="descname">get_external_sensors</tt><big>(</big><big>)</big></dt>
+<dd><p>Get the external sensors of the robot as a list.
+This function is used to update the sensor readings in proximity
+sensors.</p>
+</dd></dl>
+
+<dl class="method">
+<dt>
+<tt class="descclassname">SimBot.</tt><tt class="descname">move</tt><big>(</big><em>dt</em><big>)</big></dt>
+<dd><p>Move the robot for a time interval <cite>dt</cite>.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt>
+<em class="property">class </em><tt class="descclassname">sensor.</tt><tt class="descname">Sensor</tt><a class="reference internal" href="_modules/sensor.html#Sensor"><span class="viewcode-link">[source]</span></a></dt>
+<dd><p>Base superclass for sensor objects</p>
+<dl class="classmethod">
+<dt>
+<em class="property">classmethod </em><tt class="descclassname">Sensor.</tt><tt class="descname">add_gauss_noise</tt><big>(</big><em>value</em>, <em>sigma</em><big>)</big><a class="reference internal" href="_modules/sensor.html#Sensor.add_gauss_noise"><span class="viewcode-link">[source]</span></a></dt>
+<dd><p>Returns the value with an added normal noise</p>
+<p>The return value is normally distributed around value with a standard deviation sigma</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt>
+<em class="property">class </em><tt class="descclassname">sensor.</tt><tt class="descname">MountedSensor</tt><big>(</big><em>pose</em>, <em>parent</em><big>)</big><a class="reference internal" href="_modules/sensor.html#MountedSensor"><span class="viewcode-link">[source]</span></a></dt>
+<dd><p>A sensor that moves together with its parent object.</p>
+<p>The sensor is assumed to be attached to <em>parent</em> at <em>pose</em> in local
+coordinates.</p>
+<dl class="method">
+<dt>
+<tt class="descclassname">MountedSensor.</tt><tt class="descname">get_internal_pose</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/sensor.html#MountedSensor.get_internal_pose"><span class="viewcode-link">[source]</span></a></dt>
+<dd><p>Get the pose of the sensor in the parent (robot) coordinates.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt>
+<em class="property">class </em><tt class="descclassname">sensor.</tt><tt class="descname">ProximitySensor</tt><big>(</big><em>pose</em>, <em>robot</em>, <em>geometry</em><big>)</big><a class="reference internal" href="_modules/sensor.html#ProximitySensor"><span class="viewcode-link">[source]</span></a></dt>
+<dd><p>Create a proximity sensor mounted on robot at <em>pose</em>. The geometry
+is a (rmin, rmax, angle) tuple.</p>
+<dl class="method">
+<dt>
+<tt class="descclassname">ProximitySensor.</tt><tt class="descname">get_envelope</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/sensor.html#ProximitySensor.get_envelope"><span class="viewcode-link">[source]</span></a></dt>
+<dd><p>Return the envelope of the sensor</p>
+</dd></dl>
+
+<dl class="method">
+<dt>
+<tt class="descclassname">ProximitySensor.</tt><tt class="descname">distance_to_value</tt><big>(</big><em>dst</em><big>)</big><a class="reference internal" href="_modules/sensor.html#ProximitySensor.distance_to_value"><span class="viewcode-link">[source]</span></a></dt>
+<dd><p>Returns the distance to the value using sensor calculations</p>
+</dd></dl>
+
+<dl class="method">
+<dt>
+<tt class="descclassname">ProximitySensor.</tt><tt class="descname">distance</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/sensor.html#ProximitySensor.distance"><span class="viewcode-link">[source]</span></a></dt>
+<dd><p>Returns the distance instance</p>
+</dd></dl>
+
+<dl class="method">
+<dt>
+<tt class="descclassname">ProximitySensor.</tt><tt class="descname">reading</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/sensor.html#ProximitySensor.reading"><span class="viewcode-link">[source]</span></a></dt>
+<dd><p>Returns the reading value</p>
+</dd></dl>
+
+<dl class="method">
+<dt>
+<tt class="descclassname">ProximitySensor.</tt><tt class="descname">update_distance</tt><big>(</big><em>sim_object=None</em><big>)</big><a class="reference internal" href="_modules/sensor.html#ProximitySensor.update_distance"><span class="viewcode-link">[source]</span></a></dt>
+<dd><p>updates all the distances from the reading</p>
+</dd></dl>
+
+<dl class="method">
+<dt>
+<tt class="descclassname">ProximitySensor.</tt><tt class="descname">draw</tt><big>(</big><em>r</em><big>)</big><a class="reference internal" href="_modules/sensor.html#ProximitySensor.draw"><span class="viewcode-link">[source]</span></a></dt>
+<dd><p>draws the sensor simobject</p>
+</dd></dl>
+
+<dl class="method">
+<dt>
+<tt class="descclassname">ProximitySensor.</tt><tt class="descname">get_distance_to</tt><big>(</big><em>sim_object</em><big>)</big><a class="reference internal" href="_modules/sensor.html#ProximitySensor.get_distance_to"><span class="viewcode-link">[source]</span></a></dt>
+<dd><p>Gets the distance to another simobject
+returns distance in meters or None if not in contact</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="contents.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Implementing your own robot</a><ul>
+<li><a class="reference internal" href="#the-robot-is-a-simobject">The robot is a SimObject</a></li>
+<li><a class="reference internal" href="#the-robot-moves">The robot moves</a></li>
+<li><a class="reference internal" href="#information-about-the-robot">Information about the robot</a></li>
+<li><a class="reference internal" href="#testing">Testing</a></li>
+<li><a class="reference internal" href="#api">API</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="world.html"
+                        title="previous chapter">World files</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="supervisor.html"
+                        title="next chapter">Writing a supervisor</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="_sources/robot.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="supervisor.html" title="Writing a supervisor"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="world.html" title="World files"
+             >previous</a> |</li>
+<li><img class="logo" src="_static/appicon.png" style="vertical-align:middle; margin-top: -1px" alt="Logo"/></li>
+<li><a href="index.html">PySimiam 1.0.0 documentation</a> &raquo;</li>
+ 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2013, Timofey Fuchs, Shaun Lippy, John Alexander, Vidam Govorovski, Jonathan Whitten.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
+    </div>
+  </body>
+</html>

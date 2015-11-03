@@ -1,0 +1,233 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>World files &mdash; PySimiam 1.0.0 documentation</title>
+    
+    <link rel="stylesheet" href="_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '',
+        VERSION:     '1.0.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="shortcut icon" href="_static/appicon_16x16.ico"/>
+    <link rel="top" title="PySimiam 1.0.0 documentation" href="index.html" />
+    <link rel="next" title="Implementing your own robot" href="robot.html" />
+    <link rel="prev" title="Using PySimiam in Coursera ‘Control of mobile robots’ course" href="coursera.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="robot.html" title="Implementing your own robot"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="coursera.html" title="Using PySimiam in Coursera ‘Control of mobile robots’ course"
+             accesskey="P">previous</a> |</li>
+<li><img class="logo" src="_static/appicon.png" style="vertical-align:middle; margin-top: -1px" alt="Logo"/></li>
+<li><a href="index.html">PySimiam 1.0.0 documentation</a> &raquo;</li>
+ 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="world-files">
+<span id="world-tutorial"></span><h1>World files<a class="headerlink" href="#world-files" title="Permalink to this headline">¶</a></h1>
+<p>The simulator places robots in an environment (world) with obstacles. You can create
+your own environments or modify the existing ones. The world XML files reside in the
+&#8220;worlds&#8221; subfolder of the pySimiam distribution.</p>
+<div class="section" id="creating-new-worlds">
+<h2>Creating new worlds<a class="headerlink" href="#creating-new-worlds" title="Permalink to this headline">¶</a></h2>
+<p>Although worlds can be written by hand (see next section), it might be more pleasant to create a world
+in a vector graphics editor. A tool named <tt class="docutils literal"><span class="pre">svg2world</span></tt> is provided with pySimiam
+to convert SVG <a class="footnote-reference" href="#svgformat" id="id1">[1]</a> files to world files.</p>
+<p><tt class="docutils literal"><span class="pre">svg2world</span></tt> only supports a subset of svg, notably all the groups except
+the top one are ignored. Only the contents of this top group are processed
+(in Inkscape, the top group is the default layer).</p>
+<p>A path with 1 or 2 points is interpreted as a robot, with the position of the robot
+determined by the first point, and the direction by the second one. An optional
+attribute <em>robot</em> defines the robot class and <em>supervisor</em> defines the associated
+supervisor.</p>
+<p>The rectangles and the paths with more than 2 points will be converted to obstacles,
+unless their &#8216;id&#8217; attribute begins with &#8216;marker&#8217;, such as &#8216;marker345&#8217;. A robot will
+collide with obstacles, but will ignore markers.</p>
+<p>The color of obstacles, markers and robots is taken directly from the fill color.
+The stroke color is ignored.</p>
+<p>Run the tool with</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">python</span> <span class="n">tools</span><span class="o">/</span><span class="n">svg2world</span><span class="o">.</span><span class="n">py</span> <span class="n">your_drawing</span><span class="o">.</span><span class="n">svg</span> <span class="n">worlds</span><span class="o">/</span><span class="n">your_world</span><span class="o">.</span><span class="n">xml</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="file-format">
+<h2>File format<a class="headerlink" href="#file-format" title="Permalink to this headline">¶</a></h2>
+<p>The world for the simulation is specified in an XML file. This file
+contains the position and shape of all obstacles and markers, as well
+as the position, class and supervisor class of all robots.</p>
+<p>An obstacle is a polygon, that the robot can collide with.
+It can be detected by proximity sensors. An <tt class="docutils literal"><span class="pre">obstacle</span></tt> tag has to contain
+a pose and a list of points (minimum three points).
+This example specifies a triangular obstacle:</p>
+<div class="highlight-xml"><div class="highlight"><pre><span class="nt">&lt;obstacle&gt;</span>
+    <span class="nt">&lt;pose</span> <span class="na">x=</span><span class="s">&quot;0&quot;</span> <span class="na">y=</span><span class="s">&quot;0&quot;</span> <span class="na">theta=</span><span class="s">&quot;0&quot;</span> <span class="nt">/&gt;</span>
+    <span class="nt">&lt;geometry&gt;</span>
+        <span class="nt">&lt;point</span> <span class="na">x=</span><span class="s">&quot;0&quot;</span> <span class="na">y=</span><span class="s">&quot;0&quot;</span> <span class="nt">/&gt;</span>
+        <span class="nt">&lt;point</span> <span class="na">x=</span><span class="s">&quot;0.3&quot;</span> <span class="na">y=</span><span class="s">&quot;0.3&quot;</span> <span class="nt">/&gt;</span>
+        <span class="nt">&lt;point</span> <span class="na">x=</span><span class="s">&quot;-0.3&quot;</span> <span class="na">y=</span><span class="s">&quot;0.3&quot;</span> <span class="nt">/&gt;</span>
+    <span class="nt">&lt;/geometry&gt;</span>
+<span class="nt">&lt;/obstacle&gt;</span>
+</pre></div>
+</div>
+<p>A marker is like an obstacle that the robot can go through. It can not
+influence the robot in any way, and will not be detected by proximity sensors.
+The required fields are the same as in the case of an obstacle. Here is an
+example of a rotated square marker:</p>
+<div class="highlight-xml"><div class="highlight"><pre><span class="nt">&lt;marker&gt;</span>
+    <span class="nt">&lt;pose</span> <span class="na">x=</span><span class="s">&quot;0&quot;</span> <span class="na">y=</span><span class="s">&quot;-1.3&quot;</span> <span class="na">theta=</span><span class="s">&quot;1.57&quot;</span> <span class="nt">/&gt;</span>
+    <span class="nt">&lt;geometry&gt;</span>
+        <span class="nt">&lt;point</span> <span class="na">x=</span><span class="s">&quot;0&quot;</span> <span class="na">y=</span><span class="s">&quot;0&quot;</span> <span class="nt">/&gt;</span>
+        <span class="nt">&lt;point</span> <span class="na">x=</span><span class="s">&quot;0&quot;</span> <span class="na">y=</span><span class="s">&quot;0.3&quot;</span> <span class="nt">/&gt;</span>
+        <span class="nt">&lt;point</span> <span class="na">x=</span><span class="s">&quot;0.3&quot;</span> <span class="na">y=</span><span class="s">&quot;0.3&quot;</span> <span class="nt">/&gt;</span>
+        <span class="nt">&lt;point</span> <span class="na">x=</span><span class="s">&quot;0.3&quot;</span> <span class="na">y=</span><span class="s">&quot;0&quot;</span> <span class="nt">/&gt;</span>
+    <span class="nt">&lt;/geometry&gt;</span>
+<span class="nt">&lt;/marker&gt;</span>
+</pre></div>
+</div>
+<p>Each <tt class="docutils literal"><span class="pre">robot</span></tt> tag in the world represents a robot. It has to contain the robot pose,
+class and the supervisor class (see <a class="reference internal" href="code_simulator.html#module-string"><em>Module strings</em></a>).</p>
+<div class="highlight-xml"><div class="highlight"><pre><span class="nt">&lt;robot</span> <span class="na">type=</span><span class="s">&quot;Khepera3&quot;</span><span class="nt">&gt;</span>
+    <span class="nt">&lt;supervisor</span> <span class="na">type=</span><span class="s">&quot;K3DefaultSupervisor&quot;</span> <span class="nt">/&gt;</span>
+    <span class="nt">&lt;pose</span> <span class="na">x=</span><span class="s">&quot;1&quot;</span> <span class="na">y=</span><span class="s">&quot;0&quot;</span> <span class="na">theta=</span><span class="s">&quot;-1.57&quot;</span> <span class="nt">/&gt;</span>
+<span class="nt">&lt;/robot&gt;</span>
+</pre></div>
+</div>
+<p>All objects can also have a <tt class="docutils literal"><span class="pre">color</span></tt> attribute in the form <tt class="docutils literal"><span class="pre">#rrggbb</span></tt>.
+The objects have to be wrapped in a <tt class="docutils literal"><span class="pre">simulation</span></tt> tag. The DTD for the world
+XML reads:</p>
+<div class="highlight-dtd"><div class="highlight"><pre><span class="k">&lt;!ELEMENT</span> <span class="nt">simulation</span> <span class="o">(</span><span class="nt">robot</span><span class="o">+,</span><span class="nt">obstacle</span><span class="o">*,</span><span class="nt">marker</span><span class="o">*)</span><span class="k">&gt;</span>
+
+<span class="k">&lt;!ELEMENT</span> <span class="nt">robot</span> <span class="o">(</span><span class="nt">supervisor</span><span class="o">,</span><span class="nt">pose</span><span class="o">)</span><span class="k">&gt;</span>
+<span class="k">&lt;!ATTLIST</span> <span class="nt">robot</span> <span class="na">type</span> <span class="kc">CDATA</span> <span class="kc">#REQUIRED</span>
+                <span class="na">color</span> <span class="kc">CDATA</span> <span class="kc">#IMPLIED</span><span class="k">&gt;</span>
+
+<span class="k">&lt;!ELEMENT</span> <span class="nt">obstacle</span> <span class="o">(</span><span class="nt">pose</span><span class="o">,</span> <span class="nt">geometry</span><span class="o">)</span><span class="k">&gt;</span>
+<span class="k">&lt;!ATTLIST</span> <span class="nt">obstacle</span> <span class="na">color</span> <span class="kc">CDATA</span> <span class="kc">#IMPLIED</span><span class="k">&gt;</span>
+
+<span class="k">&lt;!ELEMENT</span> <span class="nt">marker</span> <span class="o">(</span><span class="nt">pose</span><span class="o">,</span> <span class="nt">geometry</span><span class="o">)</span><span class="k">&gt;</span>
+<span class="k">&lt;!ATTLIST</span> <span class="nt">marker</span> <span class="na">color</span> <span class="kc">CDATA</span> <span class="kc">#IMPLIED</span><span class="k">&gt;</span>
+
+<span class="k">&lt;!ELEMENT</span> <span class="nt">pose</span> <span class="kc">EMPTY</span><span class="k">&gt;</span>
+<span class="k">&lt;!ATTLIST</span> <span class="nt">pose</span> <span class="na">x</span> <span class="kc">CDATA</span> <span class="kc">#REQUIRED</span>
+               <span class="na">y</span> <span class="kc">CDATA</span> <span class="kc">#REQUIRED</span>
+               <span class="na">theta</span> <span class="kc">CDATA</span> <span class="kc">#REQUIRED</span><span class="k">&gt;</span>
+
+<span class="k">&lt;!ELEMENT</span> <span class="nt">geometry</span> <span class="o">(</span><span class="nt">point</span><span class="o">,</span> <span class="nt">point</span><span class="o">+)</span><span class="k">&gt;</span>
+<span class="k">&lt;!ELEMENT</span> <span class="nt">point</span> <span class="kc">EMPTY</span><span class="k">&gt;</span>
+<span class="k">&lt;!ATTLIST</span> <span class="nt">point</span> <span class="na">x</span> <span class="kc">CDATA</span> <span class="kc">#REQUIRED</span>
+                <span class="na">y</span> <span class="kc">CDATA</span> <span class="kc">#REQUIRED</span><span class="k">&gt;</span>
+</pre></div>
+</div>
+<table class="docutils footnote" frame="void" id="svgformat" rules="none">
+<colgroup><col class="label" /><col /></colgroup>
+<tbody valign="top">
+<tr><td class="label"><a class="fn-backref" href="#id1">[1]</a></td><td><a class="reference external" href="http://en.wikipedia.org/wiki/Scalable_Vector_Graphics">Scalable Vector Graphics</a> is a widely used format. SVG files can be created with e.g. <a class="reference external" href="www.inkscape.org">Inkscape</a></td></tr>
+</tbody>
+</table>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="contents.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">World files</a><ul>
+<li><a class="reference internal" href="#creating-new-worlds">Creating new worlds</a></li>
+<li><a class="reference internal" href="#file-format">File format</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="coursera.html"
+                        title="previous chapter">Using PySimiam in Coursera &#8216;Control of mobile robots&#8217; course</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="robot.html"
+                        title="next chapter">Implementing your own robot</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="_sources/world.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="robot.html" title="Implementing your own robot"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="coursera.html" title="Using PySimiam in Coursera ‘Control of mobile robots’ course"
+             >previous</a> |</li>
+<li><img class="logo" src="_static/appicon.png" style="vertical-align:middle; margin-top: -1px" alt="Logo"/></li>
+<li><a href="index.html">PySimiam 1.0.0 documentation</a> &raquo;</li>
+ 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2013, Timofey Fuchs, Shaun Lippy, John Alexander, Vidam Govorovski, Jonathan Whitten.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
+    </div>
+  </body>
+</html>

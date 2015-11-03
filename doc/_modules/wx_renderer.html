@@ -1,0 +1,285 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>wx_renderer &mdash; PySimiam 1.0.0 documentation</title>
+    
+    <link rel="stylesheet" href="../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '1.0.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="shortcut icon" href="../_static/appicon_16x16.ico"/>
+    <link rel="top" title="PySimiam 1.0.0 documentation" href="../index.html" />
+    <link rel="up" title="Module code" href="index.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+<li><img class="logo" src="../_static/appicon.png" style="vertical-align:middle; margin-top: -1px" alt="Logo"/></li>
+<li><a href="../index.html">PySimiam 1.0.0 documentation</a> &raquo;</li>
+
+          <li><a href="index.html" accesskey="U">Module code</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <h1>Source code for wx_renderer</h1><div class="highlight"><pre>
+<span class="c">#</span>
+<span class="c"># Class wxGCRenderer</span>
+<span class="c">#</span>
+<span class="c"># Implements Renderer for wxWidgets.</span>
+<span class="c">#</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">math</span> <span class="kn">import</span> <span class="n">sin</span><span class="p">,</span><span class="n">cos</span>
+<span class="kn">import</span> <span class="nn">wx</span>
+<span class="kn">from</span> <span class="nn">renderer</span> <span class="kn">import</span> <span class="n">Renderer</span>
+<span class="kn">from</span> <span class="nn">pose</span> <span class="kn">import</span> <span class="n">Pose</span>
+
+<div class="viewcode-block" id="wxGCRenderer"><a class="viewcode-back" href="../code_ui.html#wx_renderer.wxGCRenderer">[docs]</a><span class="k">class</span> <span class="nc">wxGCRenderer</span><span class="p">(</span><span class="n">Renderer</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;An implementation of :class:`~renderer.Renderer` for wxPython.</span>
+<span class="sd">       </span>
+<span class="sd">       This renderer expects a `wxDC` as canvas.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">DC</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_dc_grid_pen</span> <span class="o">=</span> <span class="n">wx</span><span class="o">.</span><span class="n">Pen</span><span class="p">(</span><span class="n">wx</span><span class="o">.</span><span class="n">Colour</span><span class="p">(</span><span class="mi">128</span><span class="p">,</span><span class="mi">128</span><span class="p">,</span><span class="mi">128</span><span class="p">,</span><span class="mi">255</span><span class="p">),</span><span class="mi">1</span><span class="p">,</span><span class="n">wx</span><span class="o">.</span><span class="n">SHORT_DASH</span><span class="p">)</span>
+        <span class="n">Renderer</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">DC</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">set_canvas</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">DC</span><span class="p">):</span>
+        <span class="c"># Reset cached brushes &amp; pens</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_pens</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_brushes</span> <span class="o">=</span> <span class="p">{}</span>
+
+        <span class="c"># Set dc</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_dc</span> <span class="o">=</span> <span class="n">DC</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_gc</span> <span class="o">=</span> <span class="n">wx</span><span class="o">.</span><span class="n">GraphicsContext</span><span class="o">.</span><span class="n">Create</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_dc</span><span class="p">)</span>
+        <span class="n">w</span><span class="p">,</span> <span class="n">h</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_canvas_size</span><span class="p">(</span><span class="n">DC</span><span class="p">)</span>
+
+        <span class="c"># Set correct x &amp; y axes directions</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_gc</span><span class="o">.</span><span class="n">Scale</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_gc</span><span class="o">.</span><span class="n">Translate</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="n">h</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_grid_pen</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_gc</span><span class="o">.</span><span class="n">CreatePen</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_dc_grid_pen</span><span class="p">)</span>
+        <span class="n">Renderer</span><span class="o">.</span><span class="n">set_canvas</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">DC</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_get_canvas_size</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">DC</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Get the canvas size tuple (width,height)&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">DC</span><span class="o">.</span><span class="n">GetSizeTuple</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">push_state</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Store the current state on the stack.</span>
+<span class="sd">        Current state includes default pose, pen and brush</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c">### FIXME store brush</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_gc</span><span class="o">.</span><span class="n">PushState</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">pop_state</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Restore the last saved state from the stack</span>
+<span class="sd">        The state includes default pose, pen and brush</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c">### FIXME store brush</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_gc</span><span class="o">.</span><span class="n">PopState</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">_calculate_bounds</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="c">#transform = self._gc.CreateMatrix(*self._gc.GetTransform().Get())</span>
+        <span class="n">transform</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_gc</span><span class="o">.</span><span class="n">GetTransform</span><span class="p">()</span>
+        <span class="n">transform</span><span class="o">.</span><span class="n">Invert</span><span class="p">()</span>
+        <span class="n">xs</span><span class="p">,</span><span class="n">ys</span> <span class="o">=</span> <span class="nb">zip</span><span class="p">(</span>
+                    <span class="n">transform</span><span class="o">.</span><span class="n">TransformPoint</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span><span class="mf">0.0</span><span class="p">),</span>
+                    <span class="n">transform</span><span class="o">.</span><span class="n">TransformPoint</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span><span class="nb">float</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">size</span><span class="p">[</span><span class="mi">1</span><span class="p">])),</span>
+                    <span class="n">transform</span><span class="o">.</span><span class="n">TransformPoint</span><span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">size</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span><span class="nb">float</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">size</span><span class="p">[</span><span class="mi">1</span><span class="p">])),</span>
+                    <span class="n">transform</span><span class="o">.</span><span class="n">TransformPoint</span><span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">size</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span><span class="mf">0.0</span><span class="p">)</span>
+                    <span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">__bounds</span> <span class="o">=</span> <span class="p">(</span><span class="nb">min</span><span class="p">(</span><span class="n">xs</span><span class="p">),</span> <span class="nb">min</span><span class="p">(</span><span class="n">ys</span><span class="p">),</span> <span class="nb">max</span><span class="p">(</span><span class="n">xs</span><span class="p">),</span> <span class="nb">max</span><span class="p">(</span><span class="n">ys</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__calculate_grid</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">__calculate_grid</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="c"># Calculate grid coordinates</span>
+        <span class="n">xmin</span><span class="p">,</span> <span class="n">ymin</span><span class="p">,</span> <span class="n">xmax</span><span class="p">,</span> <span class="n">ymax</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__bounds</span>
+
+        <span class="c"># Determine min/max x &amp; y line indices:</span>
+        <span class="n">x_ticks</span> <span class="o">=</span> <span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">xmin</span><span class="o">//</span><span class="bp">self</span><span class="o">.</span><span class="n">_grid_spacing</span><span class="p">),</span> <span class="nb">int</span><span class="p">(</span><span class="n">xmax</span><span class="o">//</span><span class="bp">self</span><span class="o">.</span><span class="n">_grid_spacing</span> <span class="o">+</span> <span class="mi">1</span><span class="p">))</span>
+        <span class="n">y_ticks</span> <span class="o">=</span> <span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">ymin</span><span class="o">//</span><span class="bp">self</span><span class="o">.</span><span class="n">_grid_spacing</span><span class="p">),</span> <span class="nb">int</span><span class="p">(</span><span class="n">ymax</span><span class="o">//</span><span class="bp">self</span><span class="o">.</span><span class="n">_grid_spacing</span> <span class="o">+</span> <span class="mi">1</span><span class="p">))</span>
+        <span class="n">transform</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_gc</span><span class="o">.</span><span class="n">GetTransform</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__grid_lines</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="p">[</span><span class="n">transform</span><span class="o">.</span><span class="n">TransformPoint</span><span class="p">(</span><span class="n">xmin</span><span class="p">,</span><span class="n">i</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">_grid_spacing</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="o">*</span><span class="n">y_ticks</span><span class="p">)],</span>
+            <span class="p">[</span><span class="n">transform</span><span class="o">.</span><span class="n">TransformPoint</span><span class="p">(</span><span class="n">xmax</span><span class="p">,</span><span class="n">i</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">_grid_spacing</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="o">*</span><span class="n">y_ticks</span><span class="p">)],</span>
+            <span class="p">[</span><span class="n">transform</span><span class="o">.</span><span class="n">TransformPoint</span><span class="p">(</span><span class="n">i</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">_grid_spacing</span><span class="p">,</span><span class="n">ymin</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="o">*</span><span class="n">x_ticks</span><span class="p">)],</span>
+            <span class="p">[</span><span class="n">transform</span><span class="o">.</span><span class="n">TransformPoint</span><span class="p">(</span><span class="n">i</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">_grid_spacing</span><span class="p">,</span><span class="n">ymax</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="o">*</span><span class="n">x_ticks</span><span class="p">)]</span>
+            <span class="p">]</span>
+
+    <span class="k">def</span> <span class="nf">_draw_grid</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">reset_pose</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_gc</span><span class="o">.</span><span class="n">PushState</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_gc</span><span class="o">.</span><span class="n">SetTransform</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_gc</span><span class="o">.</span><span class="n">CreateMatrix</span><span class="p">())</span>
+        <span class="c">#self._gc.SetPen(self._grid_pen)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">set_pen</span><span class="p">(</span><span class="mh">0x808080</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_gc</span><span class="o">.</span><span class="n">StrokeLineSegments</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__grid_lines</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">__grid_lines</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_gc</span><span class="o">.</span><span class="n">StrokeLineSegments</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__grid_lines</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">__grid_lines</span><span class="p">[</span><span class="mi">3</span><span class="p">])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_gc</span><span class="o">.</span><span class="n">PopState</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">set_pen</span><span class="p">(</span><span class="bp">None</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">scale</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">factor</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Scale drawing operations by factor</span>
+<span class="sd">        To be implemented in subclasses.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_gc</span><span class="o">.</span><span class="n">Scale</span><span class="p">(</span><span class="n">factor</span><span class="p">,</span><span class="n">factor</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">rotate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">angle</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Rotate canvas by angle (in radians)</span>
+<span class="sd">        To be implemented in subclasses.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_gc</span><span class="o">.</span><span class="n">Rotate</span><span class="p">(</span><span class="n">angle</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">translate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dx</span><span class="p">,</span> <span class="n">dy</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Translate canvas by dx, dy</span>
+<span class="sd">        To be implemented in subclasses.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_gc</span><span class="o">.</span><span class="n">Translate</span><span class="p">(</span><span class="n">dx</span><span class="p">,</span><span class="n">dy</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">clear_screen</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_dc</span><span class="o">.</span><span class="n">Clear</span><span class="p">()</span>
+        <span class="n">Renderer</span><span class="o">.</span><span class="n">clear_screen</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+
+    <span class="c">#def set_pose(self, pose):</span>
+        <span class="c">#self.reset_pose()</span>
+        <span class="c">#self._gc.Translate(pose.x - self._defpose.x), pose.y - self._defpose.y)</span>
+        <span class="c">#self._gc.Rotate(pose.theta - self._defpose.theta)</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">__wxcolor</span><span class="p">(</span><span class="n">color</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">color</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">None</span>
+        <span class="n">r</span> <span class="o">=</span> <span class="p">(</span><span class="n">color</span> <span class="o">&gt;&gt;</span> <span class="mi">16</span><span class="p">)</span> <span class="o">&amp;</span> <span class="mh">0xFF</span>
+        <span class="n">g</span> <span class="o">=</span> <span class="p">(</span><span class="n">color</span> <span class="o">&gt;&gt;</span> <span class="mi">8</span><span class="p">)</span> <span class="o">&amp;</span> <span class="mh">0xFF</span>
+        <span class="n">b</span> <span class="o">=</span> <span class="p">(</span><span class="n">color</span><span class="p">)</span> <span class="o">&amp;</span> <span class="mh">0xFF</span>
+        <span class="k">if</span> <span class="n">color</span> <span class="o">&gt;</span> <span class="mh">0xFFFFFF</span><span class="p">:</span> <span class="c"># Opaque component</span>
+            <span class="n">o</span> <span class="o">=</span> <span class="p">(</span><span class="n">color</span> <span class="o">&gt;&gt;</span> <span class="mi">24</span><span class="p">)</span> <span class="o">&amp;</span> <span class="mh">0xFF</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">o</span> <span class="o">=</span> <span class="mh">0xFF</span>
+        <span class="k">return</span> <span class="n">wx</span><span class="o">.</span><span class="n">Colour</span><span class="p">(</span><span class="n">r</span><span class="p">,</span><span class="n">g</span><span class="p">,</span><span class="n">b</span><span class="p">,</span><span class="n">o</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">set_pen</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">color</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Sets the line color.</span>
+
+<span class="sd">        Color is interpreted as 0xRRGGBB.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">color</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_pens</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_pens</span><span class="p">[</span><span class="n">color</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_gc</span><span class="o">.</span><span class="n">CreatePen</span><span class="p">(</span><span class="n">wx</span><span class="o">.</span><span class="n">Pen</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__wxcolor</span><span class="p">(</span><span class="n">color</span><span class="p">)))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_gc</span><span class="o">.</span><span class="n">SetPen</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_pens</span><span class="p">[</span><span class="n">color</span><span class="p">])</span>
+
+    <span class="k">def</span> <span class="nf">set_brush</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">color</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Sets the fill color.</span>
+
+<span class="sd">        Color is an integer interpreted as 0xRRGGBB.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">color</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_brushes</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_brushes</span><span class="p">[</span><span class="n">color</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_gc</span><span class="o">.</span><span class="n">CreateBrush</span><span class="p">(</span><span class="n">wx</span><span class="o">.</span><span class="n">Brush</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__wxcolor</span><span class="p">(</span><span class="n">color</span><span class="p">)))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_gc</span><span class="o">.</span><span class="n">SetBrush</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_brushes</span><span class="p">[</span><span class="n">color</span><span class="p">])</span>
+
+    <span class="k">def</span> <span class="nf">draw_polygon</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">points</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Draws a polygon.</span>
+
+<span class="sd">        Expects a list of points as a list of tuples or as a numpy array. Ignores Z if available</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">xy_pts</span> <span class="o">=</span> <span class="p">[</span><span class="n">point</span><span class="p">[:</span><span class="mi">2</span><span class="p">]</span> <span class="k">for</span> <span class="n">point</span> <span class="ow">in</span> <span class="n">points</span><span class="p">]</span>
+        <span class="n">xy_pts</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">xy_pts</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_gc</span><span class="o">.</span><span class="n">DrawLines</span><span class="p">(</span><span class="n">xy_pts</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">draw_ellipse</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cx</span><span class="p">,</span> <span class="n">cy</span><span class="p">,</span> <span class="n">ra</span><span class="p">,</span> <span class="n">rb</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Draws an ellipse.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">rb</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="n">rb</span> <span class="o">=</span> <span class="n">ra</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_gc</span><span class="o">.</span><span class="n">DrawEllipse</span><span class="p">(</span><span class="n">cx</span><span class="o">-</span><span class="n">ra</span><span class="p">,</span><span class="n">cy</span><span class="o">-</span><span class="n">rb</span><span class="p">,</span><span class="mi">2</span><span class="o">*</span><span class="n">ra</span><span class="p">,</span><span class="mi">2</span><span class="o">*</span><span class="n">rb</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">draw_rectangle</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">w</span><span class="p">,</span> <span class="n">h</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Draws a rectangle.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_gc</span><span class="o">.</span><span class="n">DrawRectangle</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">,</span><span class="n">w</span><span class="p">,</span><span class="n">h</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">draw_text</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">text</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">bgcolor</span> <span class="o">=</span> <span class="mi">0</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Draws a text string at the defined position.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">bgcolor</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_brushes</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_brushes</span><span class="p">[</span><span class="n">bgcolor</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_gc</span><span class="o">.</span><span class="n">CreateBrush</span><span class="p">(</span><span class="n">wx</span><span class="o">.</span><span class="n">Brush</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__wxcolor</span><span class="p">(</span><span class="n">bgcolor</span><span class="p">)))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_gc</span><span class="o">.</span><span class="n">DrawText</span><span class="p">(</span><span class="n">text</span><span class="p">,</span><span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">_brushes</span><span class="p">[</span><span class="n">bgcolor</span><span class="p">])</span>
+
+    <span class="k">def</span> <span class="nf">draw_line</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x1</span><span class="p">,</span> <span class="n">y1</span><span class="p">,</span> <span class="n">x2</span><span class="p">,</span> <span class="n">y2</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Draws a line using the current pen from (x1,y1) to (x2,y2)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_gc</span><span class="o">.</span><span class="n">DrawLines</span><span class="p">([(</span><span class="n">x1</span><span class="p">,</span><span class="n">y1</span><span class="p">),(</span><span class="n">x2</span><span class="p">,</span><span class="n">y2</span><span class="p">)])</span></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+<li><img class="logo" src="../_static/appicon.png" style="vertical-align:middle; margin-top: -1px" alt="Logo"/></li>
+<li><a href="../index.html">PySimiam 1.0.0 documentation</a> &raquo;</li>
+
+          <li><a href="index.html" >Module code</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2013, Timofey Fuchs, Shaun Lippy, John Alexander, Vidam Govorovski, Jonathan Whitten.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
+    </div>
+  </body>
+</html>

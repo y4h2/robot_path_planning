@@ -1,0 +1,297 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Khepera3 Specific Modules &mdash; PySimiam 1.0.0 documentation</title>
+    
+    <link rel="stylesheet" href="_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '',
+        VERSION:     '1.0.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="shortcut icon" href="_static/appicon_16x16.ico"/>
+    <link rel="top" title="PySimiam 1.0.0 documentation" href="index.html" />
+    <link rel="up" title="PySimiam API Documentation" href="code.html" />
+    <link rel="next" title="Supervisor/Controller system" href="code_sup_contr.html" />
+    <link rel="prev" title="Robots and the world" href="code_robot.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="code_sup_contr.html" title="Supervisor/Controller system"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="code_robot.html" title="Robots and the world"
+             accesskey="P">previous</a> |</li>
+<li><img class="logo" src="_static/appicon.png" style="vertical-align:middle; margin-top: -1px" alt="Logo"/></li>
+<li><a href="index.html">PySimiam 1.0.0 documentation</a> &raquo;</li>
+
+          <li><a href="code.html" accesskey="U">PySimiam API Documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="khepera3-specific-modules">
+<h1>Khepera3 Specific Modules<a class="headerlink" href="#khepera3-specific-modules" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="module-robots.khepera3">
+<span id="robot"></span><h2>Robot<a class="headerlink" href="#module-robots.khepera3" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="robots.khepera3.Khepera3">
+<em class="property">class </em><tt class="descclassname">robots.khepera3.</tt><tt class="descname">Khepera3</tt><big>(</big><em>pose</em>, <em>color=16777215</em><big>)</big><a class="reference internal" href="_modules/robots/khepera3.html#Khepera3"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#robots.khepera3.Khepera3" title="Permalink to this definition">¶</a></dt>
+<dd><p>Inherts for the simobject&#8212;&gt;robot class for behavior specific to the Khepera3</p>
+<dl class="method">
+<dt id="robots.khepera3.Khepera3.draw_sensors">
+<tt class="descname">draw_sensors</tt><big>(</big><em>renderer</em><big>)</big><a class="reference internal" href="_modules/robots/khepera3.html#Khepera3.draw_sensors"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#robots.khepera3.Khepera3.draw_sensors" title="Permalink to this definition">¶</a></dt>
+<dd><p>Draw the sensors that this robot has</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="robots.khepera3.Khepera3_IRSensor">
+<em class="property">class </em><tt class="descclassname">robots.khepera3.</tt><tt class="descname">Khepera3_IRSensor</tt><big>(</big><em>pose</em>, <em>robot</em><big>)</big><a class="reference internal" href="_modules/robots/khepera3.html#Khepera3_IRSensor"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#robots.khepera3.Khepera3_IRSensor" title="Permalink to this definition">¶</a></dt>
+<dd><p>Inherits from the proximity sensor class. Performs calculations specific to the khepera3 for its characterized proximity sensors</p>
+<dl class="method">
+<dt id="robots.khepera3.Khepera3_IRSensor.distance_to_value">
+<tt class="descname">distance_to_value</tt><big>(</big><em>dst</em><big>)</big><a class="reference internal" href="_modules/robots/khepera3.html#Khepera3_IRSensor.distance_to_value"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#robots.khepera3.Khepera3_IRSensor.distance_to_value" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the distance calculation from the distance readings of the proximity sensors</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-supervisors.khepera3">
+<span id="supervisors"></span><h2>Supervisors<a class="headerlink" href="#module-supervisors.khepera3" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="supervisors.khepera3.K3Supervisor">
+<em class="property">class </em><tt class="descclassname">supervisors.khepera3.</tt><tt class="descname">K3Supervisor</tt><big>(</big><em>robot_pose</em>, <em>robot_info</em><big>)</big><a class="reference internal" href="_modules/supervisors/khepera3.html#K3Supervisor"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#supervisors.khepera3.K3Supervisor" title="Permalink to this definition">¶</a></dt>
+<dd><p>The K3Supervisor inherits from the superclass &#8216;supervisor.Supervisor&#8217; to implement detailed calculations for any inheriting Khepera3 supervisor. Students are intended to inherit from this class when making their own supervisors. An example of implementation is the <tt class="xref py py-class docutils literal"><span class="pre">K3DefaultSupervisor</span></tt> class in which this class is used to reduce noisy code interactions.</p>
+<p>Most importantly, the K3Supervisor object implements the system functions necessary to operate a Khepera3, namely the uni2diff unicycle to differential motion model conversion, the Jacobian problem, and any other computationally complex interface.</p>
+<p>The UI may use the get_parameters function interface to create docker windows for real-time update of the PID parameters. This is an advanced implementation and is not required for students to properly implement their own supervisors.</p>
+<dl class="method">
+<dt id="supervisors.khepera3.K3Supervisor.draw_background">
+<tt class="descname">draw_background</tt><big>(</big><em>renderer</em><big>)</big><a class="reference internal" href="_modules/supervisors/khepera3.html#K3Supervisor.draw_background"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#supervisors.khepera3.K3Supervisor.draw_background" title="Permalink to this definition">¶</a></dt>
+<dd><p>Draw a circular goal</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="supervisors.khepera3.K3Supervisor.estimate_pose">
+<tt class="descname">estimate_pose</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/supervisors/khepera3.html#K3Supervisor.estimate_pose"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#supervisors.khepera3.K3Supervisor.estimate_pose" title="Permalink to this definition">¶</a></dt>
+<dd><p>Update self.pose_est using odometry</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="supervisors.khepera3.K3Supervisor.execute">
+<tt class="descname">execute</tt><big>(</big><em>robot_info</em>, <em>dt</em><big>)</big><a class="reference internal" href="_modules/supervisors/khepera3.html#K3Supervisor.execute"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#supervisors.khepera3.K3Supervisor.execute" title="Permalink to this definition">¶</a></dt>
+<dd><p>Inherit default supervisor procedures and return unicycle model output (x, y, theta)</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="supervisors.khepera3.K3Supervisor.get_ir_distances">
+<tt class="descname">get_ir_distances</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/supervisors/khepera3.html#K3Supervisor.get_ir_distances"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#supervisors.khepera3.K3Supervisor.get_ir_distances" title="Permalink to this definition">¶</a></dt>
+<dd><p>Converts the IR distance readings into a distance in meters</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="supervisors.khepera3.K3Supervisor.get_ui_description">
+<tt class="descname">get_ui_description</tt><big>(</big><em>p=None</em><big>)</big><a class="reference internal" href="_modules/supervisors/khepera3.html#K3Supervisor.get_ui_description"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#supervisors.khepera3.K3Supervisor.get_ui_description" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the UI description for the docker</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="supervisors.khepera3.K3Supervisor.init_default_parameters">
+<tt class="descname">init_default_parameters</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/supervisors/khepera3.html#K3Supervisor.init_default_parameters"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#supervisors.khepera3.K3Supervisor.init_default_parameters" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sets the default PID parameters, goal, and velocity</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="supervisors.khepera3.K3Supervisor.set_parameters">
+<tt class="descname">set_parameters</tt><big>(</big><em>params</em><big>)</big><a class="reference internal" href="_modules/supervisors/khepera3.html#K3Supervisor.set_parameters"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#supervisors.khepera3.K3Supervisor.set_parameters" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set param structure from docker</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="supervisors.khepera3.K3Supervisor.uni2diff">
+<tt class="descname">uni2diff</tt><big>(</big><em>uni</em><big>)</big><a class="reference internal" href="_modules/supervisors/khepera3.html#K3Supervisor.uni2diff"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#supervisors.khepera3.K3Supervisor.uni2diff" title="Permalink to this definition">¶</a></dt>
+<dd><p>Convert between unicycle model to differential model</p>
+</dd></dl>
+
+</dd></dl>
+
+<span class="target" id="module-supervisors.k3defaultsupervisor"></span><dl class="class">
+<dt id="supervisors.k3defaultsupervisor.K3DefaultSupervisor">
+<em class="property">class </em><tt class="descclassname">supervisors.k3defaultsupervisor.</tt><tt class="descname">K3DefaultSupervisor</tt><big>(</big><em>robot_pose</em>, <em>robot_info</em><big>)</big><a class="reference internal" href="_modules/supervisors/k3defaultsupervisor.html#K3DefaultSupervisor"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#supervisors.k3defaultsupervisor.K3DefaultSupervisor" title="Permalink to this definition">¶</a></dt>
+<dd><p>K3Default supervisor creates two controllers: gotogoal and avoidobstacles.
+It switches between the two depending on the distance to the closest
+obstacle.</p>
+<dl class="method">
+<dt id="supervisors.k3defaultsupervisor.K3DefaultSupervisor.at_goal">
+<tt class="descname">at_goal</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/supervisors/k3defaultsupervisor.html#K3DefaultSupervisor.at_goal"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#supervisors.k3defaultsupervisor.K3DefaultSupervisor.at_goal" title="Permalink to this definition">¶</a></dt>
+<dd><p>Check if the distance to goal is small</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="supervisors.k3defaultsupervisor.K3DefaultSupervisor.at_obstacle">
+<tt class="descname">at_obstacle</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/supervisors/k3defaultsupervisor.html#K3DefaultSupervisor.at_obstacle"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#supervisors.k3defaultsupervisor.K3DefaultSupervisor.at_obstacle" title="Permalink to this definition">¶</a></dt>
+<dd><p>Check if the distance to obstacle is small</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="supervisors.k3defaultsupervisor.K3DefaultSupervisor.draw_foreground">
+<tt class="descname">draw_foreground</tt><big>(</big><em>renderer</em><big>)</big><a class="reference internal" href="_modules/supervisors/k3defaultsupervisor.html#K3DefaultSupervisor.draw_foreground"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#supervisors.k3defaultsupervisor.K3DefaultSupervisor.draw_foreground" title="Permalink to this definition">¶</a></dt>
+<dd><p>Draw controller info</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="supervisors.k3defaultsupervisor.K3DefaultSupervisor.free">
+<tt class="descname">free</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/supervisors/k3defaultsupervisor.html#K3DefaultSupervisor.free"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#supervisors.k3defaultsupervisor.K3DefaultSupervisor.free" title="Permalink to this definition">¶</a></dt>
+<dd><p>Check if the distance to obstacle is large</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="supervisors.k3defaultsupervisor.K3DefaultSupervisor.process_state_info">
+<tt class="descname">process_state_info</tt><big>(</big><em>state</em><big>)</big><a class="reference internal" href="_modules/supervisors/k3defaultsupervisor.html#K3DefaultSupervisor.process_state_info"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#supervisors.k3defaultsupervisor.K3DefaultSupervisor.process_state_info" title="Permalink to this definition">¶</a></dt>
+<dd><p>Update state parameters for the controllers and self</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="supervisors.k3defaultsupervisor.K3DefaultSupervisor.set_parameters">
+<tt class="descname">set_parameters</tt><big>(</big><em>params</em><big>)</big><a class="reference internal" href="_modules/supervisors/k3defaultsupervisor.html#K3DefaultSupervisor.set_parameters"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#supervisors.k3defaultsupervisor.K3DefaultSupervisor.set_parameters" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set parameters for itself and the controllers</p>
+</dd></dl>
+
+</dd></dl>
+
+<span class="target" id="module-supervisors.k3blendingsupervisor"></span><dl class="class">
+<dt id="supervisors.k3blendingsupervisor.K3BlendingSupervisor">
+<em class="property">class </em><tt class="descclassname">supervisors.k3blendingsupervisor.</tt><tt class="descname">K3BlendingSupervisor</tt><big>(</big><em>robot_pose</em>, <em>robot_info</em><big>)</big><a class="reference internal" href="_modules/supervisors/k3blendingsupervisor.html#K3BlendingSupervisor"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#supervisors.k3blendingsupervisor.K3BlendingSupervisor" title="Permalink to this definition">¶</a></dt>
+<dd><p>K3Blending supervisor has two controllers - hold and blending, that blends
+go-to-goal and avoid-obstacles behaviour.</p>
+<dl class="method">
+<dt id="supervisors.k3blendingsupervisor.K3BlendingSupervisor.at_goal">
+<tt class="descname">at_goal</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/supervisors/k3blendingsupervisor.html#K3BlendingSupervisor.at_goal"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#supervisors.k3blendingsupervisor.K3BlendingSupervisor.at_goal" title="Permalink to this definition">¶</a></dt>
+<dd><p>Check if the distance to goal is small</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="supervisors.k3blendingsupervisor.K3BlendingSupervisor.draw_foreground">
+<tt class="descname">draw_foreground</tt><big>(</big><em>renderer</em><big>)</big><a class="reference internal" href="_modules/supervisors/k3blendingsupervisor.html#K3BlendingSupervisor.draw_foreground"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#supervisors.k3blendingsupervisor.K3BlendingSupervisor.draw_foreground" title="Permalink to this definition">¶</a></dt>
+<dd><p>Draw controller info</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="supervisors.k3blendingsupervisor.K3BlendingSupervisor.process_state_info">
+<tt class="descname">process_state_info</tt><big>(</big><em>state</em><big>)</big><a class="reference internal" href="_modules/supervisors/k3blendingsupervisor.html#K3BlendingSupervisor.process_state_info"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#supervisors.k3blendingsupervisor.K3BlendingSupervisor.process_state_info" title="Permalink to this definition">¶</a></dt>
+<dd><p>Update state parameters for the controllers and self</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="supervisors.k3blendingsupervisor.K3BlendingSupervisor.set_parameters">
+<tt class="descname">set_parameters</tt><big>(</big><em>params</em><big>)</big><a class="reference internal" href="_modules/supervisors/k3blendingsupervisor.html#K3BlendingSupervisor.set_parameters"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#supervisors.k3blendingsupervisor.K3BlendingSupervisor.set_parameters" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set parameters for itself and the controllers</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="contents.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Khepera3 Specific Modules</a><ul>
+<li><a class="reference internal" href="#module-robots.khepera3">Robot</a></li>
+<li><a class="reference internal" href="#module-supervisors.khepera3">Supervisors</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="code_robot.html"
+                        title="previous chapter">Robots and the world</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="code_sup_contr.html"
+                        title="next chapter">Supervisor/Controller system</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="_sources/code_khepera3.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="code_sup_contr.html" title="Supervisor/Controller system"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="code_robot.html" title="Robots and the world"
+             >previous</a> |</li>
+<li><img class="logo" src="_static/appicon.png" style="vertical-align:middle; margin-top: -1px" alt="Logo"/></li>
+<li><a href="index.html">PySimiam 1.0.0 documentation</a> &raquo;</li>
+
+          <li><a href="code.html" >PySimiam API Documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2013, Timofey Fuchs, Shaun Lippy, John Alexander, Vidam Govorovski, Jonathan Whitten.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
+    </div>
+  </body>
+</html>

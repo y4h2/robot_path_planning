@@ -1,0 +1,821 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Simulator &mdash; PySimiam 1.0.0 documentation</title>
+    
+    <link rel="stylesheet" href="_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '',
+        VERSION:     '1.0.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="shortcut icon" href="_static/appicon_16x16.ico"/>
+    <link rel="top" title="PySimiam 1.0.0 documentation" href="index.html" />
+    <link rel="up" title="PySimiam API Documentation" href="code.html" />
+    <link rel="next" title="SimObject" href="code_simobject.html" />
+    <link rel="prev" title="PySimiam API Documentation" href="code.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="code_simobject.html" title="SimObject"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="code.html" title="PySimiam API Documentation"
+             accesskey="P">previous</a> |</li>
+<li><img class="logo" src="_static/appicon.png" style="vertical-align:middle; margin-top: -1px" alt="Logo"/></li>
+<li><a href="index.html">PySimiam 1.0.0 documentation</a> &raquo;</li>
+
+          <li><a href="code.html" accesskey="U">PySimiam API Documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="module-simulator">
+<span id="simulator"></span><h1>Simulator<a class="headerlink" href="#module-simulator" title="Permalink to this headline">¶</a></h1>
+<dl class="class">
+<dt id="simulator.Simulator">
+<em class="property">class </em><tt class="descclassname">simulator.</tt><tt class="descname">Simulator</tt><big>(</big><em>renderer</em>, <em>in_queue</em><big>)</big><a class="reference internal" href="_modules/simulator.html#Simulator"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#simulator.Simulator" title="Permalink to this definition">¶</a></dt>
+<dd><p>The simulator manages simobjects and their collisions, commands supervisors
+and draws the world using the supplied <em>renderer</em>.</p>
+<p>The simulator runs in a separate thread. None of its functions are thread-safe,
+and should never be called directly from other objects (except for the functions
+inherited from <cite>threading.Thread</cite>). The communication with the simulator
+should be done through its <em>in_queue</em> and <em>out_queue</em>. See <a class="reference internal" href="code_ui.html#ui-sim-queue"><em>Interaction between GUI and the Simulator</em></a>.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>renderer</strong> (<a class="reference internal" href="code_ui.html#renderer.Renderer" title="renderer.Renderer"><tt class="xref py py-class docutils literal"><span class="pre">Renderer</span></tt></a>) &#8211; The renderer that will be used to draw the world.
+The simulator will assume control of the renderer.
+The renderer functions also have to be considered thread-unsafe.</li>
+<li><strong>in_queue</strong> (<tt class="xref py py-class docutils literal"><span class="pre">Queue.Queue</span></tt>) &#8211; The queue that is used to send events to the simulator.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<dl class="method">
+<dt id="simulator.Simulator.add_plotable">
+<tt class="descname">add_plotable</tt><big>(</big><em>expression</em><big>)</big><a class="reference internal" href="_modules/simulator.html#Simulator.add_plotable"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#simulator.Simulator.add_plotable" title="Permalink to this definition">¶</a></dt>
+<dd><p>A plotable is an expression that yields a numerical
+value. It is evaluated every cycle and the values are announced by the
+simulator in the <tt class="docutils literal"><span class="pre">plot_update</span></tt> signal.</p>
+<p>The expression has access to the following variables:
+<tt class="docutils literal"><span class="pre">robot</span></tt> - the first robot in the scene
+<tt class="docutils literal"><span class="pre">supervisor</span></tt> - the supervisor of this robot
+<tt class="docutils literal"><span class="pre">math</span></tt> - the math module</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="simulator.Simulator.adjust_zoom">
+<tt class="descname">adjust_zoom</tt><big>(</big><em>factor</em><big>)</big><a class="reference internal" href="_modules/simulator.html#Simulator.adjust_zoom"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#simulator.Simulator.adjust_zoom" title="Permalink to this definition">¶</a></dt>
+<dd><p>Zoom the view by <em>factor</em></p>
+</dd></dl>
+
+<dl class="method">
+<dt id="simulator.Simulator.apply_parameters">
+<tt class="descname">apply_parameters</tt><big>(</big><em>robot</em>, <em>parameters</em><big>)</big><a class="reference internal" href="_modules/simulator.html#Simulator.apply_parameters"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#simulator.Simulator.apply_parameters" title="Permalink to this definition">¶</a></dt>
+<dd><p>Apply <em>parameters</em> to the supervisor of <em>robot</em>.</p>
+<p>The parameters have to correspond to the requirements of the supervisor,
+as specified in <a class="reference internal" href="code_sup_contr.html#supervisor.Supervisor.get_ui_description" title="supervisor.Supervisor.get_ui_description"><tt class="xref py py-meth docutils literal"><span class="pre">supervisor.Supervisor.get_ui_description()</span></tt></a></p>
+</dd></dl>
+
+<dl class="method">
+<dt id="simulator.Simulator.focus_on_robot">
+<tt class="descname">focus_on_robot</tt><big>(</big><em>rotate=True</em><big>)</big><a class="reference internal" href="_modules/simulator.html#Simulator.focus_on_robot"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#simulator.Simulator.focus_on_robot" title="Permalink to this definition">¶</a></dt>
+<dd><p>Center the view on the (first) robot and follow it.</p>
+<p>If <em>rotate</em> is true, also follow the robot&#8217;s orientation.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="simulator.Simulator.focus_on_world">
+<tt class="descname">focus_on_world</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/simulator.html#Simulator.focus_on_world"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#simulator.Simulator.focus_on_world" title="Permalink to this definition">¶</a></dt>
+<dd><p>Scale the view to include all of the world (including robots)</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="simulator.Simulator.get_time">
+<tt class="descname">get_time</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/simulator.html#Simulator.get_time"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#simulator.Simulator.get_time" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the internal simulator time.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="simulator.Simulator.is_running">
+<tt class="descname">is_running</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/simulator.html#Simulator.is_running"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#simulator.Simulator.is_running" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the simulation state as a <cite>bool</cite></p>
+</dd></dl>
+
+<dl class="method">
+<dt id="simulator.Simulator.load_world">
+<tt class="descname">load_world</tt><big>(</big><em>world</em><big>)</big><a class="reference internal" href="_modules/simulator.html#Simulator.load_world"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#simulator.Simulator.load_world" title="Permalink to this definition">¶</a></dt>
+<dd><p>Load the objects from an already parsed world</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="simulator.Simulator.pause_simulation">
+<tt class="descname">pause_simulation</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/simulator.html#Simulator.pause_simulation"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#simulator.Simulator.pause_simulation" title="Permalink to this definition">¶</a></dt>
+<dd><p>Pause the simulation</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="simulator.Simulator.plotables">
+<tt class="descname">plotables</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/simulator.html#Simulator.plotables"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#simulator.Simulator.plotables" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a list with some examples of plotables</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="simulator.Simulator.read_config">
+<tt class="descname">read_config</tt><big>(</big><em>filename</em><big>)</big><a class="reference internal" href="_modules/simulator.html#Simulator.read_config"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#simulator.Simulator.read_config" title="Permalink to this definition">¶</a></dt>
+<dd><p>Load in the objects from the world XML file</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="simulator.Simulator.reset_simulation">
+<tt class="descname">reset_simulation</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/simulator.html#Simulator.reset_simulation"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#simulator.Simulator.reset_simulation" title="Permalink to this definition">¶</a></dt>
+<dd><p>Reset the simulation to the start position</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="simulator.Simulator.run">
+<tt class="descname">run</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/simulator.html#Simulator.run"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#simulator.Simulator.run" title="Permalink to this definition">¶</a></dt>
+<dd><p>Start the thread. In the beginning there&#8217;s no world, no obstacles
+and no robots.</p>
+<p>The simulator will try to draw the world undependently of the
+simulation status, so that the commands from the UI get processed.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="simulator.Simulator.set_time_multiplier">
+<tt class="descname">set_time_multiplier</tt><big>(</big><em>multiplier</em><big>)</big><a class="reference internal" href="_modules/simulator.html#Simulator.set_time_multiplier"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#simulator.Simulator.set_time_multiplier" title="Permalink to this definition">¶</a></dt>
+<dd><p>Shorten the interval between evaluation cycles by <em>multiplier</em>,
+speeding up the simulation</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="simulator.Simulator.show_grid">
+<tt class="descname">show_grid</tt><big>(</big><em>show=True</em><big>)</big><a class="reference internal" href="_modules/simulator.html#Simulator.show_grid"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#simulator.Simulator.show_grid" title="Permalink to this definition">¶</a></dt>
+<dd><p>Show/hide gridlines on simulator view</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="simulator.Simulator.show_sensors">
+<tt class="descname">show_sensors</tt><big>(</big><em>show=True</em><big>)</big><a class="reference internal" href="_modules/simulator.html#Simulator.show_sensors"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#simulator.Simulator.show_sensors" title="Permalink to this definition">¶</a></dt>
+<dd><p>Show or hide the robots&#8217; sensors on the simulation view</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="simulator.Simulator.show_supervisors">
+<tt class="descname">show_supervisors</tt><big>(</big><em>show=True</em><big>)</big><a class="reference internal" href="_modules/simulator.html#Simulator.show_supervisors"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#simulator.Simulator.show_supervisors" title="Permalink to this definition">¶</a></dt>
+<dd><p>Show/hide the information from the supervisors</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="simulator.Simulator.show_tracks">
+<tt class="descname">show_tracks</tt><big>(</big><em>show=True</em><big>)</big><a class="reference internal" href="_modules/simulator.html#Simulator.show_tracks"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#simulator.Simulator.show_tracks" title="Permalink to this definition">¶</a></dt>
+<dd><p>Show/hide tracks for every robot on simulator view</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="simulator.Simulator.start_simulation">
+<tt class="descname">start_simulation</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/simulator.html#Simulator.start_simulation"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#simulator.Simulator.start_simulation" title="Permalink to this definition">¶</a></dt>
+<dd><p>Start/continue the simulation</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="simulator.Simulator.step_simulation">
+<tt class="descname">step_simulation</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/simulator.html#Simulator.step_simulation"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#simulator.Simulator.step_simulation" title="Permalink to this definition">¶</a></dt>
+<dd><p>Do one step</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="simulator.Simulator.stop">
+<tt class="descname">stop</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/simulator.html#Simulator.stop"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#simulator.Simulator.stop" title="Permalink to this definition">¶</a></dt>
+<dd><p>Stop the simulator thread when the entire program is closed</p>
+</dd></dl>
+
+</dd></dl>
+
+<div class="section" id="helper-structures">
+<h2>Helper structures<a class="headerlink" href="#helper-structures" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="module-strings">
+<span id="module-string"></span><h3>Module strings<a class="headerlink" href="#module-strings" title="Permalink to this headline">¶</a></h3>
+<p>pySimiam loads user code dynamically. This includes robot definitions,
+supervisors and controllers. It is important to specify the type of
+the robot and its supervisor in the world XML file (see <a class="reference internal" href="world.html#world-tutorial"><em>World files</em></a>),
+and the type of a controller in <a class="reference internal" href="code_sup_contr.html#supervisor.Supervisor.add_controller" title="supervisor.Supervisor.add_controller"><tt class="xref py py-meth docutils literal"><span class="pre">supervisor.Supervisor.add_controller()</span></tt></a></p>
+<p>The type is specified as a single string with the format <tt class="docutils literal"><span class="pre">&quot;mymodule.MyClass&quot;</span></tt>.
+It is equivalent to a python construct <tt class="docutils literal"><span class="pre">from</span> <span class="pre">mymodule</span> <span class="pre">import</span> <span class="pre">MyClass</span></tt>.
+If <cite>mymodule</cite> is omitted, like in <tt class="docutils literal"><span class="pre">&quot;MyClass&quot;</span></tt>, the corresponding statement
+is <tt class="docutils literal"><span class="pre">from</span> <span class="pre">myclass</span> <span class="pre">import</span> <span class="pre">MyClass</span></tt> (note the lowercase module name).
+If there is more than one point in the string, the class name is taken to
+be everything after the last point.</p>
+<p>The file <cite>mymodule.py</cite> is expected to reside in the appropriate folder:
+<cite>./robots/</cite> for robots, <cite>./controllers/</cite> for controllers and <cite>./supervisors/</cite>
+for supervisors.</p>
+<dl class="function">
+<dt id="helpers.load_by_name">
+<tt class="descclassname">helpers.</tt><tt class="descname">load_by_name</tt><big>(</big><em>module_string</em>, <em>path=None</em><big>)</big><a class="reference internal" href="_modules/helpers.html#load_by_name"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#helpers.load_by_name" title="Permalink to this definition">¶</a></dt>
+<dd><p>Load a class from a module, specified by <em>module_string</em>.</p>
+<p>The <em>path</em> is an additional path that is prepended to the module string.</p>
+<p>E.g. <tt class="docutils literal"><span class="pre">C</span> <span class="pre">=</span> <span class="pre">load_by_name('mymodule.MyClass','path.to.module')</span></tt> is equivalent to
+<tt class="docutils literal"><span class="pre">from</span> <span class="pre">path.to.module.mymodule</span> <span class="pre">import</span> <span class="pre">MyClass</span> <span class="pre">as</span> <span class="pre">C</span></tt>.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="helpers.unload_user_modules">
+<tt class="descclassname">helpers.</tt><tt class="descname">unload_user_modules</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/helpers.html#unload_user_modules"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#helpers.unload_user_modules" title="Permalink to this definition">¶</a></dt>
+<dd><p>Unload all modules loaded so far with <a class="reference internal" href="#helpers.load_by_name" title="helpers.load_by_name"><tt class="xref py py-func docutils literal"><span class="pre">load_by_name()</span></tt></a></p>
+</dd></dl>
+
+</div>
+<div class="section" id="structures">
+<h3>Structures<a class="headerlink" href="#structures" title="Permalink to this headline">¶</a></h3>
+<dl class="class">
+<dt id="helpers.Struct">
+<em class="property">class </em><tt class="descclassname">helpers.</tt><tt class="descname">Struct</tt><big>(</big><em>desc=None</em><big>)</big><a class="reference internal" href="_modules/helpers.html#Struct"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#helpers.Struct" title="Permalink to this definition">¶</a></dt>
+<dd><p>This class describes structures with arbitrary fields.
+It is used, e.g. for the communication between the supervisor and the UI.</p>
+<p>Example:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">p</span> <span class="o">=</span> <span class="n">Struct</span><span class="p">()</span>
+<span class="n">p</span><span class="o">.</span><span class="n">goal</span> <span class="o">=</span> <span class="n">Struct</span><span class="p">()</span>
+<span class="n">p</span><span class="o">.</span><span class="n">goal</span><span class="o">.</span><span class="n">x</span> <span class="o">=</span> <span class="mf">0.0</span>
+<span class="n">p</span><span class="o">.</span><span class="n">goal</span><span class="o">.</span><span class="n">y</span> <span class="o">=</span> <span class="mf">0.5</span>
+<span class="n">p</span><span class="o">.</span><span class="n">velocity</span> <span class="o">=</span> <span class="n">Struct</span><span class="p">()</span>
+<span class="n">p</span><span class="o">.</span><span class="n">velocity</span><span class="o">.</span><span class="n">v</span> <span class="o">=</span> <span class="mf">0.2</span>
+<span class="n">p</span><span class="o">.</span><span class="n">gains</span> <span class="o">=</span> <span class="n">Struct</span><span class="p">()</span>
+<span class="n">p</span><span class="o">.</span><span class="n">gains</span><span class="o">.</span><span class="n">kp</span> <span class="o">=</span> <span class="mf">10.0</span>
+<span class="n">p</span><span class="o">.</span><span class="n">gains</span><span class="o">.</span><span class="n">ki</span> <span class="o">=</span> <span class="mf">2.0</span>
+<span class="n">p</span><span class="o">.</span><span class="n">gains</span><span class="o">.</span><span class="n">kd</span> <span class="o">=</span> <span class="mf">0.0</span>
+</pre></div>
+</div>
+<p>Alternatives:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">p</span> <span class="o">=</span> <span class="n">Struct</span><span class="p">({</span><span class="s">&#39;goal&#39;</span><span class="p">:{</span><span class="s">&#39;x&#39;</span><span class="p">:</span><span class="mf">0.0</span><span class="p">,</span> <span class="s">&#39;y&#39;</span><span class="p">:</span><span class="mf">0.5</span><span class="p">},</span> <span class="s">&#39;velocity&#39;</span><span class="p">:{</span><span class="s">&#39;v&#39;</span><span class="p">:</span><span class="mf">0.2</span><span class="p">},</span> <span class="s">&#39;gains&#39;</span><span class="p">:{</span><span class="s">&#39;kp&#39;</span><span class="p">:</span><span class="mf">10.0</span><span class="p">,</span> <span class="s">&#39;ki&#39;</span><span class="p">:</span><span class="mf">2.0</span><span class="p">,</span> <span class="s">&#39;kd&#39;</span><span class="p">:</span><span class="mf">0.0</span><span class="p">}})</span>
+<span class="n">p</span> <span class="o">=</span> <span class="n">Struct</span><span class="p">(</span><span class="s">&quot;{&#39;goal&#39;:{&#39;x&#39;:0.0, &#39;y&#39;:0.5}, &#39;velocity&#39;:{&#39;v&#39;:0.2}, &#39;gains&#39;:{&#39;kp&#39;:10.0, &#39;ki&#39;:2.0, &#39;kd&#39;:0.0}}&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>In the second case, the string has to be a valid JSON object. It is also impossible to use dictionaries as
+values in the Struct in these cases.</p>
+</dd></dl>
+
+</div>
+</div>
+<div class="section" id="module-pylygon">
+<span id="collision-detection"></span><h2>Collision detection<a class="headerlink" href="#module-pylygon" title="Permalink to this headline">¶</a></h2>
+<p>polygon object</p>
+<dl class="class">
+<dt id="pylygon.Polygon">
+<em class="property">class </em><tt class="descclassname">pylygon.</tt><tt class="descname">Polygon</tt><big>(</big><em>P</em>, <em>conv=True</em><big>)</big><a class="reference internal" href="_modules/pylygon.html#Polygon"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pylygon.Polygon" title="Permalink to this definition">¶</a></dt>
+<dd><p>polygon object</p>
+<dl class="attribute">
+<dt id="pylygon.Polygon.C">
+<tt class="descname">C</tt><a class="reference internal" href="_modules/pylygon.html#Polygon.C"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pylygon.Polygon.C" title="Permalink to this definition">¶</a></dt>
+<dd><p>returns the centroid of the polygon</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pylygon.Polygon.collidepoint">
+<tt class="descname">collidepoint</tt><big>(</big><em>x_y</em><big>)</big><a class="reference internal" href="_modules/pylygon.html#Polygon.collidepoint"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pylygon.Polygon.collidepoint" title="Permalink to this definition">¶</a></dt>
+<dd><p>test if point x_y = (x, y) is outside, on the boundary, or inside polygon
+uses raytracing algorithm</p>
+<p>returns 0 if outside
+returns -1 if on boundary
+returns 1 if inside</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pylygon.Polygon.collidepoly">
+<tt class="descname">collidepoly</tt><big>(</big><em>other</em><big>)</big><a class="reference internal" href="_modules/pylygon.html#Polygon.collidepoly"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pylygon.Polygon.collidepoly" title="Permalink to this definition">¶</a></dt>
+<dd><p>test if other polygon collides with self using seperating axis theorem
+if collision, return projections</p>
+<p>arguments:
+other &#8211; a polygon object</p>
+<p>returns:
+an array of projections</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pylygon.Polygon.distance">
+<tt class="descname">distance</tt><big>(</big><em>other</em>, <em>r=array([0</em>, <em>0])</em><big>)</big><a class="reference internal" href="_modules/pylygon.html#Polygon.distance"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pylygon.Polygon.distance" title="Permalink to this definition">¶</a></dt>
+<dd><p>return distance between self and other
+uses GJK algorithm. for details see:</p>
+<p>Bergen, Gino Van Den. (1999). A fast and robust GJK implementation for
+collision detection of convex objects. Journal of Graphics Tools 4(2).</p>
+<p>arguments:
+other &#8211; a Polygon object</p>
+<p>keyword arguments
+r &#8211; initial search direction; setting r to the movement vector of
+self - other may speed convergence</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pylygon.Polygon.get_rect">
+<tt class="descname">get_rect</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/pylygon.html#Polygon.get_rect"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pylygon.Polygon.get_rect" title="Permalink to this definition">¶</a></dt>
+<dd><p>return the AABB, as a pygame rect, of the polygon</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pylygon.Polygon.intersection_points">
+<tt class="descname">intersection_points</tt><big>(</big><em>other</em><big>)</big><a class="reference internal" href="_modules/pylygon.html#Polygon.intersection_points"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pylygon.Polygon.intersection_points" title="Permalink to this definition">¶</a></dt>
+<dd><p>Determine contact (intersection) points between self
+and other.</p>
+<p>returns Empty list if no collisions found
+returns List of intersection points</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pylygon.Polygon.move">
+<tt class="descname">move</tt><big>(</big><em>x</em>, <em>y</em><big>)</big><a class="reference internal" href="_modules/pylygon.html#Polygon.move"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pylygon.Polygon.move" title="Permalink to this definition">¶</a></dt>
+<dd><p>return a new polygon moved by x, y</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pylygon.Polygon.move_ip">
+<tt class="descname">move_ip</tt><big>(</big><em>x</em>, <em>y</em><big>)</big><a class="reference internal" href="_modules/pylygon.html#Polygon.move_ip"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pylygon.Polygon.move_ip" title="Permalink to this definition">¶</a></dt>
+<dd><p>move the polygon by x, y</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pylygon.Polygon.project">
+<tt class="descname">project</tt><big>(</big><em>axis</em><big>)</big><a class="reference internal" href="_modules/pylygon.html#Polygon.project"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pylygon.Polygon.project" title="Permalink to this definition">¶</a></dt>
+<dd><p>project self onto axis</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pylygon.Polygon.raycast">
+<tt class="descname">raycast</tt><big>(</big><em>other</em>, <em>r</em>, <em>s=array([0</em>, <em>0])</em>, <em>self_theta=0</em>, <em>other_theta=0</em><big>)</big><a class="reference internal" href="_modules/pylygon.html#Polygon.raycast"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pylygon.Polygon.raycast" title="Permalink to this definition">¶</a></dt>
+<dd><p>return the hit scalar, hit vector, and hit normal from self to other in
+direction r
+uses GJK-based raycast[1] modified to accomodate constant angular
+rotation[2][3] without needing to recompute the Minkowski Difference
+after each iteration[4].</p>
+<p>[1] Bergen, Gino Van Den. (2004). Ray casting against general convex
+objects with application to continuous collision detection. GDC 2005.
+retrieved from
+<a class="reference external" href="http://www.bulletphysics.com/ftp/pub/test/physics/papers/">http://www.bulletphysics.com/ftp/pub/test/physics/papers/</a>
+jgt04raycast.pdf
+on 6 July 2011.</p>
+<p>[2] Coumans, Erwin. (2005). Continuous collision detection and physics.
+retrieved from
+<a class="reference external" href="http://www.continuousphysics.com/">http://www.continuousphysics.com/</a>
+BulletContinuousCollisionDetection.pdf
+on 18 January 2012</p>
+<p>[3] Mirtich, Brian Vincent. (1996). Impulse-based dynamic simulation of
+rigid body systems. PhD Thesis. University of California at Berkely.
+retrieved from
+<a class="reference external" href="http://www.kuffner.org/james/software/dynamics/mirtich/">http://www.kuffner.org/james/software/dynamics/mirtich/</a>
+mirtichThesis.pdf
+on 18 January 2012</p>
+<p>[4] Behar, Evan and Jyh-Ming Lien. (2011). Dynamic Minkowski Sum of
+convex shapes.  In proceedings of IEEE ICRA 2011. retrieved from
+<a class="reference external" href="http://masc.cs.gmu.edu/wiki/uploads/GeneralizedMsum/">http://masc.cs.gmu.edu/wiki/uploads/GeneralizedMsum/</a>
+icra11-dynsum-convex.pdf
+on 18 January 2012.</p>
+<p>arguments:
+other &#8211; Polygon object
+r &#8211; direction vector
+NOTE: GJK searches IN THE DIRECTION of r, thus r needs to point
+towards the origin with respect to the direction vector of self; in
+other words, if r represents the movement of self then client code
+should call raycast with -r.</p>
+<p>keyword arguments:
+s &#8211; initial position along r, (0, 0) by default
+theta &#8211; angular velocity in radians</p>
+<p>returns:
+if r does not intersect other, returns False
+else, returns the hit scalar, hit vector, and hit normal
+hit scalar &#8211; the scalar where r intersects other
+hit vector &#8211; the vector where self intersects other
+hit normal &#8211; the edge normal at the intersection</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pylygon.Polygon.rotoedges">
+<tt class="descname">rotoedges</tt><big>(</big><em>theta</em><big>)</big><a class="reference internal" href="_modules/pylygon.html#Polygon.rotoedges"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pylygon.Polygon.rotoedges" title="Permalink to this definition">¶</a></dt>
+<dd><p>return an array of vectors of edges rotated theta radians</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pylygon.Polygon.rotopoints">
+<tt class="descname">rotopoints</tt><big>(</big><em>theta</em><big>)</big><a class="reference internal" href="_modules/pylygon.html#Polygon.rotopoints"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pylygon.Polygon.rotopoints" title="Permalink to this definition">¶</a></dt>
+<dd><p>returns an array of points rotated theta radians around the centroid</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="function">
+<dt id="pylygon.convexhull">
+<tt class="descclassname">pylygon.</tt><tt class="descname">convexhull</tt><big>(</big><em>_P</em><big>)</big><a class="reference internal" href="_modules/pylygon.html#convexhull"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pylygon.convexhull" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns an array of the points in convex hull of P in CCW order.</p>
+<p>arguments: P &#8211; a Polygon object or an numpy.array object of points</p>
+</dd></dl>
+
+<dl class="class">
+<dt>
+<em class="property">class </em><tt class="descclassname">pylygon.</tt><tt class="descname">Polygon</tt><big>(</big><em>P</em>, <em>conv=True</em><big>)</big><a class="reference internal" href="_modules/pylygon.html#Polygon"><span class="viewcode-link">[source]</span></a></dt>
+<dd><p>polygon object</p>
+<dl class="attribute">
+<dt>
+<tt class="descname">C</tt><a class="reference internal" href="_modules/pylygon.html#Polygon.C"><span class="viewcode-link">[source]</span></a></dt>
+<dd><p>returns the centroid of the polygon</p>
+</dd></dl>
+
+<dl class="method">
+<dt>
+<tt class="descname">collidepoint</tt><big>(</big><em>x_y</em><big>)</big><a class="reference internal" href="_modules/pylygon.html#Polygon.collidepoint"><span class="viewcode-link">[source]</span></a></dt>
+<dd><p>test if point x_y = (x, y) is outside, on the boundary, or inside polygon
+uses raytracing algorithm</p>
+<p>returns 0 if outside
+returns -1 if on boundary
+returns 1 if inside</p>
+</dd></dl>
+
+<dl class="method">
+<dt>
+<tt class="descname">collidepoly</tt><big>(</big><em>other</em><big>)</big><a class="reference internal" href="_modules/pylygon.html#Polygon.collidepoly"><span class="viewcode-link">[source]</span></a></dt>
+<dd><p>test if other polygon collides with self using seperating axis theorem
+if collision, return projections</p>
+<p>arguments:
+other &#8211; a polygon object</p>
+<p>returns:
+an array of projections</p>
+</dd></dl>
+
+<dl class="method">
+<dt>
+<tt class="descname">distance</tt><big>(</big><em>other</em>, <em>r=array([0</em>, <em>0])</em><big>)</big><a class="reference internal" href="_modules/pylygon.html#Polygon.distance"><span class="viewcode-link">[source]</span></a></dt>
+<dd><p>return distance between self and other
+uses GJK algorithm. for details see:</p>
+<p>Bergen, Gino Van Den. (1999). A fast and robust GJK implementation for
+collision detection of convex objects. Journal of Graphics Tools 4(2).</p>
+<p>arguments:
+other &#8211; a Polygon object</p>
+<p>keyword arguments
+r &#8211; initial search direction; setting r to the movement vector of
+self - other may speed convergence</p>
+</dd></dl>
+
+<dl class="method">
+<dt>
+<tt class="descname">get_rect</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/pylygon.html#Polygon.get_rect"><span class="viewcode-link">[source]</span></a></dt>
+<dd><p>return the AABB, as a pygame rect, of the polygon</p>
+</dd></dl>
+
+<dl class="method">
+<dt>
+<tt class="descname">intersection_points</tt><big>(</big><em>other</em><big>)</big><a class="reference internal" href="_modules/pylygon.html#Polygon.intersection_points"><span class="viewcode-link">[source]</span></a></dt>
+<dd><p>Determine contact (intersection) points between self
+and other.</p>
+<p>returns Empty list if no collisions found
+returns List of intersection points</p>
+</dd></dl>
+
+<dl class="method">
+<dt>
+<tt class="descname">move</tt><big>(</big><em>x</em>, <em>y</em><big>)</big><a class="reference internal" href="_modules/pylygon.html#Polygon.move"><span class="viewcode-link">[source]</span></a></dt>
+<dd><p>return a new polygon moved by x, y</p>
+</dd></dl>
+
+<dl class="method">
+<dt>
+<tt class="descname">move_ip</tt><big>(</big><em>x</em>, <em>y</em><big>)</big><a class="reference internal" href="_modules/pylygon.html#Polygon.move_ip"><span class="viewcode-link">[source]</span></a></dt>
+<dd><p>move the polygon by x, y</p>
+</dd></dl>
+
+<dl class="method">
+<dt>
+<tt class="descname">project</tt><big>(</big><em>axis</em><big>)</big><a class="reference internal" href="_modules/pylygon.html#Polygon.project"><span class="viewcode-link">[source]</span></a></dt>
+<dd><p>project self onto axis</p>
+</dd></dl>
+
+<dl class="method">
+<dt>
+<tt class="descname">raycast</tt><big>(</big><em>other</em>, <em>r</em>, <em>s=array([0</em>, <em>0])</em>, <em>self_theta=0</em>, <em>other_theta=0</em><big>)</big><a class="reference internal" href="_modules/pylygon.html#Polygon.raycast"><span class="viewcode-link">[source]</span></a></dt>
+<dd><p>return the hit scalar, hit vector, and hit normal from self to other in
+direction r
+uses GJK-based raycast[1] modified to accomodate constant angular
+rotation[2][3] without needing to recompute the Minkowski Difference
+after each iteration[4].</p>
+<p>[1] Bergen, Gino Van Den. (2004). Ray casting against general convex
+objects with application to continuous collision detection. GDC 2005.
+retrieved from
+<a class="reference external" href="http://www.bulletphysics.com/ftp/pub/test/physics/papers/">http://www.bulletphysics.com/ftp/pub/test/physics/papers/</a>
+jgt04raycast.pdf
+on 6 July 2011.</p>
+<p>[2] Coumans, Erwin. (2005). Continuous collision detection and physics.
+retrieved from
+<a class="reference external" href="http://www.continuousphysics.com/">http://www.continuousphysics.com/</a>
+BulletContinuousCollisionDetection.pdf
+on 18 January 2012</p>
+<p>[3] Mirtich, Brian Vincent. (1996). Impulse-based dynamic simulation of
+rigid body systems. PhD Thesis. University of California at Berkely.
+retrieved from
+<a class="reference external" href="http://www.kuffner.org/james/software/dynamics/mirtich/">http://www.kuffner.org/james/software/dynamics/mirtich/</a>
+mirtichThesis.pdf
+on 18 January 2012</p>
+<p>[4] Behar, Evan and Jyh-Ming Lien. (2011). Dynamic Minkowski Sum of
+convex shapes.  In proceedings of IEEE ICRA 2011. retrieved from
+<a class="reference external" href="http://masc.cs.gmu.edu/wiki/uploads/GeneralizedMsum/">http://masc.cs.gmu.edu/wiki/uploads/GeneralizedMsum/</a>
+icra11-dynsum-convex.pdf
+on 18 January 2012.</p>
+<p>arguments:
+other &#8211; Polygon object
+r &#8211; direction vector
+NOTE: GJK searches IN THE DIRECTION of r, thus r needs to point
+towards the origin with respect to the direction vector of self; in
+other words, if r represents the movement of self then client code
+should call raycast with -r.</p>
+<p>keyword arguments:
+s &#8211; initial position along r, (0, 0) by default
+theta &#8211; angular velocity in radians</p>
+<p>returns:
+if r does not intersect other, returns False
+else, returns the hit scalar, hit vector, and hit normal
+hit scalar &#8211; the scalar where r intersects other
+hit vector &#8211; the vector where self intersects other
+hit normal &#8211; the edge normal at the intersection</p>
+</dd></dl>
+
+<dl class="method">
+<dt>
+<tt class="descname">rotoedges</tt><big>(</big><em>theta</em><big>)</big><a class="reference internal" href="_modules/pylygon.html#Polygon.rotoedges"><span class="viewcode-link">[source]</span></a></dt>
+<dd><p>return an array of vectors of edges rotated theta radians</p>
+</dd></dl>
+
+<dl class="method">
+<dt>
+<tt class="descname">rotopoints</tt><big>(</big><em>theta</em><big>)</big><a class="reference internal" href="_modules/pylygon.html#Polygon.rotopoints"><span class="viewcode-link">[source]</span></a></dt>
+<dd><p>returns an array of points rotated theta radians around the centroid</p>
+</dd></dl>
+
+</dd></dl>
+
+<span class="target" id="module-rect"></span><dl class="class">
+<dt id="rect.Rect">
+<em class="property">class </em><tt class="descclassname">rect.</tt><tt class="descname">Rect</tt><big>(</big><em>xywh</em><big>)</big><a class="reference internal" href="_modules/rect.html#Rect"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#rect.Rect" title="Permalink to this definition">¶</a></dt>
+<dd><p>The Rect class is used for storing and manipulating rectangular areas.</p>
+<p>It has left, bottom, width and height attributes, which are automatically
+changed by assignment to the right, top, topleft, topright, bottomleft, 
+bottomright or center properties.</p>
+<p>Rects can be added to greater a greater containing rectangle, or a 
+Rect.union classmethod is available to sum a list of Rect objects.</p>
+<p>The collidepoint and intersects methods are used for collision testing.</p>
+<p>Eg:
+&gt;&gt; Rect((0,0,10,10)).collidepoint((2,2))
+&gt;&gt; True
+&gt;&gt; Rect((0,0,10,10)).collidepoint((20,20))
+&gt;&gt; False</p>
+<p>This Rect class is different to the Pygame Rect class, in that is stores
+coordinates internally as floats, and uses a left-handed coordinate
+system.</p>
+<dl class="method">
+<dt id="rect.Rect.add">
+<tt class="descname">add</tt><big>(</big><em>other</em><big>)</big><a class="reference internal" href="_modules/rect.html#Rect.add"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#rect.Rect.add" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add another rect to this rect, expanding as needed.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="rect.Rect.collidepoint">
+<tt class="descname">collidepoint</tt><big>(</big><em>xy</em><big>)</big><a class="reference internal" href="_modules/rect.html#Rect.collidepoint"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#rect.Rect.collidepoint" title="Permalink to this definition">¶</a></dt>
+<dd><p>Test if a point intersects with this rect.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="rect.Rect.contains">
+<tt class="descname">contains</tt><big>(</big><em>other</em><big>)</big><a class="reference internal" href="_modules/rect.html#Rect.contains"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#rect.Rect.contains" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return True if other contains self</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="rect.Rect.intersection">
+<tt class="descname">intersection</tt><big>(</big><em>other</em><big>)</big><a class="reference internal" href="_modules/rect.html#Rect.intersection"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#rect.Rect.intersection" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the intersection of this rect and other rect.
+Return None if no intersection.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="rect.Rect.intersects">
+<tt class="descname">intersects</tt><big>(</big><em>other</em><big>)</big><a class="reference internal" href="_modules/rect.html#Rect.intersects"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#rect.Rect.intersects" title="Permalink to this definition">¶</a></dt>
+<dd><p>Test if a rect intersects with this rect.</p>
+</dd></dl>
+
+<dl class="classmethod">
+<dt id="rect.Rect.sum">
+<em class="property">classmethod </em><tt class="descname">sum</tt><big>(</big><em>others</em><big>)</big><a class="reference internal" href="_modules/rect.html#Rect.sum"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#rect.Rect.sum" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a rect which covers all rects in others.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt>
+<em class="property">class </em><tt class="descclassname">rect.</tt><tt class="descname">Rect</tt><big>(</big><em>xywh</em><big>)</big><a class="reference internal" href="_modules/rect.html#Rect"><span class="viewcode-link">[source]</span></a></dt>
+<dd><p>The Rect class is used for storing and manipulating rectangular areas.</p>
+<p>It has left, bottom, width and height attributes, which are automatically
+changed by assignment to the right, top, topleft, topright, bottomleft, 
+bottomright or center properties.</p>
+<p>Rects can be added to greater a greater containing rectangle, or a 
+Rect.union classmethod is available to sum a list of Rect objects.</p>
+<p>The collidepoint and intersects methods are used for collision testing.</p>
+<p>Eg:
+&gt;&gt; Rect((0,0,10,10)).collidepoint((2,2))
+&gt;&gt; True
+&gt;&gt; Rect((0,0,10,10)).collidepoint((20,20))
+&gt;&gt; False</p>
+<p>This Rect class is different to the Pygame Rect class, in that is stores
+coordinates internally as floats, and uses a left-handed coordinate
+system.</p>
+<dl class="method">
+<dt>
+<tt class="descname">add</tt><big>(</big><em>other</em><big>)</big><a class="reference internal" href="_modules/rect.html#Rect.add"><span class="viewcode-link">[source]</span></a></dt>
+<dd><p>Add another rect to this rect, expanding as needed.</p>
+</dd></dl>
+
+<dl class="method">
+<dt>
+<tt class="descname">collidepoint</tt><big>(</big><em>xy</em><big>)</big><a class="reference internal" href="_modules/rect.html#Rect.collidepoint"><span class="viewcode-link">[source]</span></a></dt>
+<dd><p>Test if a point intersects with this rect.</p>
+</dd></dl>
+
+<dl class="method">
+<dt>
+<tt class="descname">contains</tt><big>(</big><em>other</em><big>)</big><a class="reference internal" href="_modules/rect.html#Rect.contains"><span class="viewcode-link">[source]</span></a></dt>
+<dd><p>Return True if other contains self</p>
+</dd></dl>
+
+<dl class="method">
+<dt>
+<tt class="descname">intersection</tt><big>(</big><em>other</em><big>)</big><a class="reference internal" href="_modules/rect.html#Rect.intersection"><span class="viewcode-link">[source]</span></a></dt>
+<dd><p>Return the intersection of this rect and other rect.
+Return None if no intersection.</p>
+</dd></dl>
+
+<dl class="method">
+<dt>
+<tt class="descname">intersects</tt><big>(</big><em>other</em><big>)</big><a class="reference internal" href="_modules/rect.html#Rect.intersects"><span class="viewcode-link">[source]</span></a></dt>
+<dd><p>Test if a rect intersects with this rect.</p>
+</dd></dl>
+
+<dl class="classmethod">
+<dt>
+<em class="property">classmethod </em><tt class="descname">sum</tt><big>(</big><em>others</em><big>)</big><a class="reference internal" href="_modules/rect.html#Rect.sum"><span class="viewcode-link">[source]</span></a></dt>
+<dd><p>Return a rect which covers all rects in others.</p>
+</dd></dl>
+
+</dd></dl>
+
+<span class="target" id="module-quadtree"></span><dl class="class">
+<dt id="quadtree.QuadTree">
+<em class="property">class </em><tt class="descclassname">quadtree.</tt><tt class="descname">QuadTree</tt><big>(</big><em>items=None</em>, <em>depth=8</em>, <em>bounding_rect=None</em><big>)</big><a class="reference internal" href="_modules/quadtree.html#QuadTree"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#quadtree.QuadTree" title="Permalink to this definition">¶</a></dt>
+<dd><p>QuadTree data structure of simulated objects</p>
+<dl class="method">
+<dt id="quadtree.QuadTree.find_items">
+<tt class="descname">find_items</tt><big>(</big><em>xywh</em><big>)</big><a class="reference internal" href="_modules/quadtree.html#QuadTree.find_items"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#quadtree.QuadTree.find_items" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the items that overlap a bounding rectangle.</p>
+<p>Returns the set of all items in the quad-tree that overlap with a
+bounding rectangle.</p>
+<dl class="docutils">
+<dt>&#64;param xywh:</dt>
+<dd>The bounding rectangle being tested against the quad-tree.</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="quadtree.QuadTree.insert_items">
+<tt class="descname">insert_items</tt><big>(</big><em>items</em><big>)</big><a class="reference internal" href="_modules/quadtree.html#QuadTree.insert_items"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#quadtree.QuadTree.insert_items" title="Permalink to this definition">¶</a></dt>
+<dd><p>Insert a list of SimObject items</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt>
+<em class="property">class </em><tt class="descclassname">quadtree.</tt><tt class="descname">QuadTree</tt><big>(</big><em>items=None</em>, <em>depth=8</em>, <em>bounding_rect=None</em><big>)</big><a class="reference internal" href="_modules/quadtree.html#QuadTree"><span class="viewcode-link">[source]</span></a></dt>
+<dd><p>QuadTree data structure of simulated objects</p>
+<dl class="method">
+<dt>
+<tt class="descname">find_items</tt><big>(</big><em>xywh</em><big>)</big><a class="reference internal" href="_modules/quadtree.html#QuadTree.find_items"><span class="viewcode-link">[source]</span></a></dt>
+<dd><p>Returns the items that overlap a bounding rectangle.</p>
+<p>Returns the set of all items in the quad-tree that overlap with a
+bounding rectangle.</p>
+<dl class="docutils">
+<dt>&#64;param xywh:</dt>
+<dd>The bounding rectangle being tested against the quad-tree.</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt>
+<tt class="descname">insert_items</tt><big>(</big><em>items</em><big>)</big><a class="reference internal" href="_modules/quadtree.html#QuadTree.insert_items"><span class="viewcode-link">[source]</span></a></dt>
+<dd><p>Insert a list of SimObject items</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="contents.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Simulator</a><ul>
+<li><a class="reference internal" href="#helper-structures">Helper structures</a><ul>
+<li><a class="reference internal" href="#module-strings">Module strings</a></li>
+<li><a class="reference internal" href="#structures">Structures</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#module-pylygon">Collision detection</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="code.html"
+                        title="previous chapter">PySimiam API Documentation</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="code_simobject.html"
+                        title="next chapter">SimObject</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="_sources/code_simulator.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="code_simobject.html" title="SimObject"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="code.html" title="PySimiam API Documentation"
+             >previous</a> |</li>
+<li><img class="logo" src="_static/appicon.png" style="vertical-align:middle; margin-top: -1px" alt="Logo"/></li>
+<li><a href="index.html">PySimiam 1.0.0 documentation</a> &raquo;</li>
+
+          <li><a href="code.html" >PySimiam API Documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2013, Timofey Fuchs, Shaun Lippy, John Alexander, Vidam Govorovski, Jonathan Whitten.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
+    </div>
+  </body>
+</html>

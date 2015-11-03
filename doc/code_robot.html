@@ -1,0 +1,320 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Robots and the world &mdash; PySimiam 1.0.0 documentation</title>
+    
+    <link rel="stylesheet" href="_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '',
+        VERSION:     '1.0.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="shortcut icon" href="_static/appicon_16x16.ico"/>
+    <link rel="top" title="PySimiam 1.0.0 documentation" href="index.html" />
+    <link rel="up" title="PySimiam API Documentation" href="code.html" />
+    <link rel="next" title="Supervisor/Controller system" href="code_sup_contr.html" />
+    <link rel="prev" title="SimObject" href="code_simobject.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="code_sup_contr.html" title="Supervisor/Controller system"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="code_simobject.html" title="SimObject"
+             accesskey="P">previous</a> |</li>
+<li><img class="logo" src="_static/appicon.png" style="vertical-align:middle; margin-top: -1px" alt="Logo"/></li>
+<li><a href="index.html">PySimiam 1.0.0 documentation</a> &raquo;</li>
+
+          <li><a href="code.html" accesskey="U">PySimiam API Documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="robots-and-the-world">
+<h1>Robots and the world<a class="headerlink" href="#robots-and-the-world" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="module-robot">
+<span id="robot"></span><h2>Robot<a class="headerlink" href="#module-robot" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="robot.RealBot">
+<em class="property">class </em><tt class="descclassname">robot.</tt><tt class="descname">RealBot</tt><big>(</big><em>pose</em>, <em>color=0</em><big>)</big><a class="headerlink" href="#robot.RealBot" title="Permalink to this definition">¶</a></dt>
+<dd><p>This type of robots implements communication with a real-world robot.</p>
+<p>Although this is a SimObject, it doesn&#8217;t move by itself.
+Use <a class="reference internal" href="code_simobject.html#simobject.SimObject.set_pose" title="simobject.SimObject.set_pose"><tt class="xref py py-meth docutils literal"><span class="pre">set_pose()</span></tt></a> to move the robot.</p>
+<dl class="method">
+<dt id="robot.RealBot.pause">
+<tt class="descname">pause</tt><big>(</big><big>)</big><a class="headerlink" href="#robot.RealBot.pause" title="Permalink to this definition">¶</a></dt>
+<dd><p>Stops the robot, saving the state</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="robot.RealBot.resume">
+<tt class="descname">resume</tt><big>(</big><big>)</big><a class="headerlink" href="#robot.RealBot.resume" title="Permalink to this definition">¶</a></dt>
+<dd><p>Restarts the robot from the saved state</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="robot.RealBot.update_external_info">
+<tt class="descname">update_external_info</tt><big>(</big><big>)</big><a class="headerlink" href="#robot.RealBot.update_external_info" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initiate communication with the real robot and get state info back.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="robot.Robot">
+<em class="property">class </em><tt class="descclassname">robot.</tt><tt class="descname">Robot</tt><big>(</big><em>pose</em>, <em>color=0</em><big>)</big><a class="reference internal" href="_modules/robot.html#Robot"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#robot.Robot" title="Permalink to this definition">¶</a></dt>
+<dd><p>The robot is a <a class="reference internal" href="code_simobject.html#simobject.SimObject" title="simobject.SimObject"><tt class="xref py py-class docutils literal"><span class="pre">SimObject</span></tt></a> that implements drawing
+and information functions to interface with supervisor.</p>
+<p>This class is not intended to be subclassed in user code. Use one
+of the provided subclasses instead: <a class="reference internal" href="#robot.SimBot" title="robot.SimBot"><tt class="xref py py-class docutils literal"><span class="pre">SimBot</span></tt></a> for emulated robots
+or <a class="reference internal" href="#robot.RealBot" title="robot.RealBot"><tt class="xref py py-class docutils literal"><span class="pre">RealBot</span></tt></a> for physical robots.</p>
+<dl class="method">
+<dt id="robot.Robot.draw_sensors">
+<tt class="descname">draw_sensors</tt><big>(</big><em>renderer</em><big>)</big><a class="reference internal" href="_modules/robot.html#Robot.draw_sensors"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#robot.Robot.draw_sensors" title="Permalink to this definition">¶</a></dt>
+<dd><p>Draw the sensors that this robot has</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="robot.Robot.get_info">
+<tt class="descname">get_info</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/robot.html#Robot.get_info"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#robot.Robot.get_info" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the robot information structure, including sensor readings and
+shape information</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="robot.Robot.set_inputs">
+<tt class="descname">set_inputs</tt><big>(</big><em>inputs</em><big>)</big><a class="reference internal" href="_modules/robot.html#Robot.set_inputs"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#robot.Robot.set_inputs" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set drive inputs in the format needed by this robot</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="robot.SimBot">
+<em class="property">class </em><tt class="descclassname">robot.</tt><tt class="descname">SimBot</tt><big>(</big><em>pose</em>, <em>color=0</em><big>)</big><a class="headerlink" href="#robot.SimBot" title="Permalink to this definition">¶</a></dt>
+<dd><p>The robot defined by this class is a simulated robot, and implements
+its own motion in <a class="reference internal" href="#robot.SimBot.move" title="robot.SimBot.move"><tt class="xref py py-meth docutils literal"><span class="pre">move()</span></tt></a>.</p>
+<p>To implement a new type of robot, subclass <a class="reference internal" href="#robot.SimBot" title="robot.SimBot"><tt class="xref py py-class docutils literal"><span class="pre">SimBot</span></tt></a> and implement
+<a class="reference internal" href="#robot.Robot.get_info" title="robot.Robot.get_info"><tt class="xref py py-meth docutils literal"><span class="pre">get_info()</span></tt></a> and <a class="reference internal" href="#robot.SimBot.get_external_sensors" title="robot.SimBot.get_external_sensors"><tt class="xref py py-meth docutils literal"><span class="pre">get_external_sensors()</span></tt></a>.</p>
+<p>To make your robot move, implement <a class="reference internal" href="#robot.SimBot.move" title="robot.SimBot.move"><tt class="xref py py-meth docutils literal"><span class="pre">move()</span></tt></a>.</p>
+<p>To make you robot controllable, implement <a class="reference internal" href="#robot.Robot.set_inputs" title="robot.Robot.set_inputs"><tt class="xref py py-meth docutils literal"><span class="pre">set_inputs()</span></tt></a>.</p>
+<p>If your robot has sensors that can be drawn in the view, implement
+<a class="reference internal" href="#robot.Robot.draw_sensors" title="robot.Robot.draw_sensors"><tt class="xref py py-meth docutils literal"><span class="pre">draw_sensors()</span></tt></a>.</p>
+<dl class="method">
+<dt id="robot.SimBot.get_external_sensors">
+<tt class="descname">get_external_sensors</tt><big>(</big><big>)</big><a class="headerlink" href="#robot.SimBot.get_external_sensors" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the external sensors of the robot as a list.
+This function is used to update the sensor readings in proximity
+sensors.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="robot.SimBot.move">
+<tt class="descname">move</tt><big>(</big><em>dt</em><big>)</big><a class="headerlink" href="#robot.SimBot.move" title="Permalink to this definition">¶</a></dt>
+<dd><p>Move the robot for a time interval <cite>dt</cite>.</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="interaction-between-the-robot-and-the-supervisor">
+<span id="robot-supervisor-link"></span><h2>Interaction between the robot and the supervisor<a class="headerlink" href="#interaction-between-the-robot-and-the-supervisor" title="Permalink to this headline">¶</a></h2>
+<p>The simulator can run with any robot and any supervisor,
+as long as they implement the necessary methods in the <a class="reference internal" href="#robot.Robot" title="robot.Robot"><tt class="xref py py-class docutils literal"><span class="pre">Robot</span></tt></a>
+and <a class="reference internal" href="code_sup_contr.html#supervisor.Supervisor" title="supervisor.Supervisor"><tt class="xref py py-class docutils literal"><span class="pre">Supervisor</span></tt></a> base classes.
+However, not any supervisor can work with any robot. Specifically,
+the supervisor has to correctly use the output of <a class="reference internal" href="#robot.Robot.get_info" title="robot.Robot.get_info"><tt class="xref py py-meth docutils literal"><span class="pre">robot.Robot.get_info()</span></tt></a>
+and supply the correct input to <a class="reference internal" href="#robot.Robot.set_inputs" title="robot.Robot.set_inputs"><tt class="xref py py-meth docutils literal"><span class="pre">robot.Robot.set_inputs()</span></tt></a>.</p>
+<p>When the simulation is run, the supervisor does not have a direct access to the robot.
+All the information that the supervisor can get, is the output of <a class="reference internal" href="#robot.Robot.get_info" title="robot.Robot.get_info"><tt class="xref py py-meth docutils literal"><span class="pre">get_info()</span></tt></a>.
+It is important when implementing a robot to put all the necessary information
+about the robot into this structure. This includes the sensor readings and the
+geometry of the robot.</p>
+<p>The only way that the supervisor can influence the robot, is through
+the <a class="reference internal" href="#robot.Robot.set_inputs" title="robot.Robot.set_inputs"><tt class="xref py py-meth docutils literal"><span class="pre">set_inputs()</span></tt></a> method. The supervisor has to produce
+the correct output from its <a class="reference internal" href="code_sup_contr.html#supervisor.Supervisor.execute" title="supervisor.Supervisor.execute"><tt class="xref py py-meth docutils literal"><span class="pre">execute()</span></tt></a> method.
+This output will be fed to the robot at the end of the cycle.</p>
+</div>
+<div class="section" id="module-sensor">
+<span id="sensor"></span><h2>Sensor<a class="headerlink" href="#module-sensor" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="sensor.Sensor">
+<em class="property">class </em><tt class="descclassname">sensor.</tt><tt class="descname">Sensor</tt><a class="reference internal" href="_modules/sensor.html#Sensor"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sensor.Sensor" title="Permalink to this definition">¶</a></dt>
+<dd><p>Base superclass for sensor objects</p>
+<dl class="classmethod">
+<dt id="sensor.Sensor.add_gauss_noise">
+<em class="property">classmethod </em><tt class="descname">add_gauss_noise</tt><big>(</big><em>value</em>, <em>sigma</em><big>)</big><a class="reference internal" href="_modules/sensor.html#Sensor.add_gauss_noise"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sensor.Sensor.add_gauss_noise" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the value with an added normal noise</p>
+<p>The return value is normally distributed around value with a standard deviation sigma</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="sensor.MountedSensor">
+<em class="property">class </em><tt class="descclassname">sensor.</tt><tt class="descname">MountedSensor</tt><big>(</big><em>pose</em>, <em>parent</em><big>)</big><a class="reference internal" href="_modules/sensor.html#MountedSensor"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sensor.MountedSensor" title="Permalink to this definition">¶</a></dt>
+<dd><p>A sensor that moves together with its parent object.</p>
+<p>The sensor is assumed to be attached to <em>parent</em> at <em>pose</em> in local
+coordinates.</p>
+<dl class="method">
+<dt id="sensor.MountedSensor.get_internal_pose">
+<tt class="descname">get_internal_pose</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/sensor.html#MountedSensor.get_internal_pose"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sensor.MountedSensor.get_internal_pose" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the pose of the sensor in the parent (robot) coordinates.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="sensor.ProximitySensor">
+<em class="property">class </em><tt class="descclassname">sensor.</tt><tt class="descname">ProximitySensor</tt><big>(</big><em>pose</em>, <em>robot</em>, <em>geometry</em><big>)</big><a class="reference internal" href="_modules/sensor.html#ProximitySensor"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sensor.ProximitySensor" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create a proximity sensor mounted on robot at <em>pose</em>. The geometry
+is a (rmin, rmax, angle) tuple.</p>
+<dl class="method">
+<dt id="sensor.ProximitySensor.get_envelope">
+<tt class="descname">get_envelope</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/sensor.html#ProximitySensor.get_envelope"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sensor.ProximitySensor.get_envelope" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the envelope of the sensor</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="sensor.ProximitySensor.distance_to_value">
+<tt class="descname">distance_to_value</tt><big>(</big><em>dst</em><big>)</big><a class="reference internal" href="_modules/sensor.html#ProximitySensor.distance_to_value"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sensor.ProximitySensor.distance_to_value" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the distance to the value using sensor calculations</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="sensor.ProximitySensor.distance">
+<tt class="descname">distance</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/sensor.html#ProximitySensor.distance"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sensor.ProximitySensor.distance" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the distance instance</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="sensor.ProximitySensor.reading">
+<tt class="descname">reading</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/sensor.html#ProximitySensor.reading"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sensor.ProximitySensor.reading" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the reading value</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="sensor.ProximitySensor.update_distance">
+<tt class="descname">update_distance</tt><big>(</big><em>sim_object=None</em><big>)</big><a class="reference internal" href="_modules/sensor.html#ProximitySensor.update_distance"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sensor.ProximitySensor.update_distance" title="Permalink to this definition">¶</a></dt>
+<dd><p>updates all the distances from the reading</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="sensor.ProximitySensor.draw">
+<tt class="descname">draw</tt><big>(</big><em>r</em><big>)</big><a class="reference internal" href="_modules/sensor.html#ProximitySensor.draw"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sensor.ProximitySensor.draw" title="Permalink to this definition">¶</a></dt>
+<dd><p>draws the sensor simobject</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="sensor.ProximitySensor.get_distance_to">
+<tt class="descname">get_distance_to</tt><big>(</big><em>sim_object</em><big>)</big><a class="reference internal" href="_modules/sensor.html#ProximitySensor.get_distance_to"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sensor.ProximitySensor.get_distance_to" title="Permalink to this definition">¶</a></dt>
+<dd><p>Gets the distance to another simobject
+returns distance in meters or None if not in contact</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="contents.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Robots and the world</a><ul>
+<li><a class="reference internal" href="#module-robot">Robot</a></li>
+<li><a class="reference internal" href="#interaction-between-the-robot-and-the-supervisor">Interaction between the robot and the supervisor</a></li>
+<li><a class="reference internal" href="#module-sensor">Sensor</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="code_simobject.html"
+                        title="previous chapter">SimObject</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="code_sup_contr.html"
+                        title="next chapter">Supervisor/Controller system</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="_sources/code_robot.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="code_sup_contr.html" title="Supervisor/Controller system"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="code_simobject.html" title="SimObject"
+             >previous</a> |</li>
+<li><img class="logo" src="_static/appicon.png" style="vertical-align:middle; margin-top: -1px" alt="Logo"/></li>
+<li><a href="index.html">PySimiam 1.0.0 documentation</a> &raquo;</li>
+
+          <li><a href="code.html" >PySimiam API Documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2013, Timofey Fuchs, Shaun Lippy, John Alexander, Vidam Govorovski, Jonathan Whitten.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
+    </div>
+  </body>
+</html>

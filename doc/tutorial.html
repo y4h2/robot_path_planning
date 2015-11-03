@@ -1,0 +1,187 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Tutorial &mdash; PySimiam 1.0.0 documentation</title>
+    
+    <link rel="stylesheet" href="_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '',
+        VERSION:     '1.0.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="shortcut icon" href="_static/appicon_16x16.ico"/>
+    <link rel="top" title="PySimiam 1.0.0 documentation" href="index.html" />
+    <link rel="next" title="Using PySimiam in Coursera ‘Control of mobile robots’ course" href="coursera.html" />
+    <link rel="prev" title="Website Tree" href="contents.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="coursera.html" title="Using PySimiam in Coursera ‘Control of mobile robots’ course"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="contents.html" title="Website Tree"
+             accesskey="P">previous</a> |</li>
+<li><img class="logo" src="_static/appicon.png" style="vertical-align:middle; margin-top: -1px" alt="Logo"/></li>
+<li><a href="index.html">PySimiam 1.0.0 documentation</a> &raquo;</li>
+ 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="tutorial">
+<h1>Tutorial<a class="headerlink" href="#tutorial" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="installing-pysimiam">
+<h2>Installing pySimiam<a class="headerlink" href="#installing-pysimiam" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="external-dependencies">
+<h3>External dependencies<a class="headerlink" href="#external-dependencies" title="Permalink to this headline">¶</a></h3>
+<p>First, make sure you have the following available on your system:</p>
+<p>PyQT &#8212;&gt; <a class="reference external" href="http://www.riverbankcomputing.com/software/pyqt/download">http://www.riverbankcomputing.com/software/pyqt/download</a></p>
+<p>Numpy &#8212;&gt; <a class="reference external" href="http://www.scipy.org/Download">http://www.scipy.org/Download</a></p>
+<p>Python 2.7 <a class="footnote-reference" href="#python3" id="id1">[1]</a> &#8212;&gt; <a class="reference external" href="http://www.python.org/getit/">http://www.python.org/getit/</a></p>
+</div>
+<div class="section" id="downloading-pysimiam">
+<h3>Downloading pySimiam<a class="headerlink" href="#downloading-pysimiam" title="Permalink to this headline">¶</a></h3>
+<p>The lastest release of pySimiam is available from <a class="reference external" href="http://sourceforge.net/projects/pysimiam/files/releases/">Sourceforge</a></p>
+<p>Unzip the latest provided archive and you are good to go!</p>
+</div>
+</div>
+<div class="section" id="running-pysimiam">
+<span id="gui-tutorial"></span><h2>Running pySimiam<a class="headerlink" href="#running-pysimiam" title="Permalink to this headline">¶</a></h2>
+<p>To start the simulator, run the following from the command-line in the <tt class="docutils literal"><span class="pre">pysimiam</span></tt> folder:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">python</span> <span class="n">qtsimiam</span><span class="o">.</span><span class="n">py</span> <span class="n">playground</span><span class="o">.</span><span class="n">xml</span>
+</pre></div>
+</div>
+<p>This will load a &#8216;world&#8217; with two robots into the simulator. By default the simulation is stopped. Push the green &#8216;play&#8217; button to start it.
+Here is a screenshot of the Qt graphical user interface (GUI) of the simulator:</p>
+<img alt="_images/qtsimiam.png" src="_images/qtsimiam.png" />
+<p>The GUI can be controlled by the menu or the toolbar buttons
+(or their equivalent keyboard shortcuts). The first toolbar controls the execution:</p>
+<img alt="_images/run-buttons.png" src="_images/run-buttons.png" />
+<p>Every time the simulation is restarted, the robot, supervisor and controller code
+is reloaded. Therefore, it is possible to change the code without restarting the simulator -
+restarting the simulation is enough.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">There is a known bug with code reloading malfunctioning. In the case you
+are constantly getting weird error messages, restart the simulator, and they should
+go away.</p>
+</div>
+<p>The second toolbar controls the display options:</p>
+<img alt="_images/view-buttons.png" src="_images/view-buttons.png" />
+<p>The docking windows on the left and on the right display the parameters of the
+robots&#8217; supervisors. These parameters can be changed at runtime by clicking <cite>Apply</cite>.
+It is up to the supervisor to implement those runtime changes.
+You can also save and load important parameter sets by using <cite>Save</cite> and <cite>Load</cite> buttons.</p>
+<p class="rubric">Footnotes</p>
+<table class="docutils footnote" frame="void" id="python3" rules="none">
+<colgroup><col class="label" /><col /></colgroup>
+<tbody valign="top">
+<tr><td class="label"><a class="fn-backref" href="#id1">[1]</a></td><td>Python 3 is not officially supported, but the simulator should run with it as well. It you are using or have tried to use Python 3 and have encountered problems, please tell us.</td></tr>
+</tbody>
+</table>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="contents.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Tutorial</a><ul>
+<li><a class="reference internal" href="#installing-pysimiam">Installing pySimiam</a><ul>
+<li><a class="reference internal" href="#external-dependencies">External dependencies</a></li>
+<li><a class="reference internal" href="#downloading-pysimiam">Downloading pySimiam</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#running-pysimiam">Running pySimiam</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="contents.html"
+                        title="previous chapter">Website Tree</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="coursera.html"
+                        title="next chapter">Using PySimiam in Coursera &#8216;Control of mobile robots&#8217; course</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="_sources/tutorial.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="coursera.html" title="Using PySimiam in Coursera ‘Control of mobile robots’ course"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="contents.html" title="Website Tree"
+             >previous</a> |</li>
+<li><img class="logo" src="_static/appicon.png" style="vertical-align:middle; margin-top: -1px" alt="Logo"/></li>
+<li><a href="index.html">PySimiam 1.0.0 documentation</a> &raquo;</li>
+ 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2013, Timofey Fuchs, Shaun Lippy, John Alexander, Vidam Govorovski, Jonathan Whitten.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
+    </div>
+  </body>
+</html>

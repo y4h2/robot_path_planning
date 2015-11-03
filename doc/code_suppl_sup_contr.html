@@ -1,0 +1,287 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Example Controllers/Supervisors &mdash; PySimiam 1.0.0 documentation</title>
+    
+    <link rel="stylesheet" href="_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '',
+        VERSION:     '1.0.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="shortcut icon" href="_static/appicon_16x16.ico"/>
+    <link rel="top" title="PySimiam 1.0.0 documentation" href="index.html" />
+    <link rel="up" title="PySimiam API Documentation" href="code.html" />
+    <link rel="next" title="Graphical Interface" href="code_ui.html" />
+    <link rel="prev" title="Supervisor/Controller system" href="code_sup_contr.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="code_ui.html" title="Graphical Interface"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="code_sup_contr.html" title="Supervisor/Controller system"
+             accesskey="P">previous</a> |</li>
+<li><img class="logo" src="_static/appicon.png" style="vertical-align:middle; margin-top: -1px" alt="Logo"/></li>
+<li><a href="index.html">PySimiam 1.0.0 documentation</a> &raquo;</li>
+
+          <li><a href="code.html" accesskey="U">PySimiam API Documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="example-controllers-supervisors">
+<h1>Example Controllers/Supervisors<a class="headerlink" href="#example-controllers-supervisors" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="module-supervisors.template">
+<span id="supervisors"></span><h2>Supervisors<a class="headerlink" href="#module-supervisors.template" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="supervisors.template.Template">
+<em class="property">class </em><tt class="descclassname">supervisors.template.</tt><tt class="descname">Template</tt><big>(</big><em>robot_pose</em>, <em>robot_info</em><big>)</big><a class="reference internal" href="_modules/supervisors/template.html#Template"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#supervisors.template.Template" title="Permalink to this definition">¶</a></dt>
+<dd><p>The template supervisor implements all required functions to operate a supervisor</p>
+<dl class="method">
+<dt id="supervisors.template.Template.execute">
+<tt class="descname">execute</tt><big>(</big><em>robot_info</em>, <em>dt</em><big>)</big><a class="reference internal" href="_modules/supervisors/template.html#Template.execute"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#supervisors.template.Template.execute" title="Permalink to this definition">¶</a></dt>
+<dd><p>K3Supervisor procedures and converts unicycle output into differential drive output for the Khepera3</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="supervisors.template.Template.process_state_info">
+<tt class="descname">process_state_info</tt><big>(</big><em>state</em><big>)</big><a class="reference internal" href="_modules/supervisors/template.html#Template.process_state_info"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#supervisors.template.Template.process_state_info" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sets parameters for supervisors and selects a supervisor
+This code is run every time the supervisor executes</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-controllers.template">
+<span id="controllers"></span><h2>Controllers<a class="headerlink" href="#module-controllers.template" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="controllers.template.Template">
+<em class="property">class </em><tt class="descclassname">controllers.template.</tt><tt class="descname">Template</tt><big>(</big><em>params</em><big>)</big><a class="reference internal" href="_modules/controllers/template.html#Template"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#controllers.template.Template" title="Permalink to this definition">¶</a></dt>
+<dd><p>Template controller with required functions</p>
+<dl class="method">
+<dt id="controllers.template.Template.execute">
+<tt class="descname">execute</tt><big>(</big><em>state</em>, <em>dt</em><big>)</big><a class="reference internal" href="_modules/controllers/template.html#Template.execute"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#controllers.template.Template.execute" title="Permalink to this definition">¶</a></dt>
+<dd><p>Required function: must return a unicycle model</p>
+<p>return &#8211;&gt; unicycle model list [velocity, omega]</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="controllers.template.Template.set_parameters">
+<tt class="descname">set_parameters</tt><big>(</big><em>params</em><big>)</big><a class="reference internal" href="_modules/controllers/template.html#Template.set_parameters"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#controllers.template.Template.set_parameters" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set PID values</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>params.kp</strong> (<em>float</em>) &#8211; Proportional gain</li>
+<li><strong>params.ki</strong> (<em>float</em>) &#8211; Integral gain</li>
+<li><strong>params.kd</strong> (<em>float</em>) &#8211; Differential gain</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+<span class="target" id="module-controllers.pid_controller"></span><dl class="class">
+<dt id="controllers.pid_controller.PIDController">
+<em class="property">class </em><tt class="descclassname">controllers.pid_controller.</tt><tt class="descname">PIDController</tt><big>(</big><em>params</em><big>)</big><a class="reference internal" href="_modules/controllers/pid_controller.html#PIDController"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#controllers.pid_controller.PIDController" title="Permalink to this definition">¶</a></dt>
+<dd><p>The PID controller is a general-purpose controller that steers the robot to a certain heading direction. The heading is recalculated on every execution.</p>
+<dl class="method">
+<dt id="controllers.pid_controller.PIDController.execute">
+<tt class="descname">execute</tt><big>(</big><em>state</em>, <em>dt</em><big>)</big><a class="reference internal" href="_modules/controllers/pid_controller.html#PIDController.execute"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#controllers.pid_controller.PIDController.execute" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculate errors and steer the robot</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="controllers.pid_controller.PIDController.get_heading">
+<tt class="descname">get_heading</tt><big>(</big><em>state</em><big>)</big><a class="reference internal" href="_modules/controllers/pid_controller.html#PIDController.get_heading"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#controllers.pid_controller.PIDController.get_heading" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the direction in which the controller wants to move the robot
+as a vector in the robot&#8217;s frame of reference.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">a numpy array [x, y, z] with z = 1.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="controllers.pid_controller.PIDController.get_heading_angle">
+<tt class="descname">get_heading_angle</tt><big>(</big><em>state</em><big>)</big><a class="reference internal" href="_modules/controllers/pid_controller.html#PIDController.get_heading_angle"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#controllers.pid_controller.PIDController.get_heading_angle" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the heading as an angle in the robot&#8217;s frame of reference.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="controllers.pid_controller.PIDController.restart">
+<tt class="descname">restart</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/controllers/pid_controller.html#PIDController.restart"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#controllers.pid_controller.PIDController.restart" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set the integral and differential errors to zero</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="controllers.pid_controller.PIDController.set_parameters">
+<tt class="descname">set_parameters</tt><big>(</big><em>params</em><big>)</big><a class="reference internal" href="_modules/controllers/pid_controller.html#PIDController.set_parameters"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#controllers.pid_controller.PIDController.set_parameters" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set PID values</p>
+<p>The params structure is expected to have in the <cite>gains</cite> field three
+parameters for the PID gains.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>params.gains.kp</strong> (<em>float</em>) &#8211; Proportional gain</li>
+<li><strong>params.gains.ki</strong> (<em>float</em>) &#8211; Integral gain</li>
+<li><strong>params.gains.kd</strong> (<em>float</em>) &#8211; Differential gain</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+<span class="target" id="module-controllers.gotogoal"></span><dl class="class">
+<dt id="controllers.gotogoal.GoToGoal">
+<em class="property">class </em><tt class="descclassname">controllers.gotogoal.</tt><tt class="descname">GoToGoal</tt><big>(</big><em>params</em><big>)</big><a class="reference internal" href="_modules/controllers/gotogoal.html#GoToGoal"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#controllers.gotogoal.GoToGoal" title="Permalink to this definition">¶</a></dt>
+<dd><p>Go-to-goal steers the robot to a predefined position in the world.</p>
+<dl class="method">
+<dt id="controllers.gotogoal.GoToGoal.get_heading_angle">
+<tt class="descname">get_heading_angle</tt><big>(</big><em>state</em><big>)</big><a class="reference internal" href="_modules/controllers/gotogoal.html#GoToGoal.get_heading_angle"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#controllers.gotogoal.GoToGoal.get_heading_angle" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the direction from the robot to the goal as a vector.</p>
+</dd></dl>
+
+</dd></dl>
+
+<span class="target" id="module-controllers.avoidobstacles"></span><dl class="class">
+<dt id="controllers.avoidobstacles.AvoidObstacles">
+<em class="property">class </em><tt class="descclassname">controllers.avoidobstacles.</tt><tt class="descname">AvoidObstacles</tt><big>(</big><em>params</em><big>)</big><a class="reference internal" href="_modules/controllers/avoidobstacles.html#AvoidObstacles"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#controllers.avoidobstacles.AvoidObstacles" title="Permalink to this definition">¶</a></dt>
+<dd><p>Avoid obstacles is an example controller that checks the sensors
+for any readings, constructs &#8216;obstacle&#8217; vectors and directs the robot
+in the direction of their weighted sum.</p>
+<dl class="method">
+<dt id="controllers.avoidobstacles.AvoidObstacles.get_heading">
+<tt class="descname">get_heading</tt><big>(</big><em>state</em><big>)</big><a class="reference internal" href="_modules/controllers/avoidobstacles.html#AvoidObstacles.get_heading"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#controllers.avoidobstacles.AvoidObstacles.get_heading" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the direction away from the obstacles as a vector.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="controllers.avoidobstacles.AvoidObstacles.set_parameters">
+<tt class="descname">set_parameters</tt><big>(</big><em>params</em><big>)</big><a class="reference internal" href="_modules/controllers/avoidobstacles.html#AvoidObstacles.set_parameters"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#controllers.avoidobstacles.AvoidObstacles.set_parameters" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set PID values and sensor poses.</p>
+<p>The params structure is expected to have sensor poses in the robot&#8217;s
+reference frame as <tt class="docutils literal"><span class="pre">params.sensor_poses</span></tt>.</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="contents.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Example Controllers/Supervisors</a><ul>
+<li><a class="reference internal" href="#module-supervisors.template">Supervisors</a></li>
+<li><a class="reference internal" href="#module-controllers.template">Controllers</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="code_sup_contr.html"
+                        title="previous chapter">Supervisor/Controller system</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="code_ui.html"
+                        title="next chapter">Graphical Interface</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="_sources/code_suppl_sup_contr.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="code_ui.html" title="Graphical Interface"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="code_sup_contr.html" title="Supervisor/Controller system"
+             >previous</a> |</li>
+<li><img class="logo" src="_static/appicon.png" style="vertical-align:middle; margin-top: -1px" alt="Logo"/></li>
+<li><a href="index.html">PySimiam 1.0.0 documentation</a> &raquo;</li>
+
+          <li><a href="code.html" >PySimiam API Documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2013, Timofey Fuchs, Shaun Lippy, John Alexander, Vidam Govorovski, Jonathan Whitten.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
+    </div>
+  </body>
+</html>

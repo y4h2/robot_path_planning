@@ -1,0 +1,534 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Graphical Interface &mdash; PySimiam 1.0.0 documentation</title>
+    
+    <link rel="stylesheet" href="_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '',
+        VERSION:     '1.0.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="shortcut icon" href="_static/appicon_16x16.ico"/>
+    <link rel="top" title="PySimiam 1.0.0 documentation" href="index.html" />
+    <link rel="up" title="PySimiam API Documentation" href="code.html" />
+    <link rel="next" title="XML" href="code_xml.html" />
+    <link rel="prev" title="Supervisor/Controller system" href="code_sup_contr.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="code_xml.html" title="XML"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="code_sup_contr.html" title="Supervisor/Controller system"
+             accesskey="P">previous</a> |</li>
+<li><img class="logo" src="_static/appicon.png" style="vertical-align:middle; margin-top: -1px" alt="Logo"/></li>
+<li><a href="index.html">PySimiam 1.0.0 documentation</a> &raquo;</li>
+
+          <li><a href="code.html" accesskey="U">PySimiam API Documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="graphical-interface">
+<h1>Graphical Interface<a class="headerlink" href="#graphical-interface" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="drawing">
+<h2>Drawing<a class="headerlink" href="#drawing" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="renderer.Renderer">
+<em class="property">class </em><tt class="descclassname">renderer.</tt><tt class="descname">Renderer</tt><big>(</big><em>canvas</em><big>)</big><a class="reference internal" href="_modules/renderer.html#Renderer"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#renderer.Renderer" title="Permalink to this definition">¶</a></dt>
+<dd><p>The Renderer class is an abstract class describing a generalized drawing engine.
+It has to be subclassed to implement the drawing in a way specific
+to the UI that the program is using.</p>
+<p>The base class does not impose any restrictions on the type of
+the <em>canvas</em> parameter. It is up to a specific implementation to
+interpret this parameter correctly.</p>
+<dl class="method">
+<dt id="renderer.Renderer.add_pose">
+<tt class="descname">add_pose</tt><big>(</big><em>pose</em><big>)</big><a class="reference internal" href="_modules/renderer.html#Renderer.add_pose"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#renderer.Renderer.add_pose" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add a pose transformation to the current transformation</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="renderer.Renderer.clear_screen">
+<tt class="descname">clear_screen</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/renderer.html#Renderer.clear_screen"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#renderer.Renderer.clear_screen" title="Permalink to this definition">¶</a></dt>
+<dd><p>Clears the canvas and draws the grid if necessary</p>
+<p>To be implemented in subclasses.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="renderer.Renderer.draw_arrow">
+<tt class="descname">draw_arrow</tt><big>(</big><em>x1</em>, <em>y1</em>, <em>x2</em>, <em>y2</em>, <em>angle=0.3</em>, <em>ratio=0.1</em>, <em>close=False</em><big>)</big><a class="reference internal" href="_modules/renderer.html#Renderer.draw_arrow"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#renderer.Renderer.draw_arrow" title="Permalink to this definition">¶</a></dt>
+<dd><p>Draw an arrow from (x1, y1) to (x2, y2).
+You can also specify the arrowhead angle (in radians), the ratio
+between arrowhead and arrow length and the triangular (close=True)
+or linear (close=False) arrowhead shape.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="renderer.Renderer.draw_ellipse">
+<tt class="descname">draw_ellipse</tt><big>(</big><em>cx</em>, <em>cy</em>, <em>ra</em>, <em>rb=None</em><big>)</big><a class="reference internal" href="_modules/renderer.html#Renderer.draw_ellipse"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#renderer.Renderer.draw_ellipse" title="Permalink to this definition">¶</a></dt>
+<dd><p>Draws an ellipse with current pen and fills it with current brush.</p>
+<p>The center of the ellipse is at (<em>cx</em>, <em>cy</em>),
+the half-axes are <em>ra</em> and <em>rb</em>. In the case <em>rb</em> is not specified, 
+the method draws a circle of radius <em>ra</em>.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="renderer.Renderer.draw_line">
+<tt class="descname">draw_line</tt><big>(</big><em>x1</em>, <em>y1</em>, <em>x2</em>, <em>y2</em><big>)</big><a class="reference internal" href="_modules/renderer.html#Renderer.draw_line"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#renderer.Renderer.draw_line" title="Permalink to this definition">¶</a></dt>
+<dd><p>Draw a line using the current pen from (x1,y1) to (x2, y2)</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="renderer.Renderer.draw_point">
+<tt class="descname">draw_point</tt><big>(</big><em>x</em>, <em>y</em><big>)</big><a class="headerlink" href="#renderer.Renderer.draw_point" title="Permalink to this definition">¶</a></dt>
+<dd><p>Draw a single point using the current pen at (x,y)</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="renderer.Renderer.draw_points">
+<tt class="descname">draw_points</tt><big>(</big><em>points</em><big>)</big><a class="headerlink" href="#renderer.Renderer.draw_points" title="Permalink to this definition">¶</a></dt>
+<dd><p>Draw a set of points, given as [(x,y)], using the current pen</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="renderer.Renderer.draw_polygon">
+<tt class="descname">draw_polygon</tt><big>(</big><em>points</em><big>)</big><a class="reference internal" href="_modules/renderer.html#Renderer.draw_polygon"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#renderer.Renderer.draw_polygon" title="Permalink to this definition">¶</a></dt>
+<dd><p>Draws a polygon with current pen and fills it with current brush</p>
+<p>Expects a list of points as a list of tuples or as a numpy array.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="renderer.Renderer.draw_rectangle">
+<tt class="descname">draw_rectangle</tt><big>(</big><em>x</em>, <em>y</em>, <em>width</em>, <em>height</em><big>)</big><a class="reference internal" href="_modules/renderer.html#Renderer.draw_rectangle"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#renderer.Renderer.draw_rectangle" title="Permalink to this definition">¶</a></dt>
+<dd><p>Draws a rectangle with current pen and fills it with current brush</p>
+<p>The bottom-left corner of the rectangle is at (<em>x</em>, <em>y</em>),
+if the width and height are positive.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="renderer.Renderer.pop_state">
+<tt class="descname">pop_state</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/renderer.html#Renderer.pop_state"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#renderer.Renderer.pop_state" title="Permalink to this definition">¶</a></dt>
+<dd><p>Restore the last saved state from the stack</p>
+<p>The state includes default pose, pen and brush.</p>
+<p>To be implemented in subclasses.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="renderer.Renderer.push_state">
+<tt class="descname">push_state</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/renderer.html#Renderer.push_state"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#renderer.Renderer.push_state" title="Permalink to this definition">¶</a></dt>
+<dd><p>Store the current state on the stack.</p>
+<p>Current state includes default pose, pen and brush.</p>
+<p>To be implemented in subclasses.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="renderer.Renderer.reset_canvas_size">
+<tt class="descname">reset_canvas_size</tt><big>(</big><em>size</em><big>)</big><a class="reference internal" href="_modules/renderer.html#Renderer.reset_canvas_size"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#renderer.Renderer.reset_canvas_size" title="Permalink to this definition">¶</a></dt>
+<dd><p>Change canvas size</p>
+<p>On canvas rescale the zoom factor will be recalculated:
+If the view rect was set, the view will be rescaled to fit the rect.
+If the view rect was not set, the zoom factor and default pose will
+be kept.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="renderer.Renderer.reset_pose">
+<tt class="descname">reset_pose</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/renderer.html#Renderer.reset_pose"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#renderer.Renderer.reset_pose" title="Permalink to this definition">¶</a></dt>
+<dd><p>Resets the renderer to default pose and zoom level</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="renderer.Renderer.rotate">
+<tt class="descname">rotate</tt><big>(</big><em>angle</em><big>)</big><a class="reference internal" href="_modules/renderer.html#Renderer.rotate"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#renderer.Renderer.rotate" title="Permalink to this definition">¶</a></dt>
+<dd><p>Rotate canvas by <em>angle</em> (in radians)</p>
+<p>To be implemented in subclasses.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="renderer.Renderer.scale">
+<tt class="descname">scale</tt><big>(</big><em>factor</em><big>)</big><a class="reference internal" href="_modules/renderer.html#Renderer.scale"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#renderer.Renderer.scale" title="Permalink to this definition">¶</a></dt>
+<dd><p>Scale all drawing operations by <em>factor</em></p>
+<p>To be implemented in subclasses.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="renderer.Renderer.scale_zoom_level">
+<tt class="descname">scale_zoom_level</tt><big>(</big><em>factor</em><big>)</big><a class="reference internal" href="_modules/renderer.html#Renderer.scale_zoom_level"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#renderer.Renderer.scale_zoom_level" title="Permalink to this definition">¶</a></dt>
+<dd><p>Zoom up the drawing by an additional <em>factor</em></p>
+<p>Equivalent to <tt class="docutils literal"><span class="pre">set_zoom_level(zoom_level*factor)</span></tt></p>
+<p>The zoom center is at the last set screen pose.
+This method will clear the canvas.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="renderer.Renderer.set_brush">
+<tt class="descname">set_brush</tt><big>(</big><em>color</em><big>)</big><a class="reference internal" href="_modules/renderer.html#Renderer.set_brush"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#renderer.Renderer.set_brush" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sets the fill color.</p>
+<p>The color is an integer, interpreted as <cite>0xAARRGGBB</cite>.
+In the case <cite>AA == 0</cite> the color is considered fully opaque.</p>
+<p>Use <cite>None</cite> to unset a brush.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="renderer.Renderer.set_canvas">
+<tt class="descname">set_canvas</tt><big>(</big><em>canvas</em><big>)</big><a class="reference internal" href="_modules/renderer.html#Renderer.set_canvas"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#renderer.Renderer.set_canvas" title="Permalink to this definition">¶</a></dt>
+<dd><p>Tell the renderer to draw on <em>canvas</em>.</p>
+<p>The type of canvas is implementation-dependent</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="renderer.Renderer.set_pen">
+<tt class="descname">set_pen</tt><big>(</big><em>color=0</em>, <em>thickness=1</em><big>)</big><a class="reference internal" href="_modules/renderer.html#Renderer.set_pen"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#renderer.Renderer.set_pen" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sets the line color anf thickness.</p>
+<p>Color is interpreted as <cite>0xAARRGGBB</cite>. In case <cite>AA == 0</cite> the color
+is considered fully opaque.</p>
+<p>Use None to unset a pen.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="renderer.Renderer.set_pose">
+<tt class="descname">set_pose</tt><big>(</big><em>pose</em><big>)</big><a class="reference internal" href="_modules/renderer.html#Renderer.set_pose"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#renderer.Renderer.set_pose" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set a coordinate transformation based on <em>pose</em></p>
+</dd></dl>
+
+<dl class="method">
+<dt id="renderer.Renderer.set_screen_center_pose">
+<tt class="descname">set_screen_center_pose</tt><big>(</big><em>pose</em><big>)</big><a class="reference internal" href="_modules/renderer.html#Renderer.set_screen_center_pose"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#renderer.Renderer.set_screen_center_pose" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set the pose of center of the canvas</p>
+<p>The zoom center will switch to canvas center.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>pose</strong> (<a class="reference internal" href="code_simobject.html#pose.Pose" title="pose.Pose"><tt class="xref py py-class docutils literal"><span class="pre">Pose</span></tt></a>) &#8211; The new pose of the lower-left corner.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="renderer.Renderer.set_screen_pose">
+<tt class="descname">set_screen_pose</tt><big>(</big><em>pose</em><big>)</big><a class="reference internal" href="_modules/renderer.html#Renderer.set_screen_pose"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#renderer.Renderer.set_screen_pose" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set the pose of the lower-left corner of the canvas.</p>
+<p>The zoom center will switch to that corner.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>pose</strong> (<a class="reference internal" href="code_simobject.html#pose.Pose" title="pose.Pose"><tt class="xref py py-class docutils literal"><span class="pre">Pose</span></tt></a>) &#8211; The new pose of the lower-left corner.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="renderer.Renderer.set_view_rect">
+<tt class="descname">set_view_rect</tt><big>(</big><em>x</em>, <em>y</em>, <em>width</em>, <em>height</em><big>)</big><a class="reference internal" href="_modules/renderer.html#Renderer.set_view_rect"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#renderer.Renderer.set_view_rect" title="Permalink to this definition">¶</a></dt>
+<dd><p>Zoom on the rectangle to fit it into the view</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="renderer.Renderer.set_zoom_level">
+<tt class="descname">set_zoom_level</tt><big>(</big><em>zoom_level</em><big>)</big><a class="reference internal" href="_modules/renderer.html#Renderer.set_zoom_level"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#renderer.Renderer.set_zoom_level" title="Permalink to this definition">¶</a></dt>
+<dd><p>Zoom up the drawing by a factor of <em>zoom_level</em></p>
+<p>The zoom center is at the last set screen pose.</p>
+<p>This method will clear the canvas.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="renderer.Renderer.show_grid">
+<tt class="descname">show_grid</tt><big>(</big><em>show=True</em><big>)</big><a class="reference internal" href="_modules/renderer.html#Renderer.show_grid"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#renderer.Renderer.show_grid" title="Permalink to this definition">¶</a></dt>
+<dd><p>Draw the grid on the canvas background by default.</p>
+<p>The grid is adaptive, with minimum interline distance of 40 px,
+and a maximum of 80 px. In the case the interline distance has to
+be smaller or larger, it is scaled. The interval is divided either
+in half, in five parts or in ten parts, to keep the grid decimal.</p>
+<p>This method will clear the canvas</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="renderer.Renderer.translate">
+<tt class="descname">translate</tt><big>(</big><em>dx</em>, <em>dy</em><big>)</big><a class="reference internal" href="_modules/renderer.html#Renderer.translate"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#renderer.Renderer.translate" title="Permalink to this definition">¶</a></dt>
+<dd><p>Translate canvas by <em>dx</em>, <em>dy</em></p>
+<p>To be implemented in subclasses.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="qt_renderer.QtRenderer">
+<em class="property">class </em><tt class="descclassname">qt_renderer.</tt><tt class="descname">QtRenderer</tt><big>(</big><em>paint_device</em><big>)</big><a class="reference internal" href="_modules/qt_renderer.html#QtRenderer"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#qt_renderer.QtRenderer" title="Permalink to this definition">¶</a></dt>
+<dd><p>An implementation of <a class="reference internal" href="#renderer.Renderer" title="renderer.Renderer"><tt class="xref py py-class docutils literal"><span class="pre">Renderer</span></tt></a> for PyQt4.</p>
+<p>This renderer will draw on any <cite>QPaintDevice</cite></p>
+</dd></dl>
+
+</div>
+<div class="section" id="ui">
+<h2>UI<a class="headerlink" href="#ui" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="interaction-between-gui-and-the-simulator">
+<span id="ui-sim-queue"></span><h3>Interaction between GUI and the Simulator<a class="headerlink" href="#interaction-between-gui-and-the-simulator" title="Permalink to this headline">¶</a></h3>
+<p>The interaction between the UI and the simulator happens through
+two thread-safe queues. One queue contains the commands for the simulator,
+the other queue contains messages from the simulator. The communication
+is implemented in the base ui class, <cite>ui.SimUI</cite>.</p>
+<span class="target" id="module-ui"></span><dl class="class">
+<dt id="ui.SimUI">
+<em class="property">class </em><tt class="descclassname">ui.</tt><tt class="descname">SimUI</tt><big>(</big><em>renderer</em><big>)</big><a class="reference internal" href="_modules/ui.html#SimUI"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ui.SimUI" title="Permalink to this definition">¶</a></dt>
+<dd><p>The SimUI class defines a front-end for the <a class="reference internal" href="code_simulator.html#simulator.Simulator" title="simulator.Simulator"><tt class="xref py py-class docutils literal"><span class="pre">Simulator</span></tt></a>.
+It contains the necessary functions for the frontend-simulator communication
+and stubs for the message callbacks.</p>
+<p>This class manages three important objects:</p>
+<ul class="simple">
+<li>The simulator, as <tt class="docutils literal"><span class="pre">self.simulator_thread</span></tt></li>
+<li>The incoming simulator events, as <tt class="docutils literal"><span class="pre">self.in_queue</span></tt></li>
+<li>The outgoing simulator commands, as <tt class="docutils literal"><span class="pre">self.sim_queue</span></tt></li>
+</ul>
+<p>The constructor of SimUI takes a <a class="reference internal" href="#renderer.Renderer" title="renderer.Renderer"><tt class="xref py py-class docutils literal"><span class="pre">Renderer</span></tt></a> object as parameter.
+This renderer will be passed to the simulator to draw on.</p>
+<dl class="method">
+<dt id="ui.SimUI.pause_simulation">
+<tt class="descname">pause_simulation</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/ui.html#SimUI.pause_simulation"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ui.SimUI.pause_simulation" title="Permalink to this definition">¶</a></dt>
+<dd><p>Pause the simulation.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="ui.SimUI.process_events">
+<tt class="descname">process_events</tt><big>(</big><em>process_all=False</em><big>)</big><a class="reference internal" href="_modules/ui.html#SimUI.process_events"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ui.SimUI.process_events" title="Permalink to this definition">¶</a></dt>
+<dd><p>Processes one or all incoming events from the simulator. A single
+event is a tuple (name,args). During the processing of the event,
+the function <tt class="docutils literal"><span class="pre">simulator_</span></tt><em>name</em> will be called with args as parameters.</p>
+<p>It is strongly discouraged to create new class methods with the name
+starting with <cite>simulator_</cite>. Such functions could be called from
+the simulator without your consent.</p>
+<p>Unknown or malformed events will lead to an error message printed
+to the console.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="ui.SimUI.register_event_handler">
+<tt class="descname">register_event_handler</tt><big>(</big><em>event_handler</em><big>)</big><a class="reference internal" href="_modules/ui.html#SimUI.register_event_handler"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ui.SimUI.register_event_handler" title="Permalink to this definition">¶</a></dt>
+<dd><p>Register a callback that will be executed to process the</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="ui.SimUI.run_simulation">
+<tt class="descname">run_simulation</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/ui.html#SimUI.run_simulation"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ui.SimUI.run_simulation" title="Permalink to this definition">¶</a></dt>
+<dd><p>Unpause the simulation.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="ui.SimUI.run_simulator_command">
+<tt class="descname">run_simulator_command</tt><big>(</big><em>command</em>, <em>*args</em><big>)</big><a class="reference internal" href="_modules/ui.html#SimUI.run_simulator_command"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ui.SimUI.run_simulator_command" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sends the command <em>command</em> to the simulator. All arguments after
+<em>command</em> are passed to the command processing function on the simulator side.</p>
+<p>See <a class="reference internal" href="code_simulator.html#simulator.Simulator" title="simulator.Simulator"><tt class="xref py py-class docutils literal"><span class="pre">Simulator</span></tt></a> for the available commands.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="ui.SimUI.simulator_exception">
+<tt class="descname">simulator_exception</tt><big>(</big><em>e_type</em>, <em>e_value</em>, <em>e_traceback</em><big>)</big><a class="reference internal" href="_modules/ui.html#SimUI.simulator_exception"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ui.SimUI.simulator_exception" title="Permalink to this definition">¶</a></dt>
+<dd><p>An exception was raised in the simulator thread in the attempt
+to process an incoming command.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="ui.SimUI.simulator_log">
+<tt class="descname">simulator_log</tt><big>(</big><em>message</em>, <em>objclass</em>, <em>objcolor</em><big>)</big><a class="reference internal" href="_modules/ui.html#SimUI.simulator_log"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ui.SimUI.simulator_log" title="Permalink to this definition">¶</a></dt>
+<dd><p>A log <em>message</em> was generated by one of the simulation objects
+of class <em>objclass</em>. The <em>objcolor</em> is the color of the simobject,
+in the case the object is connected to one, and None otherwise.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="ui.SimUI.simulator_make_param_window">
+<tt class="descname">simulator_make_param_window</tt><big>(</big><em>robot_id</em>, <em>name</em>, <em>parameters</em><big>)</big><a class="reference internal" href="_modules/ui.html#SimUI.simulator_make_param_window"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ui.SimUI.simulator_make_param_window" title="Permalink to this definition">¶</a></dt>
+<dd><p>A request from the supervisor to create a parameter window.
+<em>robot_id</em> is guaranteed to uniquely identify a robot in a simulation.
+Currently, <em>robot_id</em> is the actual robot object.
+It can be used e.g. to extract the color of the robot as <tt class="docutils literal"><span class="pre">robot_id.get_color()</span></tt>.
+<em>name</em> is the desired window name, and <em>parameters</em> is the structure
+returned by <a class="reference internal" href="code_sup_contr.html#supervisor.Supervisor.get_ui_description" title="supervisor.Supervisor.get_ui_description"><tt class="xref py py-meth docutils literal"><span class="pre">get_ui_description()</span></tt></a>.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="ui.SimUI.simulator_paused">
+<tt class="descname">simulator_paused</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/ui.html#SimUI.simulator_paused"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ui.SimUI.simulator_paused" title="Permalink to this definition">¶</a></dt>
+<dd><p>A notification that the simulation has been paused.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="ui.SimUI.simulator_reset">
+<tt class="descname">simulator_reset</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/ui.html#SimUI.simulator_reset"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ui.SimUI.simulator_reset" title="Permalink to this definition">¶</a></dt>
+<dd><p>A notification that the simulation has been reset.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="ui.SimUI.simulator_running">
+<tt class="descname">simulator_running</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/ui.html#SimUI.simulator_running"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ui.SimUI.simulator_running" title="Permalink to this definition">¶</a></dt>
+<dd><p>A notification that the simulation has been started.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="ui.SimUI.simulator_stopped">
+<tt class="descname">simulator_stopped</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/ui.html#SimUI.simulator_stopped"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ui.SimUI.simulator_stopped" title="Permalink to this definition">¶</a></dt>
+<dd><p>A notification that the simulation has been stopped.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="ui.SimUI.simulator_update_view">
+<tt class="descname">simulator_update_view</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/ui.html#SimUI.simulator_update_view"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ui.SimUI.simulator_update_view" title="Permalink to this definition">¶</a></dt>
+<dd><p>A request to redraw the simulation window. This notification
+signifies that the simulation has stopped using the renderer,
+and is waiting for the UI to process this event.</p>
+<p>The simulation will be resumed after this function exits.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="ui.SimUI.start_testing">
+<tt class="descname">start_testing</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/ui.html#SimUI.start_testing"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ui.SimUI.start_testing" title="Permalink to this definition">¶</a></dt>
+<dd><p>Prepare the simulation environment for testing, e.g. disable
+user controls of the simulation progress.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="ui.SimUI.step_simulation">
+<tt class="descname">step_simulation</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/ui.html#SimUI.step_simulation"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ui.SimUI.step_simulation" title="Permalink to this definition">¶</a></dt>
+<dd><p>Advance the simulation one step if it is paused.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="ui.SimUI.stop_testing">
+<tt class="descname">stop_testing</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/ui.html#SimUI.stop_testing"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ui.SimUI.stop_testing" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return UI back to normal operation.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="ui.SimUI.unregister_event_handler">
+<tt class="descname">unregister_event_handler</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/ui.html#SimUI.unregister_event_handler"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ui.SimUI.unregister_event_handler" title="Permalink to this definition">¶</a></dt>
+<dd><p>Unregister a previously registered event handler.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="ui.uiParameter">
+<em class="property">class </em><tt class="descclassname">ui.</tt><tt class="descname">uiParameter</tt><big>(</big><em>elem_type</em><big>)</big><a class="reference internal" href="_modules/ui.html#uiParameter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ui.uiParameter" title="Permalink to this definition">¶</a></dt>
+<dd><p>uiParameter represents a single GUI element that is used to build a parameter window
+in the UI (simulator event &#8220;make_param_window&#8221;).</p>
+<p>It has one parameter, <tt class="docutils literal"><span class="pre">type</span></tt>, that defines the type of the parameter. Possible parameter
+types are GROUP, INT, FLOAT, BOOL and SELECT.</p>
+</dd></dl>
+
+</div>
+<div class="section" id="module-qt_mainwindow">
+<span id="pyqt4-implementation"></span><h3>PyQt4 implementation<a class="headerlink" href="#module-qt_mainwindow" title="Permalink to this headline">¶</a></h3>
+<span class="target" id="module-qt_paramwindow"></span></div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="contents.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Graphical Interface</a><ul>
+<li><a class="reference internal" href="#drawing">Drawing</a></li>
+<li><a class="reference internal" href="#ui">UI</a><ul>
+<li><a class="reference internal" href="#interaction-between-gui-and-the-simulator">Interaction between GUI and the Simulator</a></li>
+<li><a class="reference internal" href="#module-qt_mainwindow">PyQt4 implementation</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="code_sup_contr.html"
+                        title="previous chapter">Supervisor/Controller system</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="code_xml.html"
+                        title="next chapter">XML</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="_sources/code_ui.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="code_xml.html" title="XML"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="code_sup_contr.html" title="Supervisor/Controller system"
+             >previous</a> |</li>
+<li><img class="logo" src="_static/appicon.png" style="vertical-align:middle; margin-top: -1px" alt="Logo"/></li>
+<li><a href="index.html">PySimiam 1.0.0 documentation</a> &raquo;</li>
+
+          <li><a href="code.html" >PySimiam API Documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2013, Timofey Fuchs, Shaun Lippy, John Alexander, Vidam Govorovski, Jonathan Whitten.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
+    </div>
+  </body>
+</html>

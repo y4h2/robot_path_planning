@@ -1,0 +1,359 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>ui &mdash; PySimiam 1.0.0 documentation</title>
+    
+    <link rel="stylesheet" href="../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '1.0.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="shortcut icon" href="../_static/appicon_16x16.ico"/>
+    <link rel="top" title="PySimiam 1.0.0 documentation" href="../index.html" />
+    <link rel="up" title="Module code" href="index.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+<li><img class="logo" src="../_static/appicon.png" style="vertical-align:middle; margin-top: -1px" alt="Logo"/></li>
+<li><a href="../index.html">PySimiam 1.0.0 documentation</a> &raquo;</li>
+
+          <li><a href="index.html" accesskey="U">Module code</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <h1>Source code for ui</h1><div class="highlight"><pre>
+<span class="k">try</span><span class="p">:</span>
+    <span class="kn">import</span> <span class="nn">Queue</span> <span class="kn">as</span> <span class="nn">queue</span>
+<span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
+    <span class="kn">import</span> <span class="nn">queue</span>
+
+<span class="kn">from</span> <span class="nn">helpers</span> <span class="kn">import</span> <span class="n">Struct</span>
+
+<div class="viewcode-block" id="uiParameter"><a class="viewcode-back" href="../code_ui.html#ui.uiParameter">[docs]</a><span class="k">class</span> <span class="nc">uiParameter</span><span class="p">(</span><span class="n">Struct</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;uiParameter represents a single GUI element that is used to build a parameter window</span>
+<span class="sd">       in the UI (simulator event &quot;make_param_window&quot;).</span>
+<span class="sd">       </span>
+<span class="sd">       It has one parameter, ``type``, that defines the type of the parameter. Possible parameter</span>
+<span class="sd">       types are GROUP, INT, FLOAT, BOOL and SELECT.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    
+    <span class="n">GROUP</span><span class="p">,</span> <span class="n">INT</span><span class="p">,</span> <span class="n">FLOAT</span><span class="p">,</span> <span class="n">BOOL</span><span class="p">,</span> <span class="n">SELECT</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span>
+    
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">elem_type</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">type</span> <span class="o">=</span> <span class="n">elem_type</span>
+</div>
+<span class="k">class</span> <span class="nc">uiGroup</span><span class="p">(</span><span class="n">uiParameter</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">contents</span><span class="p">):</span>
+        <span class="n">uiParameter</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="n">uiParameter</span><span class="o">.</span><span class="n">GROUP</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">contents</span> <span class="o">=</span> <span class="n">contents</span>
+
+<span class="k">class</span> <span class="nc">uiInt</span><span class="p">(</span><span class="n">uiParameter</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="n">min_value</span> <span class="o">=</span> <span class="o">-</span><span class="mi">100</span><span class="p">,</span> <span class="n">max_value</span> <span class="o">=</span> <span class="mi">100</span><span class="p">):</span>
+        <span class="n">uiParameter</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">uiParameter</span><span class="o">.</span><span class="n">INT</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="n">value</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">min_value</span> <span class="o">=</span> <span class="n">min_value</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">max_value</span> <span class="o">=</span> <span class="n">max_value</span>
+
+<span class="k">class</span> <span class="nc">uiFloat</span><span class="p">(</span><span class="n">uiParameter</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="n">step</span> <span class="o">=</span> <span class="mf">1.0</span><span class="p">,</span> <span class="n">min_value</span> <span class="o">=</span> <span class="o">-</span><span class="mf">1000.0</span><span class="p">,</span> <span class="n">max_value</span> <span class="o">=</span> <span class="mf">1000.0</span><span class="p">):</span>
+        <span class="n">uiParameter</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">uiParameter</span><span class="o">.</span><span class="n">FLOAT</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="n">value</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">step</span> <span class="o">=</span> <span class="n">step</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">min_value</span> <span class="o">=</span> <span class="n">min_value</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">max_value</span> <span class="o">=</span> <span class="n">max_value</span>
+
+<span class="k">class</span> <span class="nc">uiBool</span><span class="p">(</span><span class="n">uiParameter</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+        <span class="n">uiParameter</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">uiParameter</span><span class="o">.</span><span class="n">BOOL</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="n">value</span>
+
+<span class="k">class</span> <span class="nc">uiSelect</span><span class="p">(</span><span class="n">uiParameter</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="n">value_list</span><span class="p">):</span>
+        <span class="n">uiParameter</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">uiParameter</span><span class="o">.</span><span class="n">SELECT</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="n">value_list</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="n">value</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">value_list</span> <span class="o">=</span> <span class="n">value_list</span>
+    
+<span class="kn">import</span> <span class="nn">simulator</span> <span class="kn">as</span> <span class="nn">sim</span>
+
+<div class="viewcode-block" id="SimUI"><a class="viewcode-back" href="../code_ui.html#ui.SimUI">[docs]</a><span class="k">class</span> <span class="nc">SimUI</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;The SimUI class defines a front-end for the :class:`~simulator.Simulator`.</span>
+<span class="sd">       It contains the necessary functions for the frontend-simulator communication</span>
+<span class="sd">       and stubs for the message callbacks.</span>
+<span class="sd">       </span>
+<span class="sd">       This class manages three important objects:</span>
+<span class="sd">       </span>
+<span class="sd">       * The simulator, as ``self.simulator_thread``</span>
+<span class="sd">       * The incoming simulator events, as ``self.in_queue``</span>
+<span class="sd">       * The outgoing simulator commands, as ``self.sim_queue``</span>
+<span class="sd">       </span>
+<span class="sd">       The constructor of SimUI takes a :class:`~renderer.Renderer` object as parameter.</span>
+<span class="sd">       This renderer will be passed to the simulator to draw on.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">renderer</span><span class="p">):</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">event_handler</span> <span class="o">=</span> <span class="bp">None</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">sim_queue</span> <span class="o">=</span> <span class="n">queue</span><span class="o">.</span><span class="n">Queue</span><span class="p">()</span>
+        
+        <span class="c"># create the simulator thread</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">simulator_thread</span> <span class="o">=</span> <span class="n">sim</span><span class="o">.</span><span class="n">Simulator</span><span class="p">(</span><span class="n">renderer</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">sim_queue</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">in_queue</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">simulator_thread</span><span class="o">.</span><span class="n">_out_queue</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">simulator_thread</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
+    
+<div class="viewcode-block" id="SimUI.register_event_handler"><a class="viewcode-back" href="../code_ui.html#ui.SimUI.register_event_handler">[docs]</a>    <span class="k">def</span> <span class="nf">register_event_handler</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event_handler</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Register a callback that will be executed to process the </span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">event_handler</span> <span class="o">=</span> <span class="n">event_handler</span>
+        </div>
+<div class="viewcode-block" id="SimUI.unregister_event_handler"><a class="viewcode-back" href="../code_ui.html#ui.SimUI.unregister_event_handler">[docs]</a>    <span class="k">def</span> <span class="nf">unregister_event_handler</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Unregister a previously registered event handler.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">event_handler</span> <span class="o">=</span> <span class="bp">None</span>
+        </div>
+<div class="viewcode-block" id="SimUI.process_events"><a class="viewcode-back" href="../code_ui.html#ui.SimUI.process_events">[docs]</a>    <span class="k">def</span> <span class="nf">process_events</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">process_all</span> <span class="o">=</span> <span class="bp">False</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Processes one or all incoming events from the simulator. A single</span>
+<span class="sd">           event is a tuple (name,args). During the processing of the event,</span>
+<span class="sd">           the function ``simulator_``\ *name* will be called with args as parameters.</span>
+<span class="sd">           </span>
+<span class="sd">           It is strongly discouraged to create new class methods with the name</span>
+<span class="sd">           starting with `simulator_`. Such functions could be called from</span>
+<span class="sd">           the simulator without your consent.</span>
+<span class="sd">           </span>
+<span class="sd">           Unknown or malformed events will lead to an error message printed</span>
+<span class="sd">           to the console.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">while</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">in_queue</span><span class="o">.</span><span class="n">empty</span><span class="p">():</span>
+            <span class="n">tpl</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">in_queue</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">tpl</span><span class="p">,</span><span class="nb">tuple</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">tpl</span><span class="p">)</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
+                <span class="n">name</span><span class="p">,</span> <span class="n">args</span> <span class="o">=</span> <span class="n">tpl</span>
+                
+                <span class="n">intercepted</span> <span class="o">=</span> <span class="bp">False</span>
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">event_handler</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+                    <span class="n">intercepted</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">event_handler</span><span class="p">(</span><span class="n">name</span><span class="p">,</span><span class="n">args</span><span class="p">)</span>
+                    
+                <span class="k">if</span> <span class="ow">not</span> <span class="n">intercepted</span><span class="p">:</span>
+                    <span class="c"># Scramble</span>
+                    <span class="n">name</span> <span class="o">=</span> <span class="s">&quot;simulator_{}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
+                    <span class="k">if</span> <span class="n">name</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">__class__</span><span class="o">.</span><span class="n">__dict__</span><span class="p">:</span>
+                        <span class="k">try</span><span class="p">:</span>
+                            <span class="bp">self</span><span class="o">.</span><span class="n">__class__</span><span class="o">.</span><span class="n">__dict__</span><span class="p">[</span><span class="n">name</span><span class="p">](</span><span class="bp">self</span><span class="p">,</span><span class="o">*</span><span class="n">args</span><span class="p">)</span>
+                        <span class="k">except</span> <span class="ne">TypeError</span><span class="p">:</span>
+                            <span class="k">print</span><span class="p">(</span><span class="s">&quot;Wrong UI event parameters {}{}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">name</span><span class="p">,</span><span class="n">args</span><span class="p">))</span>
+                            <span class="k">raise</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="k">print</span><span class="p">(</span><span class="s">&quot;Unknown UI event &#39;{}&#39;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">name</span><span class="p">))</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">print</span><span class="p">(</span><span class="s">&quot;Wrong UI event format &#39;{}&#39;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">tpl</span><span class="p">))</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">in_queue</span><span class="o">.</span><span class="n">task_done</span><span class="p">()</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">process_all</span><span class="p">:</span>
+                <span class="k">return</span>
+    </div>
+<div class="viewcode-block" id="SimUI.run_simulator_command"><a class="viewcode-back" href="../code_ui.html#ui.SimUI.run_simulator_command">[docs]</a>    <span class="k">def</span> <span class="nf">run_simulator_command</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">command</span><span class="p">,</span><span class="o">*</span><span class="n">args</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Sends the command *command* to the simulator. All arguments after</span>
+<span class="sd">           *command* are passed to the command processing function on the simulator side.</span>
+<span class="sd">           </span>
+<span class="sd">           See :class:`~simulator.Simulator` for the available commands.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">sim_queue</span><span class="o">.</span><span class="n">put</span><span class="p">((</span><span class="n">command</span><span class="p">,</span> <span class="n">args</span><span class="p">))</span>
+
+    <span class="c"># Simulator processing functions : stubs</span>
+</div>
+<div class="viewcode-block" id="SimUI.simulator_make_param_window"><a class="viewcode-back" href="../code_ui.html#ui.SimUI.simulator_make_param_window">[docs]</a>    <span class="k">def</span> <span class="nf">simulator_make_param_window</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">robot_id</span><span class="p">,</span><span class="n">name</span><span class="p">,</span><span class="n">parameters</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;A request from the supervisor to create a parameter window.</span>
+<span class="sd">           *robot_id* is guaranteed to uniquely identify a robot in a simulation.</span>
+<span class="sd">           Currently, *robot_id* is the actual robot object.</span>
+<span class="sd">           It can be used e.g. to extract the color of the robot as ``robot_id.get_color()``.</span>
+<span class="sd">           *name* is the desired window name, and *parameters* is the structure</span>
+<span class="sd">           returned by :meth:`~supervisor.Supervisor.get_ui_description`.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s">&#39;SimUI.simulator_make_param_window&#39;</span><span class="p">)</span>
+        </div>
+<div class="viewcode-block" id="SimUI.simulator_running"><a class="viewcode-back" href="../code_ui.html#ui.SimUI.simulator_running">[docs]</a>    <span class="k">def</span> <span class="nf">simulator_running</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;A notification that the simulation has been started.&quot;&quot;&quot;</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s">&#39;SimUI.simulator_running&#39;</span><span class="p">)</span>
+    </div>
+<div class="viewcode-block" id="SimUI.simulator_paused"><a class="viewcode-back" href="../code_ui.html#ui.SimUI.simulator_paused">[docs]</a>    <span class="k">def</span> <span class="nf">simulator_paused</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;A notification that the simulation has been paused.&quot;&quot;&quot;</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s">&#39;SimUI.simulator_paused&#39;</span><span class="p">)</span>
+</div>
+<div class="viewcode-block" id="SimUI.simulator_reset"><a class="viewcode-back" href="../code_ui.html#ui.SimUI.simulator_reset">[docs]</a>    <span class="k">def</span> <span class="nf">simulator_reset</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;A notification that the simulation has been reset.&quot;&quot;&quot;</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s">&#39;SimUI.simulator_reset&#39;</span><span class="p">)</span>
+</div>
+<div class="viewcode-block" id="SimUI.simulator_stopped"><a class="viewcode-back" href="../code_ui.html#ui.SimUI.simulator_stopped">[docs]</a>    <span class="k">def</span> <span class="nf">simulator_stopped</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;A notification that the simulation has been stopped.&quot;&quot;&quot;</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s">&#39;SimUI.simulator_stopped&#39;</span><span class="p">)</span>
+        </div>
+<div class="viewcode-block" id="SimUI.simulator_update_view"><a class="viewcode-back" href="../code_ui.html#ui.SimUI.simulator_update_view">[docs]</a>    <span class="k">def</span> <span class="nf">simulator_update_view</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;A request to redraw the simulation window. This notification</span>
+<span class="sd">           signifies that the simulation has stopped using the renderer,</span>
+<span class="sd">           and is waiting for the UI to process this event.</span>
+<span class="sd">           </span>
+<span class="sd">           The simulation will be resumed after this function exits.          </span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s">&#39;SimUI.simulator_update_view&#39;</span><span class="p">)</span>
+        </div>
+<div class="viewcode-block" id="SimUI.simulator_exception"><a class="viewcode-back" href="../code_ui.html#ui.SimUI.simulator_exception">[docs]</a>    <span class="k">def</span> <span class="nf">simulator_exception</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">e_type</span><span class="p">,</span> <span class="n">e_value</span><span class="p">,</span> <span class="n">e_traceback</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;An exception was raised in the simulator thread in the attempt</span>
+<span class="sd">           to process an incoming command.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s">&#39;SimUI.simulator_exception&#39;</span><span class="p">)</span>
+        </div>
+<div class="viewcode-block" id="SimUI.simulator_log"><a class="viewcode-back" href="../code_ui.html#ui.SimUI.simulator_log">[docs]</a>    <span class="k">def</span> <span class="nf">simulator_log</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">message</span><span class="p">,</span> <span class="n">objclass</span><span class="p">,</span> <span class="n">objcolor</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;A log *message* was generated by one of the simulation objects</span>
+<span class="sd">           of class *objclass*. The *objcolor* is the color of the simobject,</span>
+<span class="sd">           in the case the object is connected to one, and None otherwise.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s">&#39;SimUI.simulator_log&#39;</span><span class="p">)</span>
+
+    <span class="c"># Commands for the tester:</span>
+    </div>
+<div class="viewcode-block" id="SimUI.run_simulation"><a class="viewcode-back" href="../code_ui.html#ui.SimUI.run_simulation">[docs]</a>    <span class="k">def</span> <span class="nf">run_simulation</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Unpause the simulation.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">run_simulator_command</span><span class="p">(</span><span class="s">&#39;start_simulation&#39;</span><span class="p">)</span>
+        </div>
+<div class="viewcode-block" id="SimUI.pause_simulation"><a class="viewcode-back" href="../code_ui.html#ui.SimUI.pause_simulation">[docs]</a>    <span class="k">def</span> <span class="nf">pause_simulation</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Pause the simulation.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">run_simulator_command</span><span class="p">(</span><span class="s">&#39;pause_simulation&#39;</span><span class="p">)</span>
+</div>
+<div class="viewcode-block" id="SimUI.step_simulation"><a class="viewcode-back" href="../code_ui.html#ui.SimUI.step_simulation">[docs]</a>    <span class="k">def</span> <span class="nf">step_simulation</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Advance the simulation one step if it is paused.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">run_simulator_command</span><span class="p">(</span><span class="s">&#39;step_simulation&#39;</span><span class="p">)</span>
+</div>
+<div class="viewcode-block" id="SimUI.start_testing"><a class="viewcode-back" href="../code_ui.html#ui.SimUI.start_testing">[docs]</a>    <span class="k">def</span> <span class="nf">start_testing</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Prepare the simulation environment for testing, e.g. disable</span>
+<span class="sd">           user controls of the simulation progress.&quot;&quot;&quot;</span>
+        <span class="k">pass</span>
+</div>
+<div class="viewcode-block" id="SimUI.stop_testing"><a class="viewcode-back" href="../code_ui.html#ui.SimUI.stop_testing">[docs]</a>    <span class="k">def</span> <span class="nf">stop_testing</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Return UI back to normal operation.&quot;&quot;&quot;</span>
+        <span class="k">pass</span>
+    
+    <span class="c">#def get_view_parameters(self):</span>
+        <span class="c">#pass</span>
+    
+    <span class="c">#def set_view_parameters(self,params):</span>
+        <span class="c">#pass</span>
+    
+    <span class="c">#def new_renderer(self):</span>
+        <span class="c">#pass</span>
+    
+    <span class="c">#def pop_renderer(self):</span>
+        <span class="c">#pass</span>
+
+    <span class="c">#def start_test(self):</span>
+        <span class="c">#&quot;&quot;&quot;This function will pause and &#39;cache&#39; the currently running</span>
+           <span class="c">#simulation. A new `simulator.Simulator` will be started with</span>
+           <span class="c">#the control belonging to the tester object.</span>
+        <span class="c">#&quot;&quot;&quot;</span>
+        <span class="c">#self.antiteststruct = Struct()</span>
+        <span class="c">#self.antiteststruct.wasrunning = False</span>
+        <span class="c">## 1) Pause simulator</span>
+        <span class="c">#if self.simulator_thread.is_running():</span>
+            <span class="c">#self.antiteststruct.wasrunning = True # Remember the setting</span>
+            <span class="c">#self.run_simulator_command(&#39;pause_simulation&#39;) # Pause simulation</span>
+            <span class="c">#self.process_events(True) # Process all events</span>
+            
+        <span class="c">## 2) Create new simulator</span>
+        <span class="c">#self.antiteststruct.simulator = simulator_thread</span>
+        <span class="c">#self.simulator_thread = sim.Simulator(self.instantiate_new_renderer(), self.sim_queue)</span>
+        <span class="c">#self.simulator_thread.start()</span>
+    
+    <span class="c">#def stop_test(self):</span>
+        <span class="c">#&quot;&quot;&quot;This function will restore the cached simulation and </span>
+           <span class="c">#simulation. A new `simulator.Simulator` will be started with</span>
+           <span class="c">#the control belonging to the tester object.</span>
+        <span class="c">#&quot;&quot;&quot;</span>
+        <span class="c">#view_params = self.get_view_parameters()</span>
+        
+        <span class="c">## 1) Stop simulator</span>
+        <span class="c">#self.run_simulator_command(&#39;stop&#39;)</span>
+        <span class="c">#while self.simulator_thread.isAlive():</span>
+            <span class="c">#self.process_events(True)</span>
+            <span class="c">#self.simulator_thread.join(0.1)</span>
+                
+        <span class="c">## 2) Switch to old simulator</span>
+        <span class="c">#self.pop_renderer()</span>
+        <span class="c">#self.simulator_thread = self.antiteststruct.simulator</span>
+        
+        <span class="c">## 3) continue running</span>
+        <span class="c">#if self.antiteststruct.wasrunning:</span>
+            <span class="c">#self.run_simulator_command(&#39;pause_simulation&#39;)</span></div></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+<li><img class="logo" src="../_static/appicon.png" style="vertical-align:middle; margin-top: -1px" alt="Logo"/></li>
+<li><a href="../index.html">PySimiam 1.0.0 documentation</a> &raquo;</li>
+
+          <li><a href="index.html" >Module code</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2013, Timofey Fuchs, Shaun Lippy, John Alexander, Vidam Govorovski, Jonathan Whitten.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
+    </div>
+  </body>
+</html>

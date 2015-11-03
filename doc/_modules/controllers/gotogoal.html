@@ -1,0 +1,145 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>controllers.gotogoal &mdash; PySimiam 1.0.0 documentation</title>
+    
+    <link rel="stylesheet" href="../../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '1.0.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="shortcut icon" href="../../_static/appicon_16x16.ico"/>
+    <link rel="top" title="PySimiam 1.0.0 documentation" href="../../index.html" />
+    <link rel="up" title="Module code" href="../index.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+<li><img class="logo" src="../../_static/appicon.png" style="vertical-align:middle; margin-top: -1px" alt="Logo"/></li>
+<li><a href="../../index.html">PySimiam 1.0.0 documentation</a> &raquo;</li>
+
+          <li><a href="../index.html" accesskey="U">Module code</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <h1>Source code for controllers.gotogoal</h1><div class="highlight"><pre>
+<span class="c">#</span>
+<span class="c"># (c) PySimiam Team 2013</span>
+<span class="c">#</span>
+<span class="c"># Contact person: Tim Fuchs &lt;typograph@elec.ru&gt;</span>
+<span class="c">#</span>
+<span class="c"># This class was implemented as a weekly programming excercise</span>
+<span class="c"># of the &#39;Control of Mobile Robots&#39; course by Magnus Egerstedt.</span>
+<span class="c">#</span>
+<span class="kn">from</span> <span class="nn">controllers.pid_controller</span> <span class="kn">import</span> <span class="n">PIDController</span>
+<span class="kn">import</span> <span class="nn">math</span>
+<span class="kn">import</span> <span class="nn">numpy</span>
+
+<div class="viewcode-block" id="GoToGoal"><a class="viewcode-back" href="../../code_suppl_sup_contr.html#controllers.gotogoal.GoToGoal">[docs]</a><span class="k">class</span> <span class="nc">GoToGoal</span><span class="p">(</span><span class="n">PIDController</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Go-to-goal steers the robot to a predefined position in the world.&quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">params</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Initialize internal variables&quot;&quot;&quot;</span>
+        <span class="n">PIDController</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">params</span><span class="p">)</span>
+
+    <span class="c"># Let&#39;s overwrite this way:</span>
+<div class="viewcode-block" id="GoToGoal.get_heading_angle"><a class="viewcode-back" href="../../code_suppl_sup_contr.html#controllers.gotogoal.GoToGoal.get_heading_angle">[docs]</a>    <span class="k">def</span> <span class="nf">get_heading_angle</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">state</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Get the direction from the robot to the goal as a vector.&quot;&quot;&quot;</span>
+        
+        <span class="c"># The goal:</span>
+        <span class="n">x_g</span><span class="p">,</span> <span class="n">y_g</span> <span class="o">=</span> <span class="n">state</span><span class="o">.</span><span class="n">goal</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="n">state</span><span class="o">.</span><span class="n">goal</span><span class="o">.</span><span class="n">y</span>
+        
+        <span class="c"># The robot:</span>
+        <span class="n">x_r</span><span class="p">,</span> <span class="n">y_r</span><span class="p">,</span> <span class="n">theta</span> <span class="o">=</span> <span class="n">state</span><span class="o">.</span><span class="n">pose</span>
+
+        <span class="c"># Where is the goal in the robot&#39;s frame of reference?</span>
+        <span class="k">return</span> <span class="p">(</span><span class="n">math</span><span class="o">.</span><span class="n">atan2</span><span class="p">(</span><span class="n">y_g</span> <span class="o">-</span> <span class="n">y_r</span><span class="p">,</span> <span class="n">x_g</span> <span class="o">-</span> <span class="n">x_r</span><span class="p">)</span> <span class="o">-</span> <span class="n">theta</span> <span class="o">+</span> <span class="n">math</span><span class="o">.</span><span class="n">pi</span><span class="p">)</span><span class="o">%</span><span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="n">math</span><span class="o">.</span><span class="n">pi</span><span class="p">)</span> <span class="o">-</span> <span class="n">math</span><span class="o">.</span><span class="n">pi</span>
+</div>
+    <span class="k">def</span> <span class="nf">get_heading</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">state</span><span class="p">):</span>
+
+        <span class="n">goal_angle</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_heading_angle</span><span class="p">(</span><span class="n">state</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">numpy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">math</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">goal_angle</span><span class="p">),</span><span class="n">math</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">goal_angle</span><span class="p">),</span><span class="mi">1</span><span class="p">])</span>
+    
+    <span class="k">def</span> <span class="nf">execute</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">state</span><span class="p">,</span> <span class="n">dt</span><span class="p">):</span>
+        
+        <span class="n">v</span><span class="p">,</span> <span class="n">w</span> <span class="o">=</span> <span class="n">PIDController</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">state</span><span class="p">,</span> <span class="n">dt</span><span class="p">)</span>
+        
+        <span class="c"># Week 5 code</span>
+        <span class="c">#</span>
+        <span class="c"># </span>
+        
+        <span class="k">return</span> <span class="n">v</span><span class="p">,</span> <span class="n">w</span></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+<li><img class="logo" src="../../_static/appicon.png" style="vertical-align:middle; margin-top: -1px" alt="Logo"/></li>
+<li><a href="../../index.html">PySimiam 1.0.0 documentation</a> &raquo;</li>
+
+          <li><a href="../index.html" >Module code</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2013, Timofey Fuchs, Shaun Lippy, John Alexander, Vidam Govorovski, Jonathan Whitten.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
+    </div>
+  </body>
+</html>
