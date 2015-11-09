@@ -6,46 +6,39 @@ from math import sqrt
 
 class GeneticFunction(object):
 	
-	def __init__(self, mutate_rate=0.01, goal=(3.0, 3.0)):
+	def __init__(self, mutate_rate=0.01,start=(0.0, 0.0), goal=(3.0, 3.0), precise=1):
 		self.mutate_rate = mutate_rate
 		self.goal = goal
+		self.precise = precise
 		graded = [ (fitness(x), x) for x in pop]
 		graded = [ x[1] for x in sorted(graded)]
 		retain_length = int(len(graded)*retain)
 		parents = graded[:retain_length]
 		
-		
-	def mutation(self, parents):
-		# mutate some individuals
-		for individual in parents:
-			if self.mutate_rate > random.random():
-				pos_to_mutate = randint(0, len(individual)-1)
-				# this mutation is not ideal, because it
-				# restricts the range of possible values,
-				# but the function is unaware of the min/max
-				# values used to create the individuals,
-				individual[pos_to_mutate] = (round(random.uniform(min(individual[0]), max(individual[0])),1), 
-											round(random.uniform(min(individual[1]), max(individual[1])),1))
+	
+	
+	def mutation(self, individual):
+		individual[pos_to_mutate] = (round(random.uniform(self.start[0], self.goal[0]),self.precise), 
+									round(random.uniform(self.start[0], self.goal[0]),self.precise))
 		return parents
 		
-	def crossover(self, parents):
-		parents_length = len(parents)
-		desired_length = len(pop) - parents_length
+	def crossover(self, population, crossover_pos=None):
+		population_length = len(population)
+		male_pos = randint(0, population_length-1)
+		female_pos = randint(0, population_length-1)
 		children = []
-		while len(children) < desired_length:
-			male = randint(0, parents_length-1)
-			female = randint(0, parents_length-1)
-			if male != female:
-				male = parents[male]
-				female = parents[female]
-				half = len(male) / 2
-				child = male[:half] + female[half:]
-				children.append(child)
+		if male_pos != female_pos:
+			male = parents[male_pos]
+			female = parents[female_pos]
+			if crossover_pos == None:
+				crossover_pos = len(male) / 2
+			child = male[:crossover_pos] + female[crossover_pos:]
+			children.append(child)
 
-		parents.extend(children)
+		population.extend(children)
 		return parents
 
-	def fitness(individual):
+	def fitness(self, individual):
 		"""
 		#Determine the fitness of an individual. Lower is better.
 
@@ -53,8 +46,7 @@ class GeneticFunction(object):
 		#target: the sum of numbers that individuals are aiming for
 		"""
 		#TODO
-		previous_point = (0.0, 0.0)
-		
+		previous_point = self.start
 		sum = 0.0
 		for point in individual:
 			sum += sqrt((point[0] - previous_point[0])**2 +(point[1] - previous_point[1])**2 )
@@ -66,6 +58,11 @@ class GeneticFunction(object):
 		if collision_detect(vertexs, previous_point, goal):
 			sum += 100
 		return sum
+		
+	def graded(self, population):
+		graded_pop = [ (fitness(x), x) for x in population]
+		graded_pop = [ x[1] for x in sorted(graded)]
+		return graded_pop
 
 
 

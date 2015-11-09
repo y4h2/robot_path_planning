@@ -9,11 +9,11 @@ start = (0.0, 0.0)
 precise = 1
 
 
-def individual (length, xmax, ymax):
+def individual (length):
 	'Create a member of the population'
-	return [ (round(random.uniform(0.0,xmax), precise), round(random.uniform(0.0, ymax), precise)) for i in xrange(length) ]
+	return [ (round(random.uniform(start[0],goal[0]), precise), round(random.uniform(start[0], goal[0]), precise)) for i in xrange(length) ]
 	
-def population(count, length, xmax, ymax):
+def population(count, length):
 	"""
     Create a number of individuals (i.e. a population).
 
@@ -23,7 +23,7 @@ def population(count, length, xmax, ymax):
     max: the max possible value in an individual's list of values
  
     """
-	return [ individual(length, xmax, ymax) for i in xrange(count) ]
+	return [ individual(length) for i in xrange(count) ]
   
 
 # fitness function to be changed later
@@ -50,7 +50,7 @@ def fitness(individual):
 	return sum
 
 # evolution operations
-def evolve(pop, retain=0.9, random_select=0.05, mutate=0.01):
+def evolve(pop, retain=0.9, random_select=0.05, mutate=0.01, crossover_pos=None):
     graded = [ (fitness(x), x) for x in pop]
     graded = [ x[1] for x in sorted(graded)]
     retain_length = int(len(graded)*retain)
@@ -80,11 +80,12 @@ def evolve(pop, retain=0.9, random_select=0.05, mutate=0.01):
         male = randint(0, parents_length-1)
         female = randint(0, parents_length-1)
         if male != female:
-            male = parents[male]
-            female = parents[female]
-            half = len(male) / 2
-            child = male[:half] + female[half:]
-            children.append(child)
+			male = parents[male]
+			female = parents[female]
+			if crossover_pos == None:
+				crossover_pos = len(male) / 2
+			child = male[:crossover_pos] + female[crossover_pos:]
+			children.append(child)
 
     parents.extend(children)
     return parents
@@ -139,7 +140,7 @@ def collision_detect(vertexs, point1, point2):
 
 if __name__ == "__main__":
 	vertexs = [(2,3), (3,2), (2,2), (3,3)]
-	pop = population(20,2, 3.0, 3.0)
+	pop = population(20,2)
 	for i in range(100):
 		parents = evolve(pop)
 
