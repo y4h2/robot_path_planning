@@ -41,8 +41,11 @@ class QBFullSupervisor(QuickBotSupervisor):
         self.gtg = self.create_controller('GoToGoal', self.parameters)
         self.wall = self.create_controller('FollowWall', self.parameters)
         self.hold = self.create_controller('Hold', None)
+		
+		# My codes
+		#self.pathplanning = self.create_controller('PathPlanning', self.parameters)
+		
 
-        # Week 7 Assignment:
         
         # Define transitions
         self.add_controller(self.hold,
@@ -54,11 +57,19 @@ class QBFullSupervisor(QuickBotSupervisor):
                             (self.at_goal, self.hold),
                             (self.free, self.gtg),
                             )
+							
+		# yu codes
+		#path planning
+		
         
+		#at middle point
+		
+		
         # Change and add additional transitions
         
         # End Week 7
-
+		# start in the 'path-planning' state
+		# self.current = self.pathplanning
         # Start in the 'go-to-goal' state
         self.current = self.gtg
 
