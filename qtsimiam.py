@@ -18,4 +18,5 @@ if __name__ == "__main__":
     simWidget.show()
     #simWidget.setTestSuite(Week7)
     simWidget.load_world("static_environment.xml")
+    
     app.exec_()

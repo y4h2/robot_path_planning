@@ -143,9 +143,12 @@ if __name__ == "__main__":
 	pop = population(20,2)
 	for i in range(100):
 		parents = evolve(pop)
-
-		
+	
+	best_individual = parents[0]
+	print type(best_individual)
+	'''	
 	for ind in parents:
 		print fitness(ind)
 		print ind
 		print '\n'
+	'''

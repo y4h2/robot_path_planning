@@ -37,7 +37,7 @@ class GeneticFunction(object):
 		female_pos = randint(0, population_length-1)
 		children = []
 		if male_pos != female_pos:
-			male = population[male_pos]
+			male = population [male_pos]
 			female = population[female_pos]
 			if crossover_pos == None:
 				crossover_pos = len(male) / 2
