@@ -12,6 +12,7 @@ from pose import Pose
 from math import pi, sin, cos, log1p, copysign
 from simobject import Path
 import numpy
+import genetic_algorithm as ga
 
 class QuickBotSupervisor(Supervisor):
     """The QuickBotSupervisor inherits from the superclass 'supervisor.Supervisor'
@@ -56,7 +57,8 @@ class QuickBotSupervisor(Supervisor):
         p.gains.kp = 4.0
         p.gains.ki = 0.1
         p.gains.kd = 0.0
-        
+        p.ga_path = []
+        p.point_cnt = 0
         self.parameters = p
         
     def get_ui_description(self,p = None):

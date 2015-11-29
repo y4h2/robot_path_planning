@@ -11,12 +11,14 @@ from PyQt4 import QtGui
 from qt_mainwindow import SimulationWidget
 #from coursera import Week7
 
+
 if __name__ == "__main__":
+
     app = QtGui.QApplication(sys.argv)
     simWidget = SimulationWidget()
     simWidget.superv_action.trigger()
     simWidget.show()
     #simWidget.setTestSuite(Week7)
-    simWidget.load_world("static_environment.xml")
+    simWidget.load_world("without_obstacle.xml")
     
     app.exec_()

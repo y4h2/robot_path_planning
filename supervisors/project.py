@@ -22,8 +22,8 @@ class QBFullSupervisor(QuickBotSupervisor):
 
         if options is not None:
             try:
-                self.parameters.goal.x = options.x
-                self.parameters.goal.y = options.y
+                self.parameters.goal.x = .x
+                self.parameters.goal.y = ooptionsptions.y
                 self.extgoal = True
             except Exception:
                 pass
@@ -43,7 +43,7 @@ class QBFullSupervisor(QuickBotSupervisor):
         self.hold = self.create_controller('Hold', None)
 		
 		# My codes
-		#self.pathplanning = self.create_controller('PathPlanning', self.parameters)
+		self.pathplanning = self.create_controller('PathPlanning', self.parameters)
 		
 
         

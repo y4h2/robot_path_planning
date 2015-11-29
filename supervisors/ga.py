@@ -11,6 +11,7 @@ from supervisor import Supervisor
 from ui import uiFloat
 from math import sqrt, sin, cos, atan2
 import numpy
+import genetic_algorithm as ga
 
 class QBFullSupervisor(QuickBotSupervisor):
     """QBFull supervisor implements the full switching behaviour for navigating labyrinths."""
@@ -33,42 +34,61 @@ class QBFullSupervisor(QuickBotSupervisor):
         self.parameters.ir_max = robot_info.ir_sensors.rmax
         self.parameters.direction = 'left'
         self.parameters.distance = 0.2
-        
+        #TODO put mid point here
         self.robot = robot_info
+
+        self.parameters.ga_path = ga.ga_execute((0,0), (self.parameters.goal.x, self.parameters.goal.y))
+        global global_cnt
+        global_cnt = len(self.parameters.ga_path)
+        point_cnt = self.parameters.point_cnt
+        
+        
+        
+        print self.parameters.ga_path, "hello"
         
         #Add controllers
+        self.avoidobstacles = self.create_controller('AvoidObstacles', self.parameters)
         self.gtg = self.create_controller('GoToGoal', self.parameters)
         self.hold = self.create_controller('Hold', None)
-        
+        self.wall = self.create_controller('FollowWall', self.parameters)
+        self.path = self.create_controller('FollowPath', self.parameters)
         # My codes
         self.pp = self.create_controller('PathPlanning', self.parameters)
         #self.gtp = self.create_controller('GoToPoint', self.parameters)
-        
+                
         # Define transitions
         self.add_controller(self.hold,
                             (lambda: not self.at_goal(), self.gtg))
         self.add_controller(self.gtg,
-                            (self.at_goal, self.hold))
+                            (self.at_goal, self.hold),
+                            (self.at_obstacle, self.avoidobstacles))
+        self.add_controller(self.avoidobstacles,
+                            (self.at_goal, self.hold),
+                            (self.free, self.gtg),
+                            )
+        self.add_controller(self.path,
+                            (lambda: self.next_point(), self.path),
+                            (lambda: self.parameters.point_cnt == len(self.parameters.ga_path) - 1 and not self.next_point(), self.gtg),
+                            (self.at_obstacle, self.avoidobstacles))
         '''
         path planning with ga first
         then after reaching the last point, switch to go to goal
         '''
         #self.add_controller()
-        self.add_controller(self.pp)
+        # self.add_controller(self.pp,
+        #                     #(no obstacles, self.gtg)
+        #                     #(lambda: not self.at_goal(), self.gtg),
+        #                     (self.at_goal, self.hold))
         # yu codes
         #path planning
         
         
         #at middle point
         
-        
-        # Change and add additional transitions
-        
-        # End Week 7
         # start in the 'path-planning' state
         # self.current = self.pathplanning
         # Start in the 'go-to-goal' state
-        self.current = self.pp
+        self.current = self.path
 
     def set_parameters(self,params):
         """Set parameters for itself and the controllers"""
@@ -77,14 +97,31 @@ class QBFullSupervisor(QuickBotSupervisor):
         self.avoidobstacles.set_parameters(self.parameters)
         self.wall.set_parameters(self.parameters)
         self.pp.set_parameters(self.parameters)
+        self.path.set_parameters(self.parameters)
 
     def at_goal(self):
         """Check if the distance to goal is small"""
         return self.distance_from_goal < 0.05
+
     #TODO
     def at_point(self):
         return self.distance_from_point < 0.05
-        
+
+    def at_start(self):
+        return self.distance_from_start == 0.0
+    #def no_obstacle(self):
+    def next_point(self):
+        point_cnt = self.parameters.point_cnt
+        print len(self.parameters.ga_path), 'length'
+        if self.parameters.point_cnt == len(self.parameters.ga_path) - 1:
+            return False
+        if sqrt((self.pose_est.x - self.parameters.ga_path[point_cnt][0])**2 + (self.pose_est.y - self.parameters.ga_path[point_cnt][1])**2) < 0.05 and global_cnt != point_cnt:
+            self.parameters.point_cnt += 1
+            print point_cnt, 'supervisor'
+            return True
+        else:
+            return False
+
     def at_obstacle(self):
         """Check if the distance to obstacle is small"""
         return self.distmin < self.robot.ir_sensors.rmax/2.0
@@ -103,12 +140,12 @@ class QBFullSupervisor(QuickBotSupervisor):
 
         # Distance to the goal
         self.distance_from_goal = sqrt((self.pose_est.x - self.parameters.goal.x)**2 + (self.pose_est.y - self.parameters.goal.y)**2)
-        
+
         # my code, Distance to the point
         '''TODO'''
-        self.distance_from_point = sqrt((self.pose_est.x - self.parameters.goal.x)**2 + (self.pose_est.y - self.parameters.goal.y)**2)
+        self.distance_from_point = sqrt((self.pose_est.x - self.parameters.ga_path[0][0])**2 + (self.pose_est.y - self.parameters.ga_path[0][1])**2)
 
-
+        self.distance_from_start = sqrt((self.pose_est.x - 0.0)**2 + (self.pose_est.y - 0.0)**2)
         # Sensor readings in real units
         self.parameters.sensor_distances = self.get_ir_distances()
         
