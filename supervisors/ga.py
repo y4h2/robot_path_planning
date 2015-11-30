@@ -38,6 +38,7 @@ class QBFullSupervisor(QuickBotSupervisor):
         self.robot = robot_info
 
         self.parameters.ga_path = ga.ga_execute((0,0), (self.parameters.goal.x, self.parameters.goal.y))
+        self.parameters.ga_path.append((self.parameters.goal.x, self.parameters.goal.y))
         global global_cnt
         global_cnt = len(self.parameters.ga_path)
         point_cnt = self.parameters.point_cnt
@@ -68,7 +69,8 @@ class QBFullSupervisor(QuickBotSupervisor):
                             )
         self.add_controller(self.path,
                             (lambda: self.next_point(), self.path),
-                            (lambda: self.parameters.point_cnt == len(self.parameters.ga_path) - 1 and not self.next_point(), self.gtg),
+                            (self.at_goal, self.hold),
+                            #(lambda: self.parameters.point_cnt == len(self.parameters.ga_path) - 1 and not self.next_point(), self.gtg),
                             (self.at_obstacle, self.avoidobstacles))
         '''
         path planning with ga first
@@ -112,12 +114,12 @@ class QBFullSupervisor(QuickBotSupervisor):
     #def no_obstacle(self):
     def next_point(self):
         point_cnt = self.parameters.point_cnt
-        print len(self.parameters.ga_path), 'length'
+        #print len(self.parameters.ga_path), 'length'
         if self.parameters.point_cnt == len(self.parameters.ga_path) - 1:
             return False
         if sqrt((self.pose_est.x - self.parameters.ga_path[point_cnt][0])**2 + (self.pose_est.y - self.parameters.ga_path[point_cnt][1])**2) < 0.05 and global_cnt != point_cnt:
             self.parameters.point_cnt += 1
-            print point_cnt, 'supervisor'
+            #print point_cnt, 'supervisor'
             return True
         else:
             return False
@@ -170,8 +172,8 @@ class QBFullSupervisor(QuickBotSupervisor):
                 arrow_length*cos(goal_angle),
                 arrow_length*sin(goal_angle))
         
-        elif self.current == self.pp:
-            goal_angle = self.gtg.get_heading_angle(self.parameters)
+        elif self.current == self.path:
+            goal_angle = self.path.get_heading_angle(self.parameters)
             renderer.set_pen(0x00FF00)
             renderer.draw_arrow(0,0,
                 arrow_length*cos(goal_angle),

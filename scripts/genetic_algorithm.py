@@ -8,9 +8,13 @@ from xmlreader import XMLReader
 import numpy as np
 from numpy import array, cos, dot, fabs, lexsort, pi, sin, sqrt, vstack
 
-def individual (length, start, goal, precise = 1):
+def individual (length, start, goal, range_min = None, range_max = None,precise = 1):
     """Create a member of the population"""
-    return [ (round(random.uniform(start[0],goal[0]), precise), round(random.uniform(start[0], goal[0]), precise)) for i in xrange(length) ]
+    if range_min == None:
+        range_min = start
+    if range_max == None:
+        range_max = goal
+    return [ (round(random.uniform(range_min[0],range_max[0]), precise), round(random.uniform(range_min[0], range_max[0]), precise)) for i in xrange(length) ]
     
 def population(count, length, start, goal):
     """

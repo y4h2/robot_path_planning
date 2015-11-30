@@ -9,7 +9,7 @@
 from controllers.pid_controller import PIDController
 import math
 import numpy
-global point_cnt, global_cnt
+
 
 class FollowPath(PIDController):
     """Go-to-goal steers the robot to a predefined position in the world."""
@@ -26,7 +26,7 @@ class FollowPath(PIDController):
         # The goal:
         point_cnt = self.params.point_cnt
         x_g, y_g = self.params.ga_path[point_cnt][0], self.params.ga_path[point_cnt][1]
-        print point_cnt, 'FollowPath'
+        #print point_cnt, 'FollowPath'
         # The robot:
         x_r, y_r, theta = state.pose
 
@@ -39,8 +39,9 @@ class FollowPath(PIDController):
         return numpy.array([math.cos(goal_angle),math.sin(goal_angle),1])
     
     def execute(self, state, dt):
-        
+        #point_cnt = self.params.point_cnt
         v, w = PIDController.execute(self, state, dt)
+        #print 'Move to point ', (self.params.ga_path[point_cnt][0], self.params.ga_path[point_cnt][1])
         
         # Week 5 code
         #

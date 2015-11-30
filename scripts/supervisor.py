@@ -212,6 +212,9 @@ class Supervisor:
                     c.restart()
                     self.current = c
                     self.log("Switched to {}".format(c.__class__.__name__))
+                    if c.__class__.__name__ == 'FollowPath':
+                        print 'Move to point', self.current.params.ga_path[self.current.params.point_cnt]
+                    
                     break
 
         #execute the current controller
