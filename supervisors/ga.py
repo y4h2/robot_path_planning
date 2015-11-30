@@ -64,7 +64,7 @@ class QBFullSupervisor(QuickBotSupervisor):
                             (self.at_obstacle, self.avoidobstacles))
         self.add_controller(self.avoidobstacles,
                             (self.at_goal, self.hold),
-                            (self.free, self.gtg),
+                            (self.free, self.path),
                             )
         self.add_controller(self.path,
                             (lambda: self.next_point(), self.path),
