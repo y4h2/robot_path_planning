@@ -104,26 +104,17 @@ def ga_execute(start, goal):
 
     
     best_individual = parents[0]
-    cnt = 0
-    point_cnt = 0
-    for vertexs in vertexs_list:
-        if collision_detect(vertexs, start, goal):
-            point_cnt += 1    
-    if point_cnt == 0:
-        best_individual = []
-        print best_individual
-        return best_individual
-        
-    point_cnt = 0
-    for point in best_individual:
-        for vertexs in vertexs_list:
-            if collision_detect(vertexs, point, goal):
-                point_cnt += 1
-        if point_cnt == 0:
-            best_individual = best_individual[0:cnt + 1]
-            print best_individual
-            break
-        cnt += 1   
+    # cnt = 0
+    # point_cnt = 0
+    # for point in best_individual:
+    #     for vertexs in vertexs_list:
+    #         if collision_detect(vertexs, point, goal):
+    #             point_cnt += 1
+    #     if point_cnt == 0:
+    #         best_individual = best_individual[0:cnt + 1]
+    #         print best_individual
+    #         break
+    #     cnt += 1   
     print 'parents[0]', parents[0]
     print 'best_individual', best_individual
     # for ind in parents:

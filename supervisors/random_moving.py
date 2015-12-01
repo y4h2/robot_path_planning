@@ -45,7 +45,7 @@ class QBFullSupervisor(QuickBotSupervisor):
         
         
         
-        #print self.parameters.ga_path, "ga_path"
+        print self.parameters.ga_path, "hello"
         
         #Add controllers
         self.avoidobstacles = self.create_controller('AvoidObstacles', self.parameters)
