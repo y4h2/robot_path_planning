@@ -54,7 +54,7 @@ class QBFullSupervisor(QuickBotSupervisor):
         self.wall = self.create_controller('FollowWall', self.parameters)
         self.path = self.create_controller('FollowPath', self.parameters)
         # My codes
-        self.pp = self.create_controller('PathPlanning', self.parameters)
+        #self.pp = self.create_controller('PathPlanning', self.parameters)
         self.blending = self.create_controller("Blending", self.parameters)
         #self.gtp = self.create_controller('GoToPoint', self.parameters)
                 
