@@ -1,11 +1,4 @@
-#
-# (c) PySimiam Team 2013
-# 
-# Contact person: Tim Fuchs <typograph@elec.ru>
-#
-# This class was implemented for the weekly programming excercises
-# of the 'Control of Mobile Robots' course by Magnus Egerstedt.
-#
+# Modified by Yu Huang
 from supervisors.quickbot import QuickBotSupervisor
 from supervisor import Supervisor
 from ui import uiFloat
@@ -34,17 +27,13 @@ class QBFullSupervisor(QuickBotSupervisor):
         self.parameters.ir_max = robot_info.ir_sensors.rmax
         self.parameters.direction = 'left'
         self.parameters.distance = 0.2
-        #TODO put mid point here
         self.robot = robot_info
-
+        # generate global path
         self.parameters.ga_path = ga.ga_execute((0,0), (self.parameters.goal.x, self.parameters.goal.y))
         self.parameters.ga_path.append((self.parameters.goal.x, self.parameters.goal.y))
         global global_cnt
         global_cnt = len(self.parameters.ga_path)
         point_cnt = self.parameters.point_cnt
-        
-        
-        
         #print self.parameters.ga_path, "ga_path"
         
         #Add controllers
@@ -53,10 +42,7 @@ class QBFullSupervisor(QuickBotSupervisor):
         self.hold = self.create_controller('Hold', None)
         self.wall = self.create_controller('FollowWall', self.parameters)
         self.path = self.create_controller('FollowPath', self.parameters)
-        # My codes
-        #self.pp = self.create_controller('PathPlanning', self.parameters)
         self.blending = self.create_controller("Blending", self.parameters)
-        #self.gtp = self.create_controller('GoToPoint', self.parameters)
                 
         # Define transitions
         self.add_controller(self.hold,
@@ -78,24 +64,7 @@ class QBFullSupervisor(QuickBotSupervisor):
                             (self.at_goal, self.hold),
                             #(lambda: self.parameters.point_cnt == len(self.parameters.ga_path) - 1 and not self.next_point(), self.gtg),
                             (self.at_obstacle, self.avoidobstacles))
-        '''
-        path planning with ga first
-        then after reaching the last point, switch to go to goal
-        '''
-        #self.add_controller()
-        # self.add_controller(self.pp,
-        #                     #(no obstacles, self.gtg)
-        #                     #(lambda: not self.at_goal(), self.gtg),
-        #                     (self.at_goal, self.hold))
-        # yu codes
-        #path planning
-        
-        
-        #at middle point
-        
-        # start in the 'path-planning' state
-        # self.current = self.pathplanning
-        # Start in the 'go-to-goal' state
+
         self.current = self.path
 
     def set_parameters(self,params):
@@ -124,11 +93,12 @@ class QBFullSupervisor(QuickBotSupervisor):
             return True
         else:
             return False
-    def unsafe(self):
-        return self.distmin < self.robot.ir_sensors.rmax/1.5
+    # safe and unsafe conditions are used in blending controller
+    # def unsafe(self):
+    #     return self.distmin < self.robot.ir_sensors.rmax/1.5
         
-    def safe(self):
-        return self.distmin > self.robot.ir_sensors.rmax/1.2
+    # def safe(self):
+    #     return self.distmin > self.robot.ir_sensors.rmax/1.2
 
     def at_obstacle(self):
         """Check if the distance to obstacle is small"""
@@ -149,8 +119,6 @@ class QBFullSupervisor(QuickBotSupervisor):
         # Distance to the goal
         self.distance_from_goal = sqrt((self.pose_est.x - self.parameters.goal.x)**2 + (self.pose_est.y - self.parameters.goal.y)**2)
 
-        # my code, Distance to the point
-        '''TODO'''
         # Sensor readings in real units
         self.parameters.sensor_distances = self.get_ir_distances()
         
@@ -175,6 +143,7 @@ class QBFullSupervisor(QuickBotSupervisor):
                 arrow_length*cos(goal_angle),
                 arrow_length*sin(goal_angle))
         
+        # Draw arrow for PathFollowing
         elif self.current == self.path:
             goal_angle = self.path.get_heading_angle(self.parameters)
             renderer.set_pen(0x00FF00)
@@ -182,12 +151,12 @@ class QBFullSupervisor(QuickBotSupervisor):
                 arrow_length*cos(goal_angle),
                 arrow_length*sin(goal_angle))
 
-        elif self.current == self.blending:
-            goal_angle = self.blending.get_heading_angle(self.parameters)
-            renderer.set_pen(0x0000FF)
-            renderer.draw_arrow(0,0,
-                arrow_length*cos(goal_angle),
-                arrow_length*sin(goal_angle))
+        # elif self.current == self.blending:
+        #     goal_angle = self.blending.get_heading_angle(self.parameters)
+        #     renderer.set_pen(0x0000FF)
+        #     renderer.draw_arrow(0,0,
+        #         arrow_length*cos(goal_angle),
+        #         arrow_length*sin(goal_angle))
 
         # Draw arrow away from obstacles
         elif self.current == self.avoidobstacles:

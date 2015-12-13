@@ -9,6 +9,7 @@ def collision_detect(vertexs, point1, point2):
     step_b = False
     # line function
     line = lambda x1, y1, x2, y2, x, y: (y2-y1)*x + (x1-x2)*y + (x2*y1 - x1*y2)
+    # step A
     for vertex in vertexs:
         if line(point1[0], point1[1],point2[0], point2[1], vertex[0], vertex[1]) == 0:
             step_b = True
@@ -17,6 +18,7 @@ def collision_detect(vertexs, point1, point2):
             negative_flag += 1
         else:
             positive_flag += 1
+    # step b
     if step_b or (not step_b and (positive_flag * negative_flag) != 0):
         max_x = 0.0
         max_y = 0.0
