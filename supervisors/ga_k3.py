@@ -10,12 +10,23 @@ from khepera3 import K3Supervisor
 from supervisor import Supervisor
 from math import sqrt, sin, cos, atan2
 import numpy
+import genetic_algorithm as ga
+from ui import uiFloat
 
 class K3FullSupervisor(K3Supervisor):
     """K3Full supervisor implements the full switching behaviour for navigating labyrinths."""
-    def __init__(self, robot_pose, robot_info):
+    def __init__(self, robot_pose, robot_info, options = None):
         """Create controllers and the state transitions"""
         K3Supervisor.__init__(self, robot_pose, robot_info)
+        self.extgoal = False
+
+        if options is not None:
+            try:
+                self.parameters.goal.x = options.x
+                self.parameters.goal.y = options.y
+                self.extgoal = True
+            except Exception:
+                pass
 
         # The maximal distance to an obstacle (inexact)
         self.distmax = robot_info.ir_sensors.rmax + robot_info.wheels.base_length/2
@@ -25,31 +36,51 @@ class K3FullSupervisor(K3Supervisor):
         self.parameters.ir_max = robot_info.ir_sensors.rmax
         self.parameters.direction = 'left'
         self.parameters.distance = self.distmax*0.85
-        
+        self.parameters.ga_path = ga.ga_execute((0,0), (self.parameters.goal.x, self.parameters.goal.y))
+        self.parameters.ga_path.append((self.parameters.goal.x, self.parameters.goal.y))
+        global global_cnt
+        global_cnt = len(self.parameters.ga_path)
+        point_cnt = self.parameters.point_cnt
+
         self.process_state_info(robot_info)
         
         #Add controllers
         self.gtg = self.create_controller('GoToGoal', self.parameters)
-        self.avoidobstacles = self.create_controller('AvoidObstacles', self.parameters)
+        self.avoidobstacles = self.create_controller('K3_AvoidObstacles', self.parameters)
         self.wall = self.create_controller('FollowWall', self.parameters)
         self.hold = self.create_controller('Hold', None)
+        self.path = self.create_controller('FollowPath', self.parameters)
         
         # Define transitions
-        self.add_controller(self.hold,
-                            (lambda: not self.at_goal(), self.gtg))
-        self.add_controller(self.gtg,
-                            (self.at_goal, self.hold),
-                            (self.at_wall, self.wall))
+        # self.add_controller(self.hold,
+        #                     (lambda: not self.at_goal(), self.gtg))
+        # self.add_controller(self.gtg,
+        #                     (self.at_goal, self.hold),
+        #                     (self.at_wall, self.wall))
         self.add_controller(self.wall,
                             (self.at_goal,self.hold),
                             (self.unsafe, self.avoidobstacles),
                             (self.wall_cleared, self.gtg))
+        # self.add_controller(self.avoidobstacles,
+        #                     (self.at_goal, self.hold),
+        #                     (self.safe, self.wall))
+        self.add_controller(self.hold,
+                            (lambda: not self.at_goal(), self.gtg))
+
         self.add_controller(self.avoidobstacles,
                             (self.at_goal, self.hold),
-                            (self.safe, self.wall))
+                            (self.free, self.path)
+                            )
 
+        self.add_controller(self.path,
+                            (lambda: self.next_point(), self.path),
+                            (self.at_goal, self.hold),
+                            #(lambda: self.parameters.point_cnt == len(self.parameters.ga_path) - 1 and not self.next_point(), self.gtg),
+                            (self.at_obstacle, self.avoidobstacles))
+
+        self.current = self.path
         # Start in the 'go-to-goal' state
-        self.current = self.gtg
+
 
     def set_parameters(self,params):
         """Set parameters for itself and the controllers"""
@@ -57,7 +88,20 @@ class K3FullSupervisor(K3Supervisor):
         self.gtg.set_parameters(self.parameters)
         self.avoidobstacles.set_parameters(self.parameters)
         self.wall.set_parameters(self.parameters)
+        self.path.set_parameters(self.parameters)
 
+    def next_point(self):
+        point_cnt = self.parameters.point_cnt
+        #print len(self.parameters.ga_path), 'length'
+        if self.parameters.point_cnt == len(self.parameters.ga_path) - 1:
+            return False
+        if sqrt((self.pose_est.x - self.parameters.ga_path[point_cnt][0])**2 + (self.pose_est.y - self.parameters.ga_path[point_cnt][1])**2) < 0.05 and global_cnt != point_cnt:
+            self.parameters.point_cnt += 1
+            #print point_cnt, 'supervisor'
+            return True
+        else:
+            return False
+            
     def at_goal(self):
         """Check if the distance to goal is small"""
         return self.distance_from_goal < self.robot.wheels.base_length/2
@@ -131,6 +175,14 @@ class K3FullSupervisor(K3Supervisor):
         if wall_far:
             self.at_wall()
         return wall_far
+    
+    def at_obstacle(self):
+        """Check if the distance to obstacle is small"""
+        return self.distmin < self.robot.ir_sensors.rmax/2.0 #default 2.0
+
+    def free(self):
+        """Check if the distance to obstacle is large"""
+        return self.distmin > self.robot.ir_sensors.rmax/1.1
 
     def process_state_info(self, state):
         """Update state parameters for the controllers and self"""
@@ -214,3 +266,26 @@ class K3FullSupervisor(K3Supervisor):
                 renderer.draw_line(0.01,-0.01,-0.01,0.01)
                 
                 renderer.pop_state()
+        elif self.current == self.path:
+            goal_angle = self.path.get_heading_angle(self.parameters)
+            renderer.set_pen(0x00FF00)
+            renderer.draw_arrow(0,0,
+                arrow_length*cos(goal_angle),
+                arrow_length*sin(goal_angle))
+
+    def get_ui_description(self,p = None):
+        """Returns the UI description for the docker"""
+        if p is None:
+            p = self.parameters
+        
+        ui =   [('goal', [('x',uiFloat(p.goal.x,0.1)), ('y',uiFloat(p.goal.y,0.1))]),
+                ('velocity', [('v',uiFloat(p.velocity.v,0.1))]),
+                (('gains',"PID gains"), [
+                    (('kp','Proportional gain'), uiFloat(p.gains.kp,0.1)),
+                    (('ki','Integral gain'), uiFloat(p.gains.ki,0.1)),
+                    (('kd','Differential gain'), uiFloat(p.gains.kd,0.1))])]
+                
+        if self.extgoal:
+            return ui[1:]
+        else:
+            return ui

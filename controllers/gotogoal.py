@@ -6,7 +6,7 @@
 # This class was implemented as a weekly programming excercise
 # of the 'Control of Mobile Robots' course by Magnus Egerstedt.
 #
-from controllers.pid_controller import PIDController
+from pid_controller import PIDController
 import math
 import numpy
 
@@ -21,25 +21,15 @@ class GoToGoal(PIDController):
         """Get the direction from the robot to the goal as a vector."""
         
         # The goal:
-        x_g, y_g = (0.5, 0.5) #state.goal.x, state.goal.y
+        x_g, y_g = 0.0, 0.0
         
         # The robot:
         x_r, y_r, theta = state.pose
 
         # Where is the goal in the robot's frame of reference?
-        return (math.atan2(y_g - y_r, x_g - x_r) - theta + math.pi)%(2*math.pi) - math.pi
+        return math.atan2(y_g - y_r, x_g - x_r) - theta
 
     def get_heading(self,state):
 
         goal_angle = self.get_heading_angle(state)
         return numpy.array([math.cos(goal_angle),math.sin(goal_angle),1])
-    
-    def execute(self, state, dt):
-        
-        v, w = PIDController.execute(self, state, dt)
-        
-        # Week 5 code
-        #
-        # 
-        
-        return v, w

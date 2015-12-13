@@ -6,18 +6,23 @@
 # This class was implemented as a weekly programming excercise
 # of the 'Control of Mobile Robots' course by Magnus Egerstedt.
 #
-from controllers.pid_controller import PIDController
+from pid_controller import PIDController
 import math
 import numpy
-from pose import Pose
 
-class AvoidObstacles(PIDController):
+class K3_AvoidObstacles(PIDController):
     """Avoid obstacles is an example controller that checks the sensors
        for any readings, constructs 'obstacle' vectors and directs the robot
-       in the direction of their weighted sum."""
+       in the direction of their weightd sum."""
     def __init__(self, params):
         '''Initialize internal variables'''
         PIDController.__init__(self,params)
+
+        # This variable should contain a list of vectors
+        # calculated from sensor readings. It is used by
+        # the supervisor to draw & debug the controller's
+        # behaviour
+        self.vectors = []
 
     def set_parameters(self, params):
         """Set PID values and sensor poses.
@@ -27,12 +32,11 @@ class AvoidObstacles(PIDController):
         """
         PIDController.set_parameters(self,params)
 
-        self.sensor_poses = params.sensor_poses
+        self.poses = params.sensor_poses
 
         # Now we know the poses, it makes sense to also
         # calculate the weights
-        #self.weights = [(math.cos(p.theta)+1.5) for p in self.sensor_poses]
-        self.weights = [1.0, 1.0, 0.5, 1.0, 1.0]
+        self.weights = [(math.cos(p.theta)+1.5) for p in self.poses]
         
         # Normalizing weights
         ws = sum(self.weights)
@@ -42,21 +46,17 @@ class AvoidObstacles(PIDController):
         """Get the direction away from the obstacles as a vector."""
         
         # Calculate heading:
-        x, y = 0, 0
-        for d,p,w in zip(state.sensor_distances, self.sensor_poses, self.weights):
-            pose = Pose(d) >> p
-            x += pose.x*w
-            y += pose.y*w
+        
+        # 1. Transform distances to vectors in the robot's frame of reference
+        self.vectors = \
+            numpy.array(
+                [numpy.dot(
+                    p.get_transformation(),
+                    numpy.array([d,0,1])
+                    )
+                     for d, p in zip(state.sensor_distances, self.poses) ] )
+        
+        # 2. Calculate weighted sum:
+        heading = numpy.dot(self.vectors.transpose(), self.weights)
      
-        return numpy.array([x, y, 1])
-    
-    def execute(self, state, dt):
-        
-        v, w = PIDController.execute(self, state, dt)
-        
-        dmin = min(state.sensor_distances)
-        v *= ((dmin - 0.04)/0.26)**2
-        
-        # 
-        
-        return v, w    
+        return heading

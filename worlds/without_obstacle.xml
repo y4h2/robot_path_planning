@@ -1,11 +1,11 @@
 <simulation>
-	<robot type="QuickBot">
-        <supervisor type="ga.QBFullSupervisor" />
+	<robot type="Khepera3">
+        <supervisor type="ga_k3.K3FullSupervisor" />
         <pose x="0" y="0" theta="0" />
     </robot>
     <robot type="Khepera3">
-        <supervisor type="K3FullSupervisor" />
-        <pose x="0.5" y="0.5" theta="0" />
+        <supervisor type="movingobstacle.K3FullSupervisor" />
+        <pose x="0.5" y="1.0" theta="0" />
     </robot>    
 
     <obstacle>

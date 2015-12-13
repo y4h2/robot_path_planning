@@ -41,6 +41,8 @@ The UI may use the get_parameters function interface to create docker windows fo
         p.gains.kp = 10.0
         p.gains.ki = 2.0
         p.gains.kd = 0.0
+        p.ga_path = []
+        p.point_cnt = 0
         
         self.parameters = p
         
@@ -131,6 +133,7 @@ The UI may use the get_parameters function interface to create docker windows fo
     def draw(self, renderer):
         """Draw a circular goal"""
         renderer.set_pose(Pose(self.parameters.goal.x, self.parameters.goal.y))
+        renderer.set_pen(0)
         renderer.set_brush(self.robot_color)
         r = self.robot_size/2
         renderer.draw_ellipse(0,0,r,r)
