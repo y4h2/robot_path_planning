@@ -11,6 +11,7 @@ from supervisor import Supervisor
 from ui import uiFloat
 from math import sqrt, sin, cos, atan2
 import numpy
+import genetic_algorithm as ga
 
 class QBFullSupervisor(QuickBotSupervisor):
     """QBFull supervisor implements the full switching behaviour for navigating labyrinths."""
@@ -33,20 +34,30 @@ class QBFullSupervisor(QuickBotSupervisor):
         self.parameters.ir_max = robot_info.ir_sensors.rmax
         self.parameters.direction = 'left'
         self.parameters.distance = 0.2
-        
+        #TODO put mid point here
         self.robot = robot_info
+
+        self.parameters.ga_path = ga.ga_execute((0,0), (self.parameters.goal.x, self.parameters.goal.y))
+        self.parameters.ga_path.append((self.parameters.goal.x, self.parameters.goal.y))
+        global global_cnt
+        global_cnt = len(self.parameters.ga_path)
+        point_cnt = self.parameters.point_cnt
+        
+        
+        
+        #print self.parameters.ga_path, "ga_path"
         
         #Add controllers
         self.avoidobstacles = self.create_controller('AvoidObstacles', self.parameters)
         self.gtg = self.create_controller('GoToGoal', self.parameters)
-        self.wall = self.create_controller('FollowWall', self.parameters)
         self.hold = self.create_controller('Hold', None)
-		
-		# My codes
-		self.pathplanning = self.create_controller('PathPlanning', self.parameters)
-		
-
-        
+        self.wall = self.create_controller('FollowWall', self.parameters)
+        self.path = self.create_controller('FollowPath', self.parameters)
+        # My codes
+        self.pp = self.create_controller('PathPlanning', self.parameters)
+        self.blending = self.create_controller("Blending", self.parameters)
+        #self.gtp = self.create_controller('GoToPoint', self.parameters)
+                
         # Define transitions
         self.add_controller(self.hold,
                             (lambda: not self.at_goal(), self.gtg))
@@ -55,23 +66,37 @@ class QBFullSupervisor(QuickBotSupervisor):
                             (self.at_obstacle, self.avoidobstacles))
         self.add_controller(self.avoidobstacles,
                             (self.at_goal, self.hold),
-                            (self.free, self.gtg),
+                            (self.free, self.path)
                             )
-							
-		# yu codes
-		#path planning
-		
+        # self.add_controller(self.blending,
+        #                     (self.at_goal, self.hold),
+        #                     (self.free, self.path),
+        #                     (self.at_obstacle, self.avoidobstacles),
+        #                     )
+        self.add_controller(self.path,
+                            (lambda: self.next_point(), self.path),
+                            (self.at_goal, self.hold),
+                            #(lambda: self.parameters.point_cnt == len(self.parameters.ga_path) - 1 and not self.next_point(), self.gtg),
+                            (self.at_obstacle, self.avoidobstacles))
+        '''
+        path planning with ga first
+        then after reaching the last point, switch to go to goal
+        '''
+        #self.add_controller()
+        # self.add_controller(self.pp,
+        #                     #(no obstacles, self.gtg)
+        #                     #(lambda: not self.at_goal(), self.gtg),
+        #                     (self.at_goal, self.hold))
+        # yu codes
+        #path planning
         
-		#at middle point
-		
-		
-        # Change and add additional transitions
         
-        # End Week 7
-		# start in the 'path-planning' state
-		# self.current = self.pathplanning
+        #at middle point
+        
+        # start in the 'path-planning' state
+        # self.current = self.pathplanning
         # Start in the 'go-to-goal' state
-        self.current = self.gtg
+        self.current = self.path
 
     def set_parameters(self,params):
         """Set parameters for itself and the controllers"""
@@ -79,14 +104,35 @@ class QBFullSupervisor(QuickBotSupervisor):
         self.gtg.set_parameters(self.parameters)
         self.avoidobstacles.set_parameters(self.parameters)
         self.wall.set_parameters(self.parameters)
+        self.pp.set_parameters(self.parameters)
+        self.path.set_parameters(self.parameters)
+        self.blending.set_parameters(self.parameters)
 
     def at_goal(self):
         """Check if the distance to goal is small"""
         return self.distance_from_goal < 0.05
 
+    #def no_obstacle(self):
+    def next_point(self):
+        point_cnt = self.parameters.point_cnt
+        #print len(self.parameters.ga_path), 'length'
+        if self.parameters.point_cnt == len(self.parameters.ga_path) - 1:
+            return False
+        if sqrt((self.pose_est.x - self.parameters.ga_path[point_cnt][0])**2 + (self.pose_est.y - self.parameters.ga_path[point_cnt][1])**2) < 0.05 and global_cnt != point_cnt:
+            self.parameters.point_cnt += 1
+            #print point_cnt, 'supervisor'
+            return True
+        else:
+            return False
+    def unsafe(self):
+        return self.distmin < self.robot.ir_sensors.rmax/1.5
+        
+    def safe(self):
+        return self.distmin > self.robot.ir_sensors.rmax/1.2
+
     def at_obstacle(self):
         """Check if the distance to obstacle is small"""
-        return self.distmin < self.robot.ir_sensors.rmax/2.0
+        return self.distmin < self.robot.ir_sensors.rmax/1.5 #default 2.0
         
     def free(self):
         """Check if the distance to obstacle is large"""
@@ -102,7 +148,9 @@ class QBFullSupervisor(QuickBotSupervisor):
 
         # Distance to the goal
         self.distance_from_goal = sqrt((self.pose_est.x - self.parameters.goal.x)**2 + (self.pose_est.y - self.parameters.goal.y)**2)
-        
+
+        # my code, Distance to the point
+        '''TODO'''
         # Sensor readings in real units
         self.parameters.sensor_distances = self.get_ir_distances()
         
@@ -123,6 +171,20 @@ class QBFullSupervisor(QuickBotSupervisor):
         if self.current == self.gtg:
             goal_angle = self.gtg.get_heading_angle(self.parameters)
             renderer.set_pen(0x00FF00)
+            renderer.draw_arrow(0,0,
+                arrow_length*cos(goal_angle),
+                arrow_length*sin(goal_angle))
+        
+        elif self.current == self.path:
+            goal_angle = self.path.get_heading_angle(self.parameters)
+            renderer.set_pen(0x00FF00)
+            renderer.draw_arrow(0,0,
+                arrow_length*cos(goal_angle),
+                arrow_length*sin(goal_angle))
+
+        elif self.current == self.blending:
+            goal_angle = self.blending.get_heading_angle(self.parameters)
+            renderer.set_pen(0x0000FF)
             renderer.draw_arrow(0,0,
                 arrow_length*cos(goal_angle),
                 arrow_length*sin(goal_angle))

@@ -98,7 +98,8 @@ def ga_execute(start, goal):
     filename = os.path.join('worlds','without_obstacle.xml')
     vertexs_list = get_obstacles(filename)
     #print vertexs_list
-    pop = population(20, 5, start, goal)
+    # generate first generation, with 20 individuals and 5 length of each individual
+    pop = population(25, 5, start, goal)
     for i in range(100):
         parents = evolve(pop, start, goal, vertexs_list)
 

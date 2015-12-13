@@ -132,7 +132,7 @@ class QBFullSupervisor(QuickBotSupervisor):
 
     def at_obstacle(self):
         """Check if the distance to obstacle is small"""
-        return self.distmin < self.robot.ir_sensors.rmax/1.5 #default 2.0
+        return self.distmin < self.robot.ir_sensors.rmax/2.0 #default 2.0
         
     def free(self):
         """Check if the distance to obstacle is large"""

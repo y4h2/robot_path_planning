@@ -66,7 +66,7 @@ class QBFullSupervisor(QuickBotSupervisor):
                             (self.at_obstacle, self.avoidobstacles))
         self.add_controller(self.avoidobstacles,
                             (self.at_goal, self.hold),
-                            (self.free, self.path)
+                            (self.free, self.gtg)
                             )
         # self.add_controller(self.blending,
         #                     (self.at_goal, self.hold),
@@ -96,7 +96,7 @@ class QBFullSupervisor(QuickBotSupervisor):
         # start in the 'path-planning' state
         # self.current = self.pathplanning
         # Start in the 'go-to-goal' state
-        self.current = self.path
+        self.current = self.gtg
 
     def set_parameters(self,params):
         """Set parameters for itself and the controllers"""

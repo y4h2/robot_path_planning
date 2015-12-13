@@ -21,7 +21,7 @@ class GoToGoal(PIDController):
         """Get the direction from the robot to the goal as a vector."""
         
         # The goal:
-        x_g, y_g = state.goal.x, state.goal.y
+        x_g, y_g = (0.5, 0.5) #state.goal.x, state.goal.y
         
         # The robot:
         x_r, y_r, theta = state.pose
