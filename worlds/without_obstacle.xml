@@ -24,15 +24,5 @@
         </geometry>
     </obstacle>
 
-    <obstacle>
-        <pose x="0.6" y="0.6" theta="0" />
-        <geometry>
-            <point x="0" y="0" />
-            <point x="0.1" y="0" />
-            <point x="0.1" y="0.1" />
-            <point x="0" y="0.1" />
-        </geometry>
-    </obstacle>
-
 
 </simulation>

@@ -9,7 +9,15 @@ import numpy as np
 from numpy import array, cos, dot, fabs, lexsort, pi, sin, sqrt, vstack
 
 def individual (length, start, goal, range_min = None, range_max = None,precise = 1):
-    """Create a member of the population"""
+    """
+    Create a member of the population
+
+    length: the number of values per individual
+    start: start point 
+    goal: goal point
+    range_min: random number's minimum range_min
+    range_min: random number's maximun range_min
+    """
     if range_min == None:
         range_min = start
     if range_max == None:
@@ -22,8 +30,8 @@ def population(count, length, start, goal):
 
     count: the number of individuals in the population
     length: the number of values per individual
-    min: the min possible value in an individual's list of values
-    max: the max possible value in an individual's list of values
+    start: start point 
+    goal: goal point
     """
     return [ individual(length, start, goal) for i in xrange(count) ]
   
@@ -34,7 +42,9 @@ def fitness(individual,start, goal, vertexs_list):
     Determine the fitness of an individual. Lower is better.
 
     individual: the individual to evaluate
-    target: the sum of numbers that individuals are aiming for
+    start: start point 
+    goal: goal point
+    vertexs_list: a list of vertexs of obstacles
     """
     #TODO
     previous_point = (start[0], start[1])
@@ -52,8 +62,21 @@ def fitness(individual,start, goal, vertexs_list):
             sum += 100
     return sum
 
-# evolution operations
+# 
 def evolve(pop, start, goal, vertexs_list, retain=0.9, random_select=0.05, mutate=0.01, crossover_pos=None, precise=1):
+    """
+    evolution operations, include selction, mutation, crossover
+
+    pop: one generation
+    start: start point 
+    goal: goal point
+    vertexs_list: a list of vertexs of obstacles
+    retain: percentage of individuals kept every generation
+    random_select: select rate 
+    mutate: mutation rate
+    crossover_pos: crossover's position 
+    precise=1
+    """
     graded = [ (fitness(x, start, goal, vertexs_list), x) for x in pop]
     graded = [ x[1] for x in sorted(graded)]
     retain_length = int(len(graded)*retain)
@@ -94,6 +117,13 @@ def evolve(pop, start, goal, vertexs_list, retain=0.9, random_select=0.05, mutat
     return parents
 
 def ga_execute(start, goal):
+    """
+    entrance of genetic algorithm
+    this function is executed in supervisor
+
+    start: start point
+    goal: goal point
+    """
     #vertexs = [(2,3), (3,2), (2,2), (3,3)]
     filename = os.path.join('worlds','without_obstacle.xml')
     vertexs_list = get_obstacles(filename)
@@ -103,10 +133,30 @@ def ga_execute(start, goal):
     for i in range(100):
         parents = evolve(pop, start, goal, vertexs_list)
 
-    
+    # select the best individual
     best_individual = parents[0]
+    # use optaimal operation
+    best_individual = optimal_operation(best_individual, vertexs_list, start, goal)
+    
+    # debug information
+    print 'parents[0]', parents[0]
+    print 'best_individual', best_individual
+    
+    return best_individual
+
+def optimal_operation(individual, vertexs_list, start, goal):
+    """
+    genetic optimal operation
+
+    individual: the individual which need to be optimalize 
+    vertexs_list: a list of vertexes of obstacles
+    start: start point
+    goal: end point
+    """
+    # check whether start point can reach goal directly
     cnt = 0
     point_cnt = 0
+    best_individual = individual
     for vertexs in vertexs_list:
         if collision_detect(vertexs, start, goal):
             point_cnt += 1    
@@ -124,17 +174,15 @@ def ga_execute(start, goal):
             best_individual = best_individual[0:cnt + 1]
             print best_individual
             break
-        cnt += 1   
-    print 'parents[0]', parents[0]
-    print 'best_individual', best_individual
-    # for ind in parents:
-    #     print ind
-    #     print fitness(ind, start, goal, vertexs_list)
-    #print fitness(best_individual, start, goal, vertexs_list)
-    
+        cnt += 1
     return best_individual
 
 def get_obstacles(file):
+    """
+    get obstacle's coordinates from world file
+
+    file: the world file
+    """
     xml = XMLReader(file, 'parameters')
     
     vertexs_list = []

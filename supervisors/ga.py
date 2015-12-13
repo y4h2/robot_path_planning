@@ -104,7 +104,7 @@ class QBFullSupervisor(QuickBotSupervisor):
         self.gtg.set_parameters(self.parameters)
         self.avoidobstacles.set_parameters(self.parameters)
         self.wall.set_parameters(self.parameters)
-        self.pp.set_parameters(self.parameters)
+        #self.pp.set_parameters(self.parameters)
         self.path.set_parameters(self.parameters)
         self.blending.set_parameters(self.parameters)
 
