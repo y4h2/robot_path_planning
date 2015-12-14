@@ -1,11 +1,4 @@
-#
-# (c) PySimiam Team 2013
-#
-# Contact person: Tim Fuchs <typograph@elec.ru>
-#
-# This class was implemented as a weekly programming excercise
-# of the 'Control of Mobile Robots' course by Magnus Egerstedt.
-#
+#modified by Yu Huang
 from khepera3 import K3Supervisor
 from supervisor import Supervisor
 from math import sqrt, sin, cos, atan2
@@ -29,25 +22,10 @@ class K3FullSupervisor(K3Supervisor):
         self.process_state_info(robot_info)
         
         #Add controllers
-        self.gtg = self.create_controller('GoToGoal', self.parameters)
-        self.avoidobstacles = self.create_controller('K3_AvoidObstacles', self.parameters)
-        self.wall = self.create_controller('FollowWall', self.parameters)
-        self.hold = self.create_controller('Hold', None)
         self.movingtopoint1 = self.create_controller('MovingToPoint1', self.parameters)
         self.movingtopoint2 = self.create_controller('MovingToPoint2', self.parameters)
         # Define transitions
-        self.add_controller(self.hold,
-                            (lambda: not self.at_goal(), self.gtg))
-        self.add_controller(self.gtg,
-                            (self.at_goal, self.hold),
-                            (self.at_wall, self.wall))
-        self.add_controller(self.wall,
-                            (self.at_goal,self.hold),
-                            (self.unsafe, self.avoidobstacles),
-                            (self.wall_cleared, self.gtg))
-        self.add_controller(self.avoidobstacles,
-                            (self.at_goal, self.hold),
-                            (self.safe, self.wall))
+       
         self.add_controller(self.movingtopoint1,
                              (self.at_point1, self.movingtopoint2))
         self.add_controller(self.movingtopoint2,
@@ -58,9 +36,6 @@ class K3FullSupervisor(K3Supervisor):
     def set_parameters(self,params):
         """Set parameters for itself and the controllers"""
         K3Supervisor.set_parameters(self,params)
-        self.gtg.set_parameters(self.parameters)
-        self.avoidobstacles.set_parameters(self.parameters)
-        self.wall.set_parameters(self.parameters)
         self.movingtopoint1.set_parameters(self.parameters)
         self.movingtopoint2.set_parameters(self.parameters)
     
@@ -73,80 +48,7 @@ class K3FullSupervisor(K3Supervisor):
         return  sqrt((self.pose_est.x - self.parameters.path[1][0])**2 + (self.pose_est.y - self.parameters.path[1][1])**2) < self.robot.wheels.base_length/2
 
 
-    def at_goal(self):
-        """Check if the distance to goal is small"""
-        return self.distance_from_goal < self.robot.wheels.base_length/2
-
-    def is_at_wall(self):
-        """Check if the distance to wall is small"""
-        return self.distmin < self.distmax*0.8
-
-    def at_wall(self):
-        """Check the distance to wall and decide
-           on the direction"""
-
-        wall_close = self.is_at_wall()
-        
-        # Decide which direction to go
-        if wall_close:
-        
-            # Find the closest detected point
-            dmin = self.distmax
-            tmin = 0
-            for i, d in enumerate(self.parameters.sensor_distances):
-                if d < dmin:
-                    dmin = d
-                    tmin = self.parameters.sensor_poses[i].theta
-            
-            # Go that way
-            if tmin > 0:
-                self.parameters.direction = 'left'
-            else:
-                self.parameters.direction = 'right'
-              
-            # Notify the controller
-            self.wall.set_parameters(self.parameters)
-            
-            # Save the closest we've been to the goal
-            self.best_distance = self.distance_from_goal
-            
-        return wall_close
-
-    def wall_cleared(self):
-        """Check if the robot should stop following the wall"""
-
-        # Did we make progress?
-        if self.distance_from_goal >= self.best_distance:
-            return False
-            
-        #self.best_distance = self.distance_from_goal
-
-        # Are we far enough from the wall,
-        # so that we don't switch back immediately
-        if self.is_at_wall():
-            return False
-            
-        # Check if we have a clear shot to the goal
-        theta_gtg = self.gtg.get_heading_angle(self.parameters)
-        dtheta = self.wall.heading_angle - theta_gtg
-        
-        if self.parameters.direction == 'right':
-            dtheta = -dtheta
-            
-        return sin(dtheta) >= 0 and cos(dtheta) >= 0
-
-    def unsafe(self):
-        """Check if the distance to wall is too small"""        
-        return self.distmin < self.distmax*0.5
-        
-    def safe(self):
-        """Check if the distance to wall is ok again"""        
-        wall_far = self.distmin > self.distmax*0.6
-        # Check which way to go
-        if wall_far:
-            self.at_wall()
-        return wall_far
-
+  
     def process_state_info(self, state):
         """Update state parameters for the controllers and self"""
 
