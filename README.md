@@ -2,7 +2,7 @@
 This project forks from pysimiam project and remove some unneccessary file
 
 # robot_path_planning
-Path planning of dynamic environment with genetic algorithm and IR sensor
+Path planning of dynamic environment with genetic algorithm and Finite State Machine
 
 
 # Running Project
@@ -14,7 +14,7 @@ Recommend installing Anaconda Package which include all common library
 ## Running
 cd into robot_path_planning root folder, run command ```python qtpysimim.py```
 
-# Contribution
+# My Works
 ## three supervisors
 - /supervisors/ga.py (state machine for Quickbot)
 - /supervisors/ga_k3.py (state machine for khepera3)
