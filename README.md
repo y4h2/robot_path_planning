@@ -1,5 +1,6 @@
 # NOTICE
-This project forks from pysimiam project and remove some unneccessary file
+This project forks from pysimiam project and remove some unneccessary file <br/>
+PySimiam documents http://pysimiam.sourceforge.net/index.html
 
 # robot_path_planning
 Path planning of dynamic environment with genetic algorithm and Finite State Machine
